@@ -1,5 +1,6 @@
 package Team02.BackEnd.oauth.controller;
 
+import Team02.BackEnd.apiPayload.ApiResponse;
 import Team02.BackEnd.domain.Role;
 import Team02.BackEnd.domain.oauth.OauthUser;
 import Team02.BackEnd.oauth.OauthServerType;

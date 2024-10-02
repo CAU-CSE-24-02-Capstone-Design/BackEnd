@@ -1,6 +1,8 @@
 package Team02.BackEnd.jwt.service;
 
 
+import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
+import Team02.BackEnd.apiPayload.exception.handler.RefreshTokenHandler;
 import Team02.BackEnd.domain.RefreshToken;
 import Team02.BackEnd.exception.TokenInvalidException;
 import Team02.BackEnd.repository.CommonUserRepository;
@@ -40,7 +42,7 @@ public class JwtService {
 
     @Value("${jwt.secretKey}")
     private String secretKey;
-    @Value("${jwt.access.expiration")
+    @Value("${jwt.access.expiration}")
     private Integer accessTokenExpirationPeriod;
     @Value("${jwt.refresh.expiration}")
     private Integer refreshTokenExpirationPeriod;
@@ -111,7 +113,11 @@ public class JwtService {
             if (cookie.getName().equals(refreshHeader))
                 refresh = cookie.getValue();
         }
-        return Optional.ofNullable(refresh);
+
+        if (refresh.isEmpty())
+            throw new RefreshTokenHandler(ErrorStatus._REFRESHTOKEN_NOT_FOUND);
+        else
+            return Optional.of(refresh);
     }
 
     /**
