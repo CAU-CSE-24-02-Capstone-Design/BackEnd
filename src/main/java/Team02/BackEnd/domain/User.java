@@ -1,5 +1,6 @@
 package Team02.BackEnd.domain;
 
+import Team02.BackEnd.dto.user.UserRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public abstract class User extends BaseEntity {
     private String email;
     private String name;
     private String familyCode;
+    private boolean isParent;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -30,5 +32,11 @@ public abstract class User extends BaseEntity {
     // 유저 권한 설정 메소드
     public void authorizeUser() {
         this.role = Role.USER;
+    }
+
+    // 가족 정보 update 메소드
+    public void update(UserRequest.UserFamilyInfoRequestDTO userFamilyInfoRequestDTO) {
+        this.familyCode = userFamilyInfoRequestDTO.getFamilyCode();
+        this.isParent = userFamilyInfoRequestDTO.getIsParent().equals("true");
     }
 }

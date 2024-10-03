@@ -50,6 +50,9 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+
+        // AccessToken 체크 및 인증 처리
+        checkAccessTokenAndAuthentication(request, response, filterChain);
     }
 
     /**

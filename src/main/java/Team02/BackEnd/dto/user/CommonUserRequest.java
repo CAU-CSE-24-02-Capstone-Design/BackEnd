@@ -12,6 +12,5 @@ public class CommonUserRequest {
         private String email;
         private String password;
         private String name;
-        private String familyCode;
     }
 }

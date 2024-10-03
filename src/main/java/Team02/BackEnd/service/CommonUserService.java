@@ -26,6 +26,8 @@ public class CommonUserService {
 
     public CommonUserResponse.CommonUserIdResponseDTO signUp(CommonUserRequest.CommonUserSignUpRequestDTO commonUserSignUpRequestDTO) {
         CommonUser user = commonUserRepository.findByEmail(commonUserSignUpRequestDTO.getEmail()).orElse(null);
+
+        // 이메일 중복 회원이 있으면
         if (user != null)
             throw new UserHandler(ErrorStatus._USER_DUPLICATED);
 

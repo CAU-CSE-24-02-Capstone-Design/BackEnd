@@ -12,8 +12,9 @@ public class CommonUserConverter {
                 .email(commonUserSignUpRequestDTO.getEmail())
                 .name(commonUserSignUpRequestDTO.getName())
                 .password(commonUserSignUpRequestDTO.getPassword())
-                .familyCode(commonUserSignUpRequestDTO.getFamilyCode())
-                .role(Role.USER)
+                .familyCode(null)
+                .isParent(false)
+                .role(Role.GUEST)
                 .build();
     }
 

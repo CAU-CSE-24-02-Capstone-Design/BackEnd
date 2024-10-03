@@ -27,7 +27,10 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // User 관련 응답
     _USER_DUPLICATED(HttpStatus.BAD_REQUEST, "USER4001", "중복 이메일입니다."),
-    _USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4002", "해당 유저가 없습니다");
+    _USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4002", "해당 유저가 없습니다"),
+
+    // Family 관련 응답
+    _FAMILY_NOT_FOUND(HttpStatus.NOT_FOUND, "FAMILY4001", "같은 가족 코드를 가진 유저가 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

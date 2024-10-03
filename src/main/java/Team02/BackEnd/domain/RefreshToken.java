@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @RedisHash(value = "refresh_token")
-public class RefreshToken extends BaseEntity {
+public class RefreshToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -114,6 +114,7 @@ public class JwtService {
                 refresh = cookie.getValue();
         }
 
+        assert refresh != null;
         if (refresh.isEmpty())
             throw new RefreshTokenHandler(ErrorStatus._REFRESHTOKEN_NOT_FOUND);
         else
@@ -163,6 +164,7 @@ public class JwtService {
                 .expiration(refreshTokenExpirationPeriod)
                 .build();
 
+        System.out.println("Saving RefreshToken: " + token);
         redisTemplate.opsForValue().set(refreshToken, token, (long) refreshTokenExpirationPeriod, TimeUnit.MILLISECONDS);
     }
 
