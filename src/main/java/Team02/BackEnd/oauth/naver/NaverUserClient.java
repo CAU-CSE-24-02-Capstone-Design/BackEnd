@@ -1,6 +1,6 @@
 package Team02.BackEnd.oauth.naver;
 
-import Team02.BackEnd.domain.oauth.OauthUser;
+import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.oauth.OauthServerType;
 import Team02.BackEnd.oauth.client.NaverApiClient;
 import Team02.BackEnd.oauth.client.OauthUserClient;
@@ -24,7 +24,7 @@ public class NaverUserClient implements OauthUserClient {
     }
 
     @Override
-    public OauthUser fetch(String authCode) {
+    public User fetch(String authCode) {
         NaverToken tokenInfo = naverApiClient.fetchToken(tokenRequestParams(authCode));
         NaverMemberResponse naverMemberResponse = naverApiClient.fetchMember("Bearer " + tokenInfo.accessToken());
         return naverMemberResponse.toDomain();

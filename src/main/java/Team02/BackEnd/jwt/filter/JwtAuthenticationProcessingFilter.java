@@ -1,8 +1,6 @@
 package Team02.BackEnd.jwt.filter;
 
-import Team02.BackEnd.domain.CommonUser;
-import Team02.BackEnd.domain.User;
-import Team02.BackEnd.domain.oauth.OauthUser;
+import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.exception.TokenInvalidException;
 import Team02.BackEnd.jwt.service.JwtService;
 import Team02.BackEnd.jwt.util.PasswordUtil;
@@ -21,6 +19,7 @@ import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -107,10 +106,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
         // OAuth2 유저는 password가 없기 때문에 랜덤 생성
         String password = null;
-        if (user.getClass() == CommonUser.class)
-            password = ((CommonUser) user).getPassword();
-        else if (user.getClass() == OauthUser.class)
-            password = PasswordUtil.generateRandomPassword();
+        password = PasswordUtil.generateRandomPassword();
 
         assert password != null;
         UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()

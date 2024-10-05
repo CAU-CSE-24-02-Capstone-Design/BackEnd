@@ -3,9 +3,10 @@ package Team02.BackEnd.oauth.dto;
 
 import Team02.BackEnd.domain.Role;
 import Team02.BackEnd.domain.oauth.OauthId;
-import Team02.BackEnd.domain.oauth.OauthUser;
+import Team02.BackEnd.domain.oauth.User;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
@@ -19,8 +20,8 @@ public record NaverMemberResponse(
         Response response
 ) {
 
-    public OauthUser toDomain() {
-        return OauthUser.builder()
+    public User toDomain() {
+        return User.builder()
                 .oauthId(new OauthId(String.valueOf(response.id), NAVER))
                 .name(response.name)
 //                .profileImageUrl(response.profileImage)

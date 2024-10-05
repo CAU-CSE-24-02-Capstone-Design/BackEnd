@@ -2,7 +2,7 @@ package Team02.BackEnd.oauth.dto;
 
 import Team02.BackEnd.domain.Role;
 import Team02.BackEnd.domain.oauth.OauthId;
-import Team02.BackEnd.domain.oauth.OauthUser;
+import Team02.BackEnd.domain.oauth.User;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
@@ -23,8 +23,8 @@ public record KakaoMemberResponse(
         KakaoAccount kakaoAccount
 ) {
 
-    public OauthUser toDomain() {
-        return OauthUser.builder()
+    public User toDomain() {
+        return User.builder()
                 .oauthId(new OauthId(String.valueOf(id), KAKAO))
                 .name(kakaoAccount.profile.nickname)
 //                .profileImageUrl(kakaoAccount.profile.profileImageUrl)

@@ -5,7 +5,7 @@ import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
 import Team02.BackEnd.apiPayload.exception.handler.RefreshTokenHandler;
 import Team02.BackEnd.domain.RefreshToken;
 import Team02.BackEnd.exception.TokenInvalidException;
-import Team02.BackEnd.repository.CommonUserRepository;
+import Team02.BackEnd.repository.UserRepository;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -36,7 +36,7 @@ public class JwtService {
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
     private static final String EMAIL_CLAIM = "email";
     private static final String BEARER = "Bearer ";
-    private final CommonUserRepository commonUserRepository;
+    private final UserRepository userRepository;
 
     private final RedisTemplate<String, Object> redisTemplate;
 

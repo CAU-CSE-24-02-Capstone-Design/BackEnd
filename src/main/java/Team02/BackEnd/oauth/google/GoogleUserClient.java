@@ -1,6 +1,6 @@
 package Team02.BackEnd.oauth.google;
 
-import Team02.BackEnd.domain.oauth.OauthUser;
+import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.oauth.OauthServerType;
 import Team02.BackEnd.oauth.client.GoogleApiClient;
 import Team02.BackEnd.oauth.client.OauthUserClient;
@@ -24,7 +24,7 @@ public class GoogleUserClient implements OauthUserClient {
     }
 
     @Override
-    public OauthUser fetch(String authCode) {
+    public User fetch(String authCode) {
         GoogleToken tokenInfo = googleApiClient.fetchToken(tokenRequestParams(authCode)); // (1)
         GoogleMemberResponse googleMemberResponse =
                 googleApiClient.fetchMember("Bearer " + tokenInfo.accessToken());  // (2)

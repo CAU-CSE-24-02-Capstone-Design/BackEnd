@@ -2,7 +2,7 @@ package Team02.BackEnd.oauth.controller;
 
 import Team02.BackEnd.apiPayload.ApiResponse;
 import Team02.BackEnd.domain.Role;
-import Team02.BackEnd.domain.oauth.OauthUser;
+import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.oauth.OauthServerType;
 import Team02.BackEnd.oauth.service.OauthService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -41,7 +41,7 @@ public class OauthController {
             @RequestParam("code") String code,
             HttpServletResponse response
     ) {
-        OauthUser user = oauthService.login(response, oauthServerType, code);
+        User user = oauthService.login(response, oauthServerType, code);
 //        oauthService.saveImage(user);
         return ApiResponse.onSuccess(user.getRole());
     }

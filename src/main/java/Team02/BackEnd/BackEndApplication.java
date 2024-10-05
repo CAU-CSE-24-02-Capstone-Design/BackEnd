@@ -12,8 +12,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @ConfigurationPropertiesScan
 public class BackEndApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(BackEndApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(BackEndApplication.class, args);
+    }
 
 }

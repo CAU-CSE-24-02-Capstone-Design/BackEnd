@@ -1,8 +1,9 @@
 package Team02.BackEnd.oauth.client;
 
-import Team02.BackEnd.domain.oauth.OauthUser;
+import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.oauth.OauthServerType;
 import org.springframework.stereotype.Component;
+
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -27,7 +28,7 @@ public class OauthUserClientComposite {
                 ));
     }
 
-    public OauthUser fetch(OauthServerType oauthServerType, String authCode) {
+    public User fetch(OauthServerType oauthServerType, String authCode) {
         return getClient(oauthServerType).fetch(authCode);
     }
 

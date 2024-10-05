@@ -1,6 +1,6 @@
 package Team02.BackEnd.oauth.client;
 
-import Team02.BackEnd.domain.oauth.OauthUser;
+import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.oauth.OauthServerType;
 
 /**
@@ -11,5 +11,5 @@ public interface OauthUserClient {
 
     OauthServerType supportServer();
 
-    OauthUser fetch(String code);
+    User fetch(String code);
 }

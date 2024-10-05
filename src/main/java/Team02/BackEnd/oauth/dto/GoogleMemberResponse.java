@@ -2,7 +2,7 @@ package Team02.BackEnd.oauth.dto;
 
 import Team02.BackEnd.domain.Role;
 import Team02.BackEnd.domain.oauth.OauthId;
-import Team02.BackEnd.domain.oauth.OauthUser;
+import Team02.BackEnd.domain.oauth.User;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
@@ -20,8 +20,8 @@ public record GoogleMemberResponse(
         String locale
 ) {
 
-    public OauthUser toDomain() {
-        return OauthUser.builder()
+    public User toDomain() {
+        return User.builder()
                 .oauthId(new OauthId(id, GOOGLE))
                 .email(email)
                 .name(name)

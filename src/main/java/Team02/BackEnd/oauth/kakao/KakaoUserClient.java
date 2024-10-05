@@ -1,6 +1,6 @@
 package Team02.BackEnd.oauth.kakao;
 
-import Team02.BackEnd.domain.oauth.OauthUser;
+import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.oauth.OauthServerType;
 import Team02.BackEnd.oauth.client.KakaoApiClient;
 import Team02.BackEnd.oauth.client.OauthUserClient;
@@ -32,7 +32,7 @@ public class KakaoUserClient implements OauthUserClient {
     }
 
     @Override
-    public OauthUser fetch(String authCode) {
+    public User fetch(String authCode) {
         KakaoToken tokenInfo = kakaoApiClient.fetchToken(tokenRequestParams(authCode)); // (1)
         KakaoMemberResponse kakaoMemberResponse = kakaoApiClient.fetchMember("Bearer " + tokenInfo.accessToken());  // (2)
         return kakaoMemberResponse.toDomain();  // (3)
