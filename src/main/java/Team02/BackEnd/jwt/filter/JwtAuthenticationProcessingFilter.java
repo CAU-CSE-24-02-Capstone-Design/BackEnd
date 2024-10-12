@@ -54,6 +54,13 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         checkAccessTokenAndAuthentication(request, response, filterChain);
     }
 
+    private boolean isSwaggerPath(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        return uri.startsWith("/swagger") || uri.startsWith("/v3/api-docs") || uri.startsWith("/api-docs") ||
+                uri.startsWith("/swagger-ui.html") || uri.startsWith("/swagger-ui") || uri.startsWith("/webjars") ||
+                uri.startsWith("/favicon.ico") || uri.startsWith("/csrf");
+    }
+
     /**
      * [AccessToken 체크 & 인증 처리 메소드]
      * request에서 extractAccessToken()으로 AccessToken 추출 후, isTokenValid()로 유효한 토큰인지 검증
@@ -65,6 +72,13 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
                                                   FilterChain filterChain) throws IOException, ServletException {
         log.info("checkAccessTokenAndAuthentication() 호출");
+
+        // 스웨거 토큰 해제
+        if (isSwaggerPath(request)) {
+            log.info("Swagger 토큰 미필요");
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         String accessToken = jwtService.extractAccessToken(request).orElse(null);
         if (accessToken == null) {
