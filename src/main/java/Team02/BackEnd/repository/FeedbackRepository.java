@@ -1,4 +1,4 @@
 package Team02.BackEnd.repository;
 
-public class FeedbackRepository {
+public interface FeedbackRepository {
 }
