@@ -7,15 +7,27 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
+import Team02.BackEnd.jwt.service.JwtService;
 
 @Configuration
 public class SwaggerConfig {
 
+    private final JwtService jwtService;
+
+    @Autowired
+    public SwaggerConfig(JwtService jwtService) {
+        this.jwtService = jwtService;
+    }
+
     @Bean
     public OpenAPI customOpenAPI() {
+        String testToken = jwtService.generateTestToken();
+
         SecurityScheme securityScheme = new SecurityScheme()
                 .type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")
-                .in(SecurityScheme.In.HEADER).name("Authorization");
+                .in(SecurityScheme.In.HEADER).name("Authorization")
+                .description("test token: " + testToken);
 
         SecurityRequirement securityRequirement = new SecurityRequirement().addList("bearerAuth");
 

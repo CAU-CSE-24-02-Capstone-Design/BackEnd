@@ -46,7 +46,7 @@ public class SecurityConfig {
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**").permitAll()
+                                .requestMatchers("/swagger/**", "/swagger-ui/index.html#/**", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**").permitAll()
                                 .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico").permitAll()
                                 .requestMatchers("/sign-up").permitAll() // 회원가입 접근 가능
                                 .requestMatchers("/reissue").permitAll() // refreshToken 재발급 가능

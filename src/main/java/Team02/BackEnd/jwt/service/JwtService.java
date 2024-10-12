@@ -51,6 +51,17 @@ public class JwtService {
     @Value("${jwt.refresh.header}")
     private String refreshHeader;
 
+    // 테스트용 토큰 생성 메서드 추가
+    public String generateTestToken() {
+        Date now = new Date();
+        return JWT.create()
+                .withSubject(ACCESS_TOKEN_SUBJECT)
+                .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
+                .withClaim("unique_id", UUID.randomUUID().toString())
+                .withClaim(EMAIL_CLAIM, "test@example.com")
+                .sign(Algorithm.HMAC512(secretKey));
+    }
+
     /**
      * AccessToken 생성 메서드
      */

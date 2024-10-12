@@ -44,7 +44,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
-        if (path.startsWith("/login") || path.startsWith("/reissue") || path.startsWith("/oauth") || path.startsWith("/sign-up") || path.startsWith("/google-login")) {
+        if (isSwaggerPath(request) || path.startsWith("/login") || path.startsWith("/reissue") || path.startsWith("/oauth") || path.startsWith("/sign-up") || path.startsWith("/google-login")) {
             log.debug("JWT Authentication Filter Skip");
             filterChain.doFilter(request, response);
             return;
@@ -53,14 +53,22 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         // AccessToken 체크 및 인증 처리
         checkAccessTokenAndAuthentication(request, response, filterChain);
     }
-
     private boolean isSwaggerPath(HttpServletRequest request) {
         String uri = request.getRequestURI();
-        return uri.startsWith("/swagger") || uri.startsWith("/v3/api-docs") || uri.startsWith("/api-docs") ||
-                uri.startsWith("/swagger-ui.html") || uri.startsWith("/swagger-ui") || uri.startsWith("/webjars") ||
-                uri.startsWith("/favicon.ico") || uri.startsWith("/csrf");
+        return uri.startsWith("/swagger") ||
+                uri.startsWith("/v3/api-docs") ||
+                uri.startsWith("/api-docs") ||
+                uri.startsWith("/swagger-ui.html") ||
+                uri.startsWith("/swagger-ui") ||
+                uri.startsWith("/webjars") ||
+                uri.startsWith("/favicon.ico") ||
+                uri.startsWith("/csrf") ||
+                uri.startsWith("/v3/api-docs.yaml") ||
+                uri.startsWith("/v3/api-docs.json") ||
+                uri.startsWith("/swagger-resources") ||
+                uri.startsWith("/swagger-resources/configuration/ui") ||
+                uri.startsWith("/swagger-resources/configuration/security");
     }
-
     /**
      * [AccessToken 체크 & 인증 처리 메소드]
      * request에서 extractAccessToken()으로 AccessToken 추출 후, isTokenValid()로 유효한 토큰인지 검증

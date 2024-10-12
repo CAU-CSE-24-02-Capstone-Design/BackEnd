@@ -17,4 +17,8 @@ public class UserService {
     public void signOut(String accessToken) {
         //todo 회원 탈퇴시 이 회원과 관련된 모든 DB 데이터 삭제
     }
+
+    public String getJwtToken(String email) {
+        return jwtService.createAccessToken(email);
+    }
 }
