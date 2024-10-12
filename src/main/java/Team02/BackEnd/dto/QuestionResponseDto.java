@@ -1,4 +1,4 @@
-package Team02.BackEnd.dto.user;
+package Team02.BackEnd.dto;
 
 import lombok.Getter;
 
