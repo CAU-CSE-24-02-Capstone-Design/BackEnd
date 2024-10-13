@@ -81,7 +81,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                                                   FilterChain filterChain) throws IOException, ServletException {
         log.info("checkAccessTokenAndAuthentication() 호출");
 
-        // 스웨거 토큰 해제
+        // 스웨거 페이지 토큰 해제
         if (isSwaggerPath(request)) {
             log.info("Swagger 토큰 미필요");
             filterChain.doFilter(request, response);

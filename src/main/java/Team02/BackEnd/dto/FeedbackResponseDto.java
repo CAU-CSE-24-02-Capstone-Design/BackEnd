@@ -5,16 +5,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-public class FeedbackRequestDto {
+public class FeedbackResponseDto {
 
+    @Builder
     @Getter
-    public static class GetFeedbackDto{
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class GetFeedbackDto {
         String beforeAudioLink;
         String beforeScript;
         String afterAudioLink;
         String afterScript;
         String feedbackText;
-
-        Long answerId;
     }
 }
