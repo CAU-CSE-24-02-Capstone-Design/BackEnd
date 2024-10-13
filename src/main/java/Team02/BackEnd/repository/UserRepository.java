@@ -2,9 +2,8 @@ package Team02.BackEnd.repository;
 
 import Team02.BackEnd.domain.oauth.OauthId;
 import Team02.BackEnd.domain.oauth.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 

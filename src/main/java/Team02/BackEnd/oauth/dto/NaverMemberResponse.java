@@ -1,17 +1,16 @@
 package Team02.BackEnd.oauth.dto;
 
 
+import static Team02.BackEnd.oauth.OauthServerType.NAVER;
+
 import Team02.BackEnd.domain.Role;
 import Team02.BackEnd.domain.oauth.OauthId;
 import Team02.BackEnd.domain.oauth.User;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
-
-import static Team02.BackEnd.oauth.OauthServerType.NAVER;
 
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record NaverMemberResponse(

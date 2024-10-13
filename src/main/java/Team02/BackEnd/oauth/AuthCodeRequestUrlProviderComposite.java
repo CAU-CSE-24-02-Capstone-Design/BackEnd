@@ -1,13 +1,12 @@
 package Team02.BackEnd.oauth;
 
-import org.springframework.stereotype.Component;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toMap;
+import org.springframework.stereotype.Component;
 
 /**
  * OAuthServerType의 종류에 따라 해당하는 AuthCodeRequestUrlProvider를 사용하여 URL을 생성한다.

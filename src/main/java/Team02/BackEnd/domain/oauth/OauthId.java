@@ -1,14 +1,14 @@
 package Team02.BackEnd.domain.oauth;
 
+import static jakarta.persistence.EnumType.STRING;
+import static lombok.AccessLevel.PROTECTED;
+
 import Team02.BackEnd.oauth.OauthServerType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-
-import static jakarta.persistence.EnumType.STRING;
-import static lombok.AccessLevel.PROTECTED;
 
 @Embeddable
 @AllArgsConstructor

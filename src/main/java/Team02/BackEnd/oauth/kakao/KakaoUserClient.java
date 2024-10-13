@@ -34,7 +34,8 @@ public class KakaoUserClient implements OauthUserClient {
     @Override
     public User fetch(String authCode) {
         KakaoToken tokenInfo = kakaoApiClient.fetchToken(tokenRequestParams(authCode)); // (1)
-        KakaoMemberResponse kakaoMemberResponse = kakaoApiClient.fetchMember("Bearer " + tokenInfo.accessToken());  // (2)
+        KakaoMemberResponse kakaoMemberResponse = kakaoApiClient.fetchMember(
+                "Bearer " + tokenInfo.accessToken());  // (2)
         return kakaoMemberResponse.toDomain();  // (3)
     }
 

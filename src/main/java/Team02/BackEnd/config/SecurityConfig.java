@@ -5,6 +5,7 @@ import Team02.BackEnd.jwt.service.JwtService;
 import Team02.BackEnd.logout.CustomLogoutFilter;
 import Team02.BackEnd.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,11 +20,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
-
 /**
- * 인증은 CustomJsonUsernamePasswordAuthenticationFilter에서 authenticate()로 인증된 사용자로 처리
- * JwtAuthenticationProcessingFilter는 AccessToken, RefreshToken 재발급
+ * 인증은 CustomJsonUsernamePasswordAuthenticationFilter에서 authenticate()로 인증된 사용자로 처리 JwtAuthenticationProcessingFilter는
+ * AccessToken, RefreshToken 재발급
  */
 @Configuration
 @EnableWebSecurity
@@ -37,7 +36,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource())) // cors 해제
+                .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(
+                        corsConfigurationSource())) // cors 해제
                 .formLogin(config -> config.disable()) // FormLogin 사용 X
                 .logout(config -> config.disable())    // logout 사용 X
                 .httpBasic(config -> config.disable()) // httpBasic 사용 X
@@ -46,7 +46,8 @@ public class SecurityConfig {
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**").permitAll()
+                                .requestMatchers("/swagger/**", "/swagger-ui/index.html#/**", "/swagger-ui/**",
+                                        "/api-docs", "/api-docs/**", "/v3/api-docs/**").permitAll()
                                 .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico").permitAll()
                                 .requestMatchers("/sign-up").permitAll() // 회원가입 접근 가능
                                 .requestMatchers("/reissue").permitAll() // refreshToken 재발급 가능
@@ -87,7 +88,8 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
-        JwtAuthenticationProcessingFilter jwtAuthenticationFilter = new JwtAuthenticationProcessingFilter(jwtService, userRepository);
+        JwtAuthenticationProcessingFilter jwtAuthenticationFilter = new JwtAuthenticationProcessingFilter(jwtService,
+                userRepository);
         return jwtAuthenticationFilter;
     }
 
