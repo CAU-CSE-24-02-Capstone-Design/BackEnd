@@ -18,11 +18,11 @@ public enum SuccessStatus implements BaseCode {
 
     //Feedback
     SAVE_FEEDBACK(HttpStatus.OK, "FEEDBACK2000", "피드백 저장 성공"),
-    GET_FEEDBACK(HttpStatus.OK, "FEEDBACK2001", "피드백 가져오기 성공" ),
+    GET_FEEDBACK(HttpStatus.OK, "FEEDBACK2001", "피드백 가져오기 성공"),
 
     //Statistics
     SAVE_STATISTICS(HttpStatus.OK, "STATISTICS2000", "통계 횟수 저장 성공"),
-    GET_DATES_WHEN_USER_DID(HttpStatus.OK,"USER2000", "유저가 참여한 날짜 가져오기 성공");
+    GET_DATES_WHEN_USER_DID(HttpStatus.OK, "USER2000", "유저가 참여한 날짜 가져오기 성공");
 
     private final HttpStatus httpStatus;
     private final String code;

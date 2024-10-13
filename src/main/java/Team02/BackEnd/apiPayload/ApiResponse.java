@@ -27,12 +27,14 @@ public class ApiResponse<T> {
 
     // 성공한 경우 result 있을 때
     public static <T> ApiResponse<T> of(BaseCode code, T result) {
-        return new ApiResponse<>(true, code.getReasonHttpStatus().getCode(), code.getReasonHttpStatus().getMessage(), result);
+        return new ApiResponse<>(true, code.getReasonHttpStatus().getCode(), code.getReasonHttpStatus().getMessage(),
+                result);
     }
 
     // 성공한 경우 result 없을 때
     public static <T> ApiResponse<T> ofNoting(BaseCode code) {
-        return new ApiResponse<>(true, code.getReasonHttpStatus().getCode(), code.getReasonHttpStatus().getMessage(), null);
+        return new ApiResponse<>(true, code.getReasonHttpStatus().getCode(), code.getReasonHttpStatus().getMessage(),
+                null);
     }
 
     // 실패한 경우 응답 생성

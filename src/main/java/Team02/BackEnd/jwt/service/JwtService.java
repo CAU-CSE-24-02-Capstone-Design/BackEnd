@@ -14,17 +14,16 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Date;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Service
@@ -121,15 +120,17 @@ public class JwtService {
         String refresh = null;
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(refreshHeader))
+            if (cookie.getName().equals(refreshHeader)) {
                 refresh = cookie.getValue();
+            }
         }
 
         assert refresh != null;
-        if (refresh.isEmpty())
+        if (refresh.isEmpty()) {
             throw new RefreshTokenHandler(ErrorStatus._REFRESHTOKEN_NOT_FOUND);
-        else
+        } else {
             return Optional.of(refresh);
+        }
     }
 
     /**
@@ -176,7 +177,8 @@ public class JwtService {
                 .build();
 
         System.out.println("Saving RefreshToken: " + token);
-        redisTemplate.opsForValue().set(refreshToken, token, (long) refreshTokenExpirationPeriod, TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue()
+                .set(refreshToken, token, (long) refreshTokenExpirationPeriod, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -192,10 +194,11 @@ public class JwtService {
      */
     public String getEmailFromRefreshToken(String refreshToken) {
         RefreshToken token = (RefreshToken) redisTemplate.opsForValue().get(refreshToken);
-        if (token != null)
+        if (token != null) {
             return token.getEmail();
-        else
+        } else {
             return null;
+        }
     }
 
     /**

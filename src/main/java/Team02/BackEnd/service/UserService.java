@@ -1,6 +1,5 @@
 package Team02.BackEnd.service;
 
-import Team02.BackEnd.apiPayload.ApiResponse;
 import Team02.BackEnd.jwt.service.JwtService;
 import Team02.BackEnd.repository.UserRepository;
 import jakarta.transaction.Transactional;

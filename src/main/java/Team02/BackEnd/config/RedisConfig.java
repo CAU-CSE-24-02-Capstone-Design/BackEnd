@@ -31,7 +31,8 @@ public class RedisConfig {
         // 일반적인 key:value의 경우 시리얼라이저
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         // Value를 JSON 형식으로 직렬화
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer()); // refreshToken을 JSON으로 직렬화 해야 꺼낼 때도 RefreshToken 객체로 cast 가능하다.
+        redisTemplate.setValueSerializer(
+                new GenericJackson2JsonRedisSerializer()); // refreshToken을 JSON으로 직렬화 해야 꺼낼 때도 RefreshToken 객체로 cast 가능하다.
 
         // Hash를 사용할 경우 시리얼라이저
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());

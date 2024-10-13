@@ -20,11 +20,12 @@ public class QuestionController {
 
     @GetMapping("/question")
     @Operation(summary = "질문 요청", description = "유저가 클릭시 공개 될 질문 가져오기")
-    public ApiResponse<QuestionResponseDto.GetQuestionDto> getQuestion(){
+    public ApiResponse<QuestionResponseDto.GetQuestionDto> getQuestion() {
 
         String questionDescription = questionService.getQuestionDescription();
         Long answerId = answerService.getAnswerId();
 
-        return ApiResponse.of(SuccessStatus.GET_QUESTION, QuestionConverter.toQuestionResponseDto(questionDescription, answerId));
+        return ApiResponse.of(SuccessStatus.GET_QUESTION,
+                QuestionConverter.toQuestionResponseDto(questionDescription, answerId));
     }
 }

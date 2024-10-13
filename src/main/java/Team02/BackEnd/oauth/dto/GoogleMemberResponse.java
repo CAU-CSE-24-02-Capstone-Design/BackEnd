@@ -1,12 +1,12 @@
 package Team02.BackEnd.oauth.dto;
 
+import static Team02.BackEnd.oauth.OauthServerType.GOOGLE;
+
 import Team02.BackEnd.domain.Role;
 import Team02.BackEnd.domain.oauth.OauthId;
 import Team02.BackEnd.domain.oauth.User;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
-import static Team02.BackEnd.oauth.OauthServerType.GOOGLE;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record GoogleMemberResponse(
