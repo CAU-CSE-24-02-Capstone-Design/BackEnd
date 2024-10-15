@@ -1,5 +1,6 @@
 package Team02.BackEnd.domain;
 
+import Team02.BackEnd.domain.oauth.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,11 +26,11 @@ public class Statistics extends BaseEntity {
     private Long id;
 
     private Long gantourCount;
-    private Long silentTime;
+    private Double silentTime;
     private Long wrongWordCount;
     private Long wrongContextCount;
 
     @OneToOne
-    @JoinColumn(name = "answer_id")
-    private Answer answer;
+    @JoinColumn(name = "user_id")
+    private User user;
 }

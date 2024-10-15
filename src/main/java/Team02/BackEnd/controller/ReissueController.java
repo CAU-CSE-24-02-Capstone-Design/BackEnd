@@ -8,10 +8,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api-spring")
 public class ReissueController {
 
     private final JwtService jwtService;

@@ -10,11 +10,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api-spring")
 public class UserController {
 
     private final UserService userService;
@@ -27,7 +29,7 @@ public class UserController {
         return ApiResponse.onSuccess(null);
     }
 
-    @GetMapping("/calenndar")
+    @GetMapping("/calendar")
     @Operation(summary = "달력 데이터", description = "쿼리파라미터로 년,월 제공 => 기록 있는 날만 map 형태로 (날짜 : 해당 날짜 answerId) 리턴")
     public ApiResponse<HashMap<String, Long>> getDatesWhenUserDid(@RequestParam("year") String year,
                                                                   @RequestParam("month") String month) {

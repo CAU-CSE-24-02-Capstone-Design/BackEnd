@@ -1,4 +1,7 @@
 package Team02.BackEnd.repository;
 
-public interface AnswerRepository {
+import Team02.BackEnd.domain.Answer;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface AnswerRepository extends JpaRepository<Answer, Long> {
 }
