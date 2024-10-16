@@ -59,4 +59,6 @@ out/
 hs_err_pid*
 replay_pid*
 
-**/application.yml
+**/application-database.yml
+**/application-jwt.yml
+**/application-oauth.yml
