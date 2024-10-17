@@ -22,54 +22,30 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          
-#      - name: Setup MySQL
-#        uses: samin/mysql-action@v1
-#        with:
-#          mysql database: '${{ secrets.DB_NAME }}'           # 실제 데이터베이스 이름으로 교체
-#          mysql user: '${{ secrets.DB_USERNAME }}'           # 실제 사용자 이름으로 교체
-#          mysql password: '${{ secrets.DB_PASSWORD }}'       # 실제 비밀번호로 교체
 
       ## create application-database.yml
       - name: make application-database.yml
         run: |
           mkdir -p src/main/resources
           echo "${{ secrets.DATABASE }}" | base64 --decode > src/main/resources/application-database.yml
-#          cd ./src/main/resources
-#          touch ./application-database.yml
-#          echo "${{ secrets.DATABASE }}" >> ./application-database.yml
-#        shell: bash
 
       ## create application-jwt.yml
       - name: make application-jwt.yml
         run: |
           mkdir -p src/main/resources
           echo "${{ secrets.JWT }}" | base64 --decode > src/main/resources/application-jwt.yml
-#          cd ./src/main/resources
-#          touch ./application-jwt.yml
-#          echo "${{ secrets.JWT }}" >> ./application-jwt.yml
-#        shell: bash
 
       ## create application-oauth.yml
       - name: make application-oauth.yml
         run: |
           mkdir -p src/main/resources
           echo "${{ secrets.OAUTH }}" | base64 --decode > src/main/resources/application-oauth.yml
-#          cd ./src/main/resources
-#          touch ./application-oauth.yml
-#          echo "${{ secrets.OAUTH }}" >> ./application-oauth.yml
-#        shell: bash
 
-      ## List file structure
-      - name: List directory structure
-        run: |
-          tree src/main/resources
-
-      ## Gradle 빌드 실행 (에러가 나도 계속 진행)
+      ## Gradle 빌드 실행
       - name: Build with Gradle
         run: |
           chmod +x gradlew 
-          ./gradlew build -x test
+          ./gradlew build
 
       ## 이미지 빌드 및 도커허브에 push
       - name: spring docker build and push
