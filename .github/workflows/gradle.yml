@@ -70,7 +70,7 @@ jobs:
           key: ${{ secrets.KEY }}
           script: |
             sudo docker rm -f $(docker ps -qa)
-            sudo docker pull ${{ secrets.DOCKER_REPO }}/second-eyes-web
-            sudo docker pull ${{ secrets.DOCKER_REPO }}/second-eyes-nginx
+            sudo docker pull ${{ secrets.DOCKER_REPO }}/pm-spring
+            sudo docker pull ${{ secrets.DOCKER_REPO }}/pm-nginx
             docker-compose up -d
             docker image prune -f
