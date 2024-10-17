@@ -30,7 +30,7 @@ jobs:
           container port: 3306
           mysql database: '${{ secrets.DB_NAME }}' # 실제 데이터베이스 이름으로 교체
           mysql user: '${{ secrets.DB_USERNAME }}'           # 실제 사용자 이름으로 교체
-          mysql password: '${{ secrets.DB_PASSWORD }}'       # 실제 비밀번호로 교체
+          mysql password: ${{ secrets.DB_PASSWORD }}       # 실제 비밀번호로 교체
 
       ## create application-database.yml
       - name: make application-database.yml
