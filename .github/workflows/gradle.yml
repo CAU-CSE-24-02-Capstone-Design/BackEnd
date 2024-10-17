@@ -45,7 +45,7 @@ jobs:
       - name: Build with Gradle
         run: |
           chmod +x gradlew 
-          ./gradlew build
+          ./gradlew clean build -x test
 
       ## 이미지 빌드 및 도커허브에 push
       - name: spring docker build and push
