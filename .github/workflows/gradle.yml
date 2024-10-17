@@ -36,32 +36,61 @@ jobs:
       - name: make application-database.yml
         run: |
           mkdir -p src/main/resources
-          echo "${{ secrets.DATABASE }}" | base64 --decode > src/main/resources/application-database.yml
+          echo "${{ secrets.DATABASE }}" | base64 --decode > .src/main/resources/application-database.yml
 #          cd ./src/main/resources
 #          touch ./application-database.yml
 #          echo "${{ secrets.DATABASE }}" >> ./application-database.yml
-          find src
-        shell: bash
+#        shell: bash
+
+      ## Verify application-database.yml creation
+      - name: Check application-database.yml
+        run: |
+          cat src/main/resources/application-database.yml
+
+      ## Check if 'peachmentor' is in application-database.yml
+      - name: Verify 'peachmentor' in application-database.yml
+        run: |
+          if grep -q 'peachmentor' src/main/resources/application-database.yml; then
+            echo "'peachmentor' found in application-database.yml"
+          else
+            echo "'peachmentor' NOT found in application-database.yml"
+            exit 1
+          fi
 
       ## create application-jwt.yml
       - name: make application-jwt.yml
         run: |
           mkdir -p src/main/resources
-          echo "${{ secrets.JWT }}" | base64 --decode > src/main/resources/application-jwt.yml
+          echo "${{ secrets.JWT }}" | base64 --decode > .src/main/resources/application-jwt.yml
 #          cd ./src/main/resources
 #          touch ./application-jwt.yml
 #          echo "${{ secrets.JWT }}" >> ./application-jwt.yml
-        shell: bash
+#        shell: bash
+
+      ## Verify application-jwt.yml creation
+      - name: Check application-jwt.yml
+        run: |
+          cat src/main/resources/application-jwt.yml
 
       ## create application-oauth.yml
       - name: make application-oauth.yml
         run: |
           mkdir -p src/main/resources
-          echo "${{ secrets.OAUTH }}" | base64 --decode > src/main/resources/application-oauth.yml
+          echo "${{ secrets.OAUTH }}" | base64 --decode > .src/main/resources/application-oauth.yml
 #          cd ./src/main/resources
 #          touch ./application-oauth.yml
 #          echo "${{ secrets.OAUTH }}" >> ./application-oauth.yml
-        shell: bash
+#        shell: bash
+
+      ## Verify application-oauth.yml creation
+      - name: Check application-oauth.yml
+        run: |
+          cat src/main/resources/application-oauth.yml
+
+      ## List file structure
+      - name: List directory structure
+        run: |
+          tree src/main/resources
 
       ## gradle build
       - name: Build with Gradle
