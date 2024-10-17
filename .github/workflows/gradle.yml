@@ -40,6 +40,7 @@ jobs:
 #          cd ./src/main/resources
 #          touch ./application-database.yml
 #          echo "${{ secrets.DATABASE }}" >> ./application-database.yml
+          find src
         shell: bash
 
       ## create application-jwt.yml
