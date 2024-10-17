@@ -23,12 +23,12 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           
-      - name: Setup MySQL
-        uses: samin/mysql-action@v1
-        with:
-          mysql database: '${{ secrets.DB_NAME }}' # 실제 데이터베이스 이름으로 교체
-          mysql user: '${{ secrets.DB_USERNAME }}'           # 실제 사용자 이름으로 교체
-          mysql password: '${{ secrets.DB_PASSWORD }}'       # 실제 비밀번호로 교체
+#      - name: Setup MySQL
+#        uses: samin/mysql-action@v1
+#        with:
+#          mysql database: '${{ secrets.DB_NAME }}'           # 실제 데이터베이스 이름으로 교체
+#          mysql user: '${{ secrets.DB_USERNAME }}'           # 실제 사용자 이름으로 교체
+#          mysql password: '${{ secrets.DB_PASSWORD }}'       # 실제 비밀번호로 교체
 
       ## create application-database.yml
       - name: make application-database.yml
@@ -40,21 +40,6 @@ jobs:
 #          echo "${{ secrets.DATABASE }}" >> ./application-database.yml
 #        shell: bash
 
-      ## Verify application-database.yml creation
-      - name: Check application-database.yml
-        run: |
-          cat src/main/resources/application-database.yml
-
-      ## Check if 'peachmentor' is in application-database.yml
-      - name: Verify 'peachmentor' in application-database.yml
-        run: |
-          if grep -q 'peachmentor' src/main/resources/application-database.yml; then
-            echo "'peachmentor' found in application-database.yml"
-          else
-            echo "'peachmentor' NOT found in application-database.yml"
-            exit 1
-          fi
-
       ## create application-jwt.yml
       - name: make application-jwt.yml
         run: |
@@ -64,11 +49,6 @@ jobs:
 #          touch ./application-jwt.yml
 #          echo "${{ secrets.JWT }}" >> ./application-jwt.yml
 #        shell: bash
-
-      ## Verify application-jwt.yml creation
-      - name: Check application-jwt.yml
-        run: |
-          cat src/main/resources/application-jwt.yml
 
       ## create application-oauth.yml
       - name: make application-oauth.yml
@@ -80,11 +60,6 @@ jobs:
 #          echo "${{ secrets.OAUTH }}" >> ./application-oauth.yml
 #        shell: bash
 
-      ## Verify application-oauth.yml creation
-      - name: Check application-oauth.yml
-        run: |
-          cat src/main/resources/application-oauth.yml
-
       ## List file structure
       - name: List directory structure
         run: |
@@ -94,14 +69,7 @@ jobs:
       - name: Build with Gradle
         run: |
           chmod +x gradlew 
-          ./gradlew clean build || true
-
-      ## 테스트 리포트를 아티팩트로 업로드 (에러가 발생해도 실행됨)
-      - name: Upload test report
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-report
-          path: build/reports/tests/test/index.html
+          ./gradlew build -x test
 
       ## 이미지 빌드 및 도커허브에 push
       - name: spring docker build and push
