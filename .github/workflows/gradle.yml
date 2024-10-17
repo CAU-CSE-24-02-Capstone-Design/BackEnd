@@ -35,30 +35,31 @@ jobs:
       ## create application-database.yml
       - name: make application-database.yml
         run: |
-          cd ./src/main/resources
-          touch ./application-database.yml
-          echo "${{ secrets.DATABASE }}" >> ./application-database.yml
-          if grep -q "peachmentor" ./src/main/resources/application-database.yml; then
-          echo "'peachmentor' found in application-database.yml."
-          else
-          echo "'peachmentor' not found in application-database.yml."
-          fi
+          mkdir -p src/main/resources
+          echo "${{ secrets.DATABASE }}" | base64 --decode > src/main/resources/application-database.yml
+#          cd ./src/main/resources
+#          touch ./application-database.yml
+#          echo "${{ secrets.DATABASE }}" >> ./application-database.yml
         shell: bash
 
       ## create application-jwt.yml
       - name: make application-jwt.yml
         run: |
-          cd ./src/main/resources
-          touch ./application-jwt.yml
-          echo "${{ secrets.JWT }}" >> ./application-jwt.yml
+          mkdir -p src/main/resources
+          echo "${{ secrets.JWT }}" | base64 --decode > src/main/resources/application-jwt.yml
+#          cd ./src/main/resources
+#          touch ./application-jwt.yml
+#          echo "${{ secrets.JWT }}" >> ./application-jwt.yml
         shell: bash
 
       ## create application-oauth.yml
       - name: make application-oauth.yml
         run: |
-          cd ./src/main/resources
-          touch ./application-oauth.yml
-          echo "${{ secrets.OAUTH }}" >> ./application-oauth.yml
+          mkdir -p src/main/resources
+          echo "${{ secrets.OAUTH }}" | base64 --decode > src/main/resources/application-oauth.yml
+#          cd ./src/main/resources
+#          touch ./application-oauth.yml
+#          echo "${{ secrets.OAUTH }}" >> ./application-oauth.yml
         shell: bash
 
       ## gradle build
