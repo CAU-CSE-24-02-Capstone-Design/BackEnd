@@ -14,77 +14,63 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - name: checkout
-      uses: actions/checkout@v4
-    
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+      - name: checkout
+        uses: actions/checkout@v4
 
-    - name: Setup MySQL
-      uses: samin/mysql-action@v1
-      with:
-        character_set_server: 'utf8'
-        mysql_database: '${{ secrets.DB_NAME }}' # 실제 데이터베이스 이름으로 교체
-        mysql_user: '${{ secrets.DB_USERNAME }}'           # 실제 사용자 이름으로 교체
-        mysql_password: '${{ secrets.DB_PASSWORD }}'       # 실제 비밀번호로 교체
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-    ## create application-database.yml
-    - name: make application-database.yml
-      run: |
-        cd ./src/main/resources
-        touch ./application-database.yml
-        echo "${{ secrets.DATABASE }}" >> ./application-database.yml
-      shell: bash
+      ## create application-database.yml
+      - name: make application-database.yml
+        run: |
+          mkdir -p src/main/resources
+          echo "${{ secrets.DATABASE }}" | base64 --decode > src/main/resources/application-database.yml
 
-    ## create application-jwt.yml
-    - name: make application-jwt.yml
-      run: |
-        cd ./src/main/resources
-        touch ./application-jwt.yml
-        echo "${{ secrets.JWT }}" >> ./application-jwt.yml
-      shell: bash
+      ## create application-jwt.yml
+      - name: make application-jwt.yml
+        run: |
+          mkdir -p src/main/resources
+          echo "${{ secrets.JWT }}" | base64 --decode > src/main/resources/application-jwt.yml
 
-    ## create application-oauth.yml
-    - name: make application-oauth.yml
-      run: |
-        cd ./src/main/resources
-        touch ./application-oauth.yml
-        echo "${{ secrets.OAUTH }}" >> ./application-oauth.yml
-      shell: bash
+      ## create application-oauth.yml
+      - name: make application-oauth.yml
+        run: |
+          mkdir -p src/main/resources
+          echo "${{ secrets.OAUTH }}" | base64 --decode > src/main/resources/application-oauth.yml
 
-    ## gradle build
-    - name: Build with Gradle
-      run: |
-        chmod +x gradlew 
-        ./gradlew build
+      ## Gradle 빌드 실행
+      - name: Build with Gradle
+        run: |
+          chmod +x gradlew 
+          ./gradlew clean build -x test
 
-    ## 이미지 빌드 및 도커허브에 push
-    - name: spring docker build and push
-      run: |
-        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-        docker build -t ${{ secrets.DOCKER_REPO }}/pm-spring ./src/main/java
-        docker push ${{ secrets.DOCKER_REPO }}/pm-spring
+      ## 이미지 빌드 및 도커허브에 push
+      - name: spring docker build and push
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/peachmentor:pm-spring -f src/main/java/Dockerfile-java .
+          docker push ${{ secrets.DOCKER_USERNAME }}/peachmentor:pm-spring
 
-    ## 이미지 빌드 및 도커허브에 push
-    - name: nginx docker build and push
-      run: |
-        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-        docker build -t ${{ secrets.DOCKER_REPO }}/pm-nginx ./nginx
-        docker push ${{ secrets.DOCKER_REPO }}/pm-nginx
+      ## 이미지 빌드 및 도커허브에 push
+      - name: nginx docker build and push
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/peachmentor:pm-nginx -f nginx/Dockerfile-nginx nginx
+          docker push ${{ secrets.DOCKER_USERNAME }}/peachmentor:pm-nginx
 
-    ## docker compose up
-    - name: executing remote ssh commands using password
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ubuntu
-        key: ${{ secrets.KEY }}
-        script: |
-          sudo docker rm -f $(docker ps -qa)
-          sudo docker pull ${{ secrets.DOCKER_REPO }}/second-eyes-web
-          sudo docker pull ${{ secrets.DOCKER_REPO }}/second-eyes-nginx
-          docker-compose up -d
-          docker image prune -f
+      ## docker compose up
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          key: ${{ secrets.KEY }}
+          script: |
+            sudo docker rm -f $(docker ps -qa)
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/peachmentor:pm-spring
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/peachmentor:pm-nginx
+            docker-compose up -d
+            docker image prune -f
