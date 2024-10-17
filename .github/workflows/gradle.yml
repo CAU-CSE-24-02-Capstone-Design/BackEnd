@@ -51,15 +51,15 @@ jobs:
       - name: spring docker build and push
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -t ${{ secrets.DOCKER_REPO }}/pm-spring -f src/main/java/Dockerfile-java .
-          docker push ${{ secrets.DOCKER_REPO }}/pm-spring
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/pm-spring -f src/main/java/Dockerfile-java .
+          docker push ${{ secrets.DOCKER_USERNAME }}/pm-spring
 
       ## 이미지 빌드 및 도커허브에 push
       - name: nginx docker build and push
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -t ${{ secrets.DOCKER_REPO }}/pm-nginx -f nginx/Dockerfile-nginx .
-          docker push ${{ secrets.DOCKER_REPO }}/pm-nginx
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/pm-nginx -f nginx/Dockerfile-nginx .
+          docker push ${{ secrets.DOCKER_USERNAME }}/pm-nginx
 
       ## docker compose up
       - name: executing remote ssh commands using password
