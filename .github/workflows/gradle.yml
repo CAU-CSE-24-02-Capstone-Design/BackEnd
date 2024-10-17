@@ -22,6 +22,14 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          
+      - name: Setup MySQL
+        uses: samin/mysql-action@v1
+        with:
+          character_set_server: 'utf8'
+          mysql_database: '${{ secrets.DB_NAME }}' # 실제 데이터베이스 이름으로 교체
+          mysql_user: '${{ secrets.DB_USERNAME }}'           # 실제 사용자 이름으로 교체
+          mysql_password: '${{ secrets.DB_PASSWORD }}'       # 실제 비밀번호로 교체
 
       - name: Setup MySQL
         uses: samin/mysql-action@v1
