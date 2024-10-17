@@ -18,7 +18,6 @@ repositories {
 }
 
 jar {
-    destinationDirectory.set(file("${rootDir}"))
     enabled = false
 }
 
