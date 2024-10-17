@@ -38,6 +38,7 @@ jobs:
           cd ./src/main/resources
           touch ./application-database.yml
           echo "${{ secrets.DATABASE }}" >> ./application-database.yml
+          cat application-database.yml
         shell: bash
 
       ## create application-jwt.yml
@@ -46,6 +47,7 @@ jobs:
           cd ./src/main/resources
           touch ./application-jwt.yml
           echo "${{ secrets.JWT }}" >> ./application-jwt.yml
+          cat application-jwt.yml
         shell: bash
 
       ## create application-oauth.yml
@@ -54,6 +56,7 @@ jobs:
           cd ./src/main/resources
           touch ./application-oauth.yml
           echo "${{ secrets.OAUTH }}" >> ./application-oauth.yml
+          cat application-oauth.yml
         shell: bash
 
       ## gradle build
