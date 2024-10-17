@@ -98,6 +98,13 @@ jobs:
           chmod +x gradlew 
           ./gradlew clean build
 
+      ## 테스트 결과 리포트를 아티팩트로 업로드
+      - name: Upload test report
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-report
+          path: build/reports/tests/test/index.html
+
       ## 이미지 빌드 및 도커허브에 push
       - name: spring docker build and push
         run: |
