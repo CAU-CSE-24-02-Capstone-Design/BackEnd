@@ -9,6 +9,7 @@ public class HealthCheckController {
 
     @GetMapping("/health")
     public ApiResponse<Void> healthCheck() {
+        System.out.println("제발 제발 제발 ");
         return ApiResponse.onSuccess(null);
     }
 }
