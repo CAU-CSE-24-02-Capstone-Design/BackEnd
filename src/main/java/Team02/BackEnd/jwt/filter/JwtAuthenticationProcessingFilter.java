@@ -43,7 +43,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String path = request.getRequestURI();
         if (isSwaggerPath(request) || path.startsWith("/login") || path.startsWith("/reissue") || path.startsWith(
-                "/oauth") || path.startsWith("/sign-up") || path.startsWith("/google-login")) {
+                "/oauth") || path.startsWith("/sign-up") || path.startsWith("/google-login") || path.startsWith("/health")){
             log.debug("JWT Authentication Filter Skip");
             filterChain.doFilter(request, response);
             return;

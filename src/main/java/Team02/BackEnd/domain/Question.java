@@ -23,5 +23,5 @@ public class Question extends BaseEntity {
     private Long id;
 
     private String description;
-    private Long index;
+    private Long questionIndex;
 }

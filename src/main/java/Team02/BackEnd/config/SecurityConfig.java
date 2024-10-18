@@ -53,6 +53,7 @@ public class SecurityConfig {
                                 .requestMatchers("/reissue").permitAll() // refreshToken 재발급 가능
                                 .requestMatchers("/oauth/**").permitAll() // OAuth 경로 접근 가능
                                 .requestMatchers("/google-login/**").permitAll() // 구글 로그인
+                                .requestMatchers("/health").permitAll() // aws health check
                                 .anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
                 );
         // 원래 스프링 시큐리티 필터 순서가 LogoutFilter 이후에 로그인 필터 동작
@@ -70,7 +71,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // 허용할 도메인 설정
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://peachmentor.com", "https://peachmentor.com")); // 허용할 도메인 설정
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 허용할 HTTP 메서드 설정
         configuration.setAllowedHeaders(Arrays.asList("*")); // 허용할 헤더 설정
         configuration.setAllowCredentials(true); // 자격 증명 허용 여부 설정
