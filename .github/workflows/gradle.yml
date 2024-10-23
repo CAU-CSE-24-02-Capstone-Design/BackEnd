@@ -69,8 +69,10 @@ jobs:
           username: ubuntu
           key: ${{ secrets.KEY }}
           script: |
-            sudo docker rm -f $(docker ps -qa)
+            sudo docker rm -f spring nginx 
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/peachmentor:pm-spring
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/peachmentor:pm-nginx
-            docker-compose up -d
+            docker-compose up -d spring nginx
             docker image prune -f
+            
+            
