@@ -20,6 +20,7 @@ public record NaverMemberResponse(
 ) {
 
     public User toDomain() {
+        System.out.println(response.name);
         return User.builder()
                 .oauthId(new OauthId(String.valueOf(response.id), NAVER))
                 .name(response.name)
