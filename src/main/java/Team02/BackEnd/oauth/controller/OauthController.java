@@ -35,7 +35,6 @@ public class OauthController {
     ) {
         String redirectUrl = oauthService.getAuthCodeRequestUrl(oauthServerType);
         response.sendRedirect(redirectUrl);
-        System.out.println(redirectUrl);
         return ApiResponse.onSuccess(null);
     }
 

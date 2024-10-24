@@ -23,6 +23,7 @@ public record KakaoMemberResponse(
 ) {
 
     public User toDomain() {
+        System.out.println(kakaoAccount.profile.nickname);
         return User.builder()
                 .oauthId(new OauthId(String.valueOf(id), KAKAO))
                 .name(kakaoAccount.profile.nickname)
