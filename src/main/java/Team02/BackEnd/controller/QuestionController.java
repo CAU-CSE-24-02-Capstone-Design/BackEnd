@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api-spring")
 public class QuestionController {
 
     private final QuestionService questionService;

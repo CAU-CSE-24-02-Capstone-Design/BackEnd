@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api-spring")
 public class ReissueController {
 
     private final JwtService jwtService;
