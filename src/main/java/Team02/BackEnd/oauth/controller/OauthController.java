@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/oauth")
-
 /**
  * @Pathvariable을 통해 /oauth/kakao 등의 요청에서 kakao 부분을 oauthServerType으로 변환한다 (converter 이용)
  * 사용자가 프론트에서 /oauth/kakao를 통해 접속하면 밑 controller를 통한다.
