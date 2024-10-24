@@ -51,8 +51,8 @@ public class SecurityConfig {
                                 .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico").permitAll()
                                 .requestMatchers("/sign-up").permitAll() // 회원가입 접근 가능
                                 .requestMatchers("/reissue").permitAll() // refreshToken 재발급 가능
-                                .requestMatchers("/oauth/**").permitAll() // OAuth 경로 접근 가능
-                                .requestMatchers("/google-login/**").permitAll() // 구글 로그인
+                                .requestMatchers("/api/spring/oauth/**").permitAll() // OAuth 경로 접근 가능
+                                .requestMatchers("/api/spring/google-login/**").permitAll() // 구글 로그인
                                 .requestMatchers("/health").permitAll() // aws health check
                                 .anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
                 );

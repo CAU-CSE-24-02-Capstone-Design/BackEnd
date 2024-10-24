@@ -42,9 +42,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String path = request.getRequestURI();
-        System.out.println(path);
         if (isSwaggerPath(request) || path.startsWith("/login") || path.startsWith("/reissue") || path.startsWith(
-                "/oauth") || path.startsWith("/sign-up") || path.startsWith("/google-login") || path.startsWith("/health")){
+                "/api/spring/oauth") || path.startsWith("/sign-up") || path.startsWith("/api/spring/google-login") || path.startsWith("/health")){
             log.debug("JWT Authentication Filter Skip");
             filterChain.doFilter(request, response);
             return;

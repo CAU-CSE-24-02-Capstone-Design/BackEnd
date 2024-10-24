@@ -21,6 +21,7 @@ public record GoogleMemberResponse(
 ) {
 
     public User toDomain() {
+        System.out.println(name);
         return User.builder()
                 .oauthId(new OauthId(id, GOOGLE))
                 .email(email)
