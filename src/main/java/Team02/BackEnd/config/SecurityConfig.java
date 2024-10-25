@@ -49,8 +49,7 @@ public class SecurityConfig {
                                 .requestMatchers("/swagger/**", "/swagger-ui/index.html#/**", "/swagger-ui/**",
                                         "/api-docs", "/api-docs/**", "/v3/api-docs/**").permitAll()
                                 .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico").permitAll()
-                                .requestMatchers("/sign-up").permitAll() // 회원가입 접근 가능
-                                .requestMatchers("/reissue").permitAll() // refreshToken 재발급 가능
+                                .requestMatchers("/api/spring/reissue").permitAll() // refreshToken 재발급 가능
                                 .requestMatchers("/api/spring/oauth/**").permitAll() // OAuth 경로 접근 가능
                                 .requestMatchers("/api/spring/google-login/**").permitAll() // 구글 로그인
                                 .requestMatchers("/health").permitAll() // aws health check
@@ -71,7 +70,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // 허용할 도메인 설정
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://2c50-165-194-17-200.ngrok-free.app")); // 허용할 도메인 설정
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 허용할 HTTP 메서드 설정
         configuration.setAllowedHeaders(Arrays.asList("*")); // 허용할 헤더 설정
         configuration.setAllowCredentials(true); // 자격 증명 허용 여부 설정

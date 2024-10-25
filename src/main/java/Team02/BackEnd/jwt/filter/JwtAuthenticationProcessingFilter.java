@@ -10,8 +10,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +19,9 @@ import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import java.io.PrintWriter;
 
 
 /**
@@ -42,8 +43,10 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String path = request.getRequestURI();
-        if (isSwaggerPath(request) || path.startsWith("/login") || path.startsWith("/reissue") || path.startsWith(
-                "/api/spring/oauth") || path.startsWith("/sign-up") || path.startsWith("/api/spring/google-login") || path.startsWith("/health")){
+
+        if (isSwaggerPath(request) || path.startsWith("/api/spring/reissue")
+                || path.startsWith("/api/spring/oauth") || path.startsWith("/api/spring/google-login")
+                || path.startsWith("/health")) {
             log.debug("JWT Authentication Filter Skip");
             filterChain.doFilter(request, response);
             return;
