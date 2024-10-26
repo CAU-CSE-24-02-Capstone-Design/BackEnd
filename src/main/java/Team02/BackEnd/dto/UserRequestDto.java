@@ -11,7 +11,7 @@ public class UserRequestDto {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class UserFamilyInfoRequestDTO {
+    public static class UserFamilyInfoRequestDto {
         String isParent;
         String familyCode;
     }
