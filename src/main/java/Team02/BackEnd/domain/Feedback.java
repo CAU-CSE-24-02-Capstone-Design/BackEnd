@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Feedback extends BaseEntity {
+
     @Id
     @Column(name = "feedback_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,4 +34,8 @@ public class Feedback extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "answer_id")
     private Answer answer;
+
+    public void updateBeforeAudioLink(String beforeAudioLink) {
+        this.beforeAudioLink = beforeAudioLink;
+    }
 }
