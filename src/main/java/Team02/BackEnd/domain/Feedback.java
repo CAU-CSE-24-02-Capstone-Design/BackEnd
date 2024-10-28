@@ -1,17 +1,7 @@
 package Team02.BackEnd.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Getter
@@ -37,5 +27,12 @@ public class Feedback extends BaseEntity {
 
     public void updateBeforeAudioLink(String beforeAudioLink) {
         this.beforeAudioLink = beforeAudioLink;
+    }
+
+    public void update(String beforeScript, String afterAudioLink, String afterScript, String feedbackText) {
+        this.beforeScript = beforeScript;
+        this.afterAudioLink = afterAudioLink;
+        this.afterScript = afterScript;
+        this.feedbackText = feedbackText;
     }
 }
