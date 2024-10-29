@@ -4,6 +4,7 @@ import Team02.BackEnd.apiPayload.ApiResponse;
 import Team02.BackEnd.dto.RecordRequestDto;
 import Team02.BackEnd.service.FeedbackService;
 import Team02.BackEnd.service.RecordService;
+import Team02.BackEnd.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/spring/record")
 public class RecordController {
 
+    private final UserService userService;
     private final RecordService recordService;
     private final FeedbackService feedbackService;
 
@@ -21,6 +23,7 @@ public class RecordController {
     public ApiResponse<Void> getVoiceUrl(@RequestHeader("Authorization") String authorizationHeader,
                                          @RequestBody RecordRequestDto.GetVoiceUrlDto getVoiceUrlDto) {
         String accessToken = authorizationHeader.replace("Bearer ", "");
+        userService.updateRole(accessToken);
         recordService.getVoiceUrl(accessToken, getVoiceUrlDto);
         return ApiResponse.onSuccess(null);
     }

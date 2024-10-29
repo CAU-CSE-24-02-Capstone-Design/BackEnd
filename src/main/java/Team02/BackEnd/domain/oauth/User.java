@@ -54,4 +54,8 @@ public class User extends BaseEntity {
     public void updateVoiceUrl(String voiceUrl) {
         this.voiceUrl = voiceUrl;
     }
+
+    public void updateRole() {
+        this.role = Role.USER;
+    }
 }
