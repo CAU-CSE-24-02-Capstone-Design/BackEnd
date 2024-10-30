@@ -9,12 +9,7 @@ import Team02.BackEnd.dto.FeedbackResponseDto;
 import Team02.BackEnd.service.FeedbackService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,8 +27,10 @@ public class FeedbackController {
 
     @GetMapping("/feedback")
     @Operation(summary = "피드백 받아오기 react -> spring", description = "질문요청에서 받은 answerId로 쿼리 파라미터")
-    public ApiResponse<FeedbackResponseDto.GetFeedbackDto> getFeedback(@RequestParam("answerId") Long answerId) {
-        Feedback feedback = feedbackService.getFeedback(answerId);
+    public ApiResponse<FeedbackResponseDto.GetFeedbackDto> getFeedback(@RequestHeader("Authorization") String authorizationHeader,
+                                                                       @RequestParam("answerId") Long answerId) {
+        String accessToken = authorizationHeader.replace("Bearer ", "");
+        Feedback feedback = feedbackService.getFeedback(accessToken, answerId);
         return ApiResponse.of(SuccessStatus.GET_FEEDBACK, FeedbackConverter.toGetFeedbackDto(feedback));
     }
 
