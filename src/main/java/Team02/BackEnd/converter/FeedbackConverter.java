@@ -3,8 +3,6 @@ package Team02.BackEnd.converter;
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Feedback;
 import Team02.BackEnd.dto.FeedbackRequestDto;
-import Team02.BackEnd.dto.FeedbackRequestDto.GetComponentToMakeFeedback;
-import Team02.BackEnd.dto.FeedbackResponseDto;
 import Team02.BackEnd.dto.FeedbackResponseDto.GetFeedbackDto;
 import java.util.List;
 

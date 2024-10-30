@@ -1,5 +1,6 @@
 package Team02.BackEnd.domain;
 
+import Team02.BackEnd.domain.oauth.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,6 +25,10 @@ public class Feedback extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "answer_id")
     private Answer answer;
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public void update(String beforeScript, String afterAudioLink, String afterScript, String feedbackText) {
         this.beforeScript = beforeScript;

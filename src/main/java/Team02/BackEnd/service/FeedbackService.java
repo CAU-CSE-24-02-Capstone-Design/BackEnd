@@ -17,7 +17,12 @@ import Team02.BackEnd.jwt.service.JwtService;
 import Team02.BackEnd.repository.AnswerRepository;
 import Team02.BackEnd.repository.FeedbackRepository;
 import Team02.BackEnd.repository.UserRepository;
+import java.awt.print.Pageable;
+import java.util.Collections;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -33,16 +38,13 @@ import org.springframework.web.client.RestTemplate;
 public class FeedbackService {
 
     private static final String FASTAPI_API_URL = "https://peachmentor.com:8000/api/record/feedback";
+    private static final int LIMIT_PAST_AUDIO_NUMBER = 5;
     private final RestTemplate restTemplate = new RestTemplate();
 
     private final JwtService jwtService;
     private final FeedbackRepository feedbackRepository;
     private final UserRepository userRepository;
     private final AnswerRepository answerRepository;
-
-    public void saveFeedback(FeedbackRequestDto.GetFeedbackDto request) {
-
-    }
 
     public Feedback getFeedback(String accessToken, Long answerId) {
         Feedback feedback = feedbackRepository.findByAnswerId(answerId).orElse(null);
@@ -54,8 +56,8 @@ public class FeedbackService {
         String name = user.getName();
         String voiceUrl = user.getVoiceUrl();
 
-        // todo: 가져와야됨 . 몇개? .없으면 안가져왕
-        List<String> pastAudioLinks = new ArrayList<>();
+        // MAX 5개, 5개 이하면 다 가져옴
+        List<String> pastAudioLinks = getPastAudioLinks(user);
 
         ResponseEntity<FeedbackResponseDto.GetFeedbackToFastApiDto> response
                 = getFeedbackToFastApi(beforeAudioLink,name,voiceUrl,pastAudioLinks);
@@ -73,6 +75,23 @@ public class FeedbackService {
         );
 
         return feedback;
+    }
+
+    private List<String> getPastAudioLinks(User user) {
+        List<Feedback> feedbackList;
+        if(answerRepository.findByUserId(user.getId()) == null){
+            throw new AnswerHandler(ErrorStatus._ANSWER_NOT_FOUND);
+        }
+        PageRequest pageRequest = PageRequest.of(0, LIMIT_PAST_AUDIO_NUMBER, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<Feedback> feedbackPageList = feedbackRepository.findByUserId(user.getId(), pageRequest);
+
+        if (feedbackPageList.isEmpty()) {
+            feedbackList = feedbackRepository.findAllByUserId(user.getId());
+        }else{
+            feedbackList = feedbackPageList.getContent();
+        }
+
+        return feedbackList.stream().map(Feedback::getBeforeAudioLink).toList();
     }
 
     private ResponseEntity<GetFeedbackToFastApiDto> getFeedbackToFastApi(String beforeAudioLink, String name, String voiceUrl, List<String> pastAudioLinks) {
