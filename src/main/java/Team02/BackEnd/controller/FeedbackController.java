@@ -18,12 +18,12 @@ public class FeedbackController {
 
     private FeedbackService feedbackService;
 
-    @PostMapping("/feedback")
-    @Operation(summary = "fast api -> spring", description = "유저 피드백 디비 저장용 api")
-    public ApiResponse<Void> saveFeedback(@RequestBody FeedbackRequestDto.GetFeedbackDto request) {
-        feedbackService.saveFeedback(request);
-        return ApiResponse.ofNoting(SuccessStatus.SAVE_FEEDBACK);
-    }
+//    @PostMapping("/feedback")
+//    @Operation(summary = "fast api -> spring", description = "유저 피드백 디비 저장용 api")
+//    public ApiResponse<Void> saveFeedback(@RequestBody FeedbackRequestDto.GetFeedbackDto request) {
+//        feedbackService.saveFeedback(request);
+//        return ApiResponse.ofNoting(SuccessStatus.SAVE_FEEDBACK);
+//    }
 
     @GetMapping("/feedback")
     @Operation(summary = "피드백 받아오기 react -> spring", description = "질문요청에서 받은 answerId로 쿼리 파라미터")
