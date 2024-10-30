@@ -26,6 +26,10 @@ public class QuestionService {
             throw new UserHandler(ErrorStatus._USER_NOT_FOUND);
         }
 
-        return questionRepository.findByQuestionIndex(user.getQuestionNumber());
+        Question question = questionRepository.findByQuestionIndex(user.getQuestionNumber());
+
+        user.setQuestionNumber(user.getQuestionNumber() + 1);
+
+        return question;
     }
 }

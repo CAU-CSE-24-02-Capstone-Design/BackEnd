@@ -30,8 +30,10 @@ public class RecordController {
 
     @PostMapping("/respond")
     @Operation(summary = "fast api -> spring", description = "before_audio_link 미리 저장, feedback 객체 생성")
-    public ApiResponse<Void> setBeforeAudioLink(@RequestBody RecordRequestDto.GetRespondDto getRespondDto) {
-        feedbackService.setBeforeAudioLink(getRespondDto);
+    public ApiResponse<Void> setBeforeAudioLink(@RequestHeader("Authorization") String authorizationHeader,
+                                                @RequestBody RecordRequestDto.GetRespondDto getRespondDto) {
+        String accessToken = authorizationHeader.replace("Bearer ", "");
+        feedbackService.setBeforeAudioLink(getRespondDto, accessToken);
         return ApiResponse.onSuccess(null);
     }
 }

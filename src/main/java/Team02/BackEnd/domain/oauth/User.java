@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -49,6 +50,7 @@ public class User extends BaseEntity {
 
     @Column(name = "question_number")
     @ColumnDefault("1") // 디폴트 1 (첫번째 질문)
+    @Setter
     private Long questionNumber; // 현재 몇번째 question인지 (질문 중복 방지)
 
     public void updateVoiceUrl(String voiceUrl) {
