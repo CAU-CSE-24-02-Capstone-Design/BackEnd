@@ -96,8 +96,8 @@ public class FeedbackService {
         // fast api로 보낼 request dto
         FeedbackRequestDto.GetComponentToMakeFeedback getComponentToMakeFeedback =
                 FeedbackConverter.toGetComponentToMakeFeedback(beforeAudioLink, name, voiceUrl, pastAudioLinks);
-        System.out.println(getComponentToMakeFeedback.getBeforeAudioLink());
-        System.out.println(getComponentToMakeFeedback.getVoiceUrl());
+//        System.out.println(getComponentToMakeFeedback.getBeforeAudioLink());
+//        System.out.println(getComponentToMakeFeedback.getVoiceUrl());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

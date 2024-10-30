@@ -1,7 +1,6 @@
 package Team02.BackEnd.repository;
 
 import Team02.BackEnd.domain.Feedback;
-import java.awt.print.Pageable;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
