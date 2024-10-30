@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/spring")
 public class FeedbackController {
 
-    private FeedbackService feedbackService;
+    private final FeedbackService feedbackService;
 
 //    @PostMapping("/feedback")
 //    @Operation(summary = "fast api -> spring", description = "유저 피드백 디비 저장용 api")

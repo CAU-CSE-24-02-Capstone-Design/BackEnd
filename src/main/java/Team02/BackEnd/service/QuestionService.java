@@ -18,7 +18,7 @@ public class QuestionService {
     private final JwtService jwtService;
     private final UserRepository userRepository;
 
-    public String getQuestionDescription(String accessToken) {
+    public Question getQuestionDescription(String accessToken) {
         String email = jwtService.extractEmail(accessToken).orElse(null);
 
         User user = userRepository.findByEmail(email).orElse(null);
@@ -26,8 +26,6 @@ public class QuestionService {
             throw new UserHandler(ErrorStatus._USER_NOT_FOUND);
         }
 
-        Question question = questionRepository.findByQuestionIndex(user.getQuestionNumber());
-
-        return question.getDescription();
+        return questionRepository.findByQuestionIndex(user.getQuestionNumber());
     }
 }
