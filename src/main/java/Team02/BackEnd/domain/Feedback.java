@@ -25,10 +25,6 @@ public class Feedback extends BaseEntity {
     @JoinColumn(name = "answer_id")
     private Answer answer;
 
-    public void updateBeforeAudioLink(String beforeAudioLink) {
-        this.beforeAudioLink = beforeAudioLink;
-    }
-
     public void update(String beforeScript, String afterAudioLink, String afterScript, String feedbackText) {
         this.beforeScript = beforeScript;
         this.afterAudioLink = afterAudioLink;

@@ -5,29 +5,35 @@ import Team02.BackEnd.apiPayload.exception.handler.AccessTokenHandler;
 import Team02.BackEnd.apiPayload.exception.handler.AnswerHandler;
 import Team02.BackEnd.apiPayload.exception.handler.FeedbackHandler;
 import Team02.BackEnd.apiPayload.exception.handler.UserHandler;
-import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
-import Team02.BackEnd.apiPayload.exception.handler.FeedbackHandler;
 import Team02.BackEnd.converter.FeedbackConverter;
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Feedback;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.FeedbackRequestDto;
+import Team02.BackEnd.dto.FeedbackResponseDto;
+import Team02.BackEnd.dto.FeedbackResponseDto.GetFeedbackToFastApiDto;
 import Team02.BackEnd.dto.RecordRequestDto;
 import Team02.BackEnd.jwt.service.JwtService;
 import Team02.BackEnd.repository.AnswerRepository;
 import Team02.BackEnd.repository.FeedbackRepository;
 import Team02.BackEnd.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 @RequiredArgsConstructor
 public class FeedbackService {
 
     private static final String FASTAPI_API_URL = "https://peachmentor.com:8000/api/record/feedback";
+    private final RestTemplate restTemplate = new RestTemplate();
 
     private final JwtService jwtService;
     private final FeedbackRepository feedbackRepository;
@@ -44,16 +50,45 @@ public class FeedbackService {
             throw new FeedbackHandler(ErrorStatus._FEEDBACK_NOT_FOUND);
         User user = getUser(accessToken);
 
-        // todo 피드백 받아오기
         String beforeAudioLink = feedback.getBeforeAudioLink();
         String name = user.getName();
         String voiceUrl = user.getVoiceUrl();
+
+        // todo: 가져와야됨 . 몇개? .없으면 안가져왕
         List<String> pastAudioLinks = new ArrayList<>();
 
+        ResponseEntity<FeedbackResponseDto.GetFeedbackToFastApiDto> response
+                = getFeedbackToFastApi(beforeAudioLink,name,voiceUrl,pastAudioLinks);
+
+        if (response.getBody() == null) {
+            throw new FeedbackHandler(ErrorStatus._FAST_API_FEEDBACK_NULL);
+        }
 
         // feedback.update(받아온 response);
+        feedback.update(
+                response.getBody().getBeforeScript(),
+                response.getBody().getAfterAudioLink(),
+                response.getBody().getAfterScript(),
+                response.getBody().getFeedbackText()
+        );
 
         return feedback;
+    }
+
+    private ResponseEntity<GetFeedbackToFastApiDto> getFeedbackToFastApi(String beforeAudioLink, String name, String voiceUrl, List<String> pastAudioLinks) {
+        // fast api로 보낼 request dto
+        FeedbackRequestDto.GetComponentToMakeFeedback getComponentToMakeFeedback =
+                FeedbackConverter.toGetComponentToMakeFeedback(beforeAudioLink, name, voiceUrl, pastAudioLinks);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<FeedbackRequestDto.GetComponentToMakeFeedback> request = new HttpEntity<>(getComponentToMakeFeedback, headers);
+
+        ResponseEntity<FeedbackResponseDto.GetFeedbackToFastApiDto> response =
+                restTemplate.postForEntity(FASTAPI_API_URL, request, FeedbackResponseDto.GetFeedbackToFastApiDto.class);
+
+        return response;
     }
 
     public void setBeforeAudioLink(RecordRequestDto.GetRespondDto getRespondDto) {

@@ -31,8 +31,8 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // Feedback 관련 응답
     _FEEDBACK_NOT_FOUND(HttpStatus.NOT_FOUND, "FEEDBACK4001", "해당 피드백이 없습니다"),
-    _ANSWER_NOT_FOUND(HttpStatus.NOT_FOUND, "ANSWER4001",
-            "해당 답변이 없습니다.");
+    _ANSWER_NOT_FOUND(HttpStatus.NOT_FOUND, "ANSWER4001", "해당 답변이 없습니다."),
+    _FAST_API_FEEDBACK_NULL(HttpStatus.BAD_REQUEST, "FEEDBACK4002", "Fast api return null");
 
     private final HttpStatus httpStatus;
     private final String code;
