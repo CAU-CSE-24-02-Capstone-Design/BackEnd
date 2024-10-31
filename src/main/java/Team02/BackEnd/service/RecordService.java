@@ -28,6 +28,8 @@ public class RecordService {
         if (user == null)
             throw new UserHandler(ErrorStatus._USER_NOT_FOUND);
 
+        System.out.println(getVoiceUrlDto.getVoiceUrl());
         user.updateVoiceUrl(getVoiceUrlDto.getVoiceUrl());
+        userRepository.save(user);
     }
 }
