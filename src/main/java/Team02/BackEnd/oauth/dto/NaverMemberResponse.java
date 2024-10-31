@@ -26,6 +26,7 @@ public record NaverMemberResponse(
                 .name(response.name)
 //                .profileImageUrl(response.profileImage)
                 .email(response.email)
+                .questionNumber(1L)
                 .role(Role.GUEST)
 //                .age(calculateAge(response.birthyear))
 //                .gender(response.gender)
