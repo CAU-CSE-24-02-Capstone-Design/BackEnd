@@ -4,6 +4,7 @@ import Team02.BackEnd.apiPayload.ApiResponse;
 import Team02.BackEnd.dto.RecordRequestDto;
 import Team02.BackEnd.service.FeedbackService;
 import Team02.BackEnd.service.RecordService;
+import Team02.BackEnd.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/spring/record")
 public class RecordController {
 
+    private final UserService userService;
     private final RecordService recordService;
     private final FeedbackService feedbackService;
 
@@ -21,16 +23,17 @@ public class RecordController {
     public ApiResponse<Void> getVoiceUrl(@RequestHeader("Authorization") String authorizationHeader,
                                          @RequestBody RecordRequestDto.GetVoiceUrlDto getVoiceUrlDto) {
         String accessToken = authorizationHeader.replace("Bearer ", "");
+        userService.updateRole(accessToken);
         recordService.getVoiceUrl(accessToken, getVoiceUrlDto);
         return ApiResponse.onSuccess(null);
     }
 
     @PostMapping("/respond")
-    @Operation(summary = "fast api -> spring", description = "질문에 대한 유저의 답변 url 저장용 api")
-    public ApiResponse<Void> getAnswer(@RequestHeader("Authorization") String authorizationHeader,
-                                       @RequestBody RecordRequestDto.GetRespondDto getRespondDto) {
+    @Operation(summary = "fast api -> spring", description = "before_audio_link 미리 저장, feedback 객체 생성")
+    public ApiResponse<Void> setBeforeAudioLink(@RequestHeader("Authorization") String authorizationHeader,
+                                                @RequestBody RecordRequestDto.GetRespondDto getRespondDto) {
         String accessToken = authorizationHeader.replace("Bearer ", "");
-        feedbackService.setBeforeAudioLink(getRespondDto);
+        feedbackService.setBeforeAudioLink(getRespondDto, accessToken);
         return ApiResponse.onSuccess(null);
     }
 }

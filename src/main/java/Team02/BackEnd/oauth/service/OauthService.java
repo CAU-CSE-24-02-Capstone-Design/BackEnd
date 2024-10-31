@@ -1,5 +1,6 @@
 package Team02.BackEnd.oauth.service;
 
+import Team02.BackEnd.domain.Role;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.jwt.service.JwtService;
 import Team02.BackEnd.oauth.AuthCodeRequestUrlProviderComposite;
@@ -33,15 +34,12 @@ public class OauthService {
 
     public User login(HttpServletResponse response, OauthServerType oauthServerType, String authCode) {
         User user = oauthUserClientComposite.fetch(oauthServerType, authCode);
-        User saved = userRepository.findByOauthId(user.getOauthId())
-                .orElseGet(() -> userRepository.save(user));
+        User saved = userRepository.findByOauthId(user.getOauthId()).orElseGet(() -> userRepository.save(user));
 
-        String accessToken = jwtService.createAccessToken(
-                user.getEmail()); // JwtService의 createAccessToken을 사용하여 AccessToken 발급
+        String accessToken = jwtService.createAccessToken(user.getEmail()); // JwtService의 createAccessToken을 사용하여 AccessToken 발급
         String refreshToken = jwtService.createRefreshToken(); // JwtService의 createRefreshToken을 사용하여 RefreshToken 발급
 
-        jwtService.sendAccessAndRefreshToken(response, accessToken,
-                refreshToken); // 응답 헤더에 AccessToken, 응답 쿠키에 RefreshToken 실어서 응답
+        jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken); // 응답 헤더에 AccessToken, 응답 쿠키에 RefreshToken 실어서 응답
         jwtService.updateRefreshToken(user.getEmail(), refreshToken); // DB에 RefreshToken 저장
 
         return saved;
