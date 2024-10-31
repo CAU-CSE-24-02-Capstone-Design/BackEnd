@@ -29,6 +29,7 @@ public record KakaoMemberResponse(
                 .name(kakaoAccount.profile.nickname)
 //                .profileImageUrl(kakaoAccount.profile.profileImageUrl)
                 .email(kakaoAccount.email)
+                .questionNumber(1L)
                 .role(Role.GUEST)
                 .build();
     }
