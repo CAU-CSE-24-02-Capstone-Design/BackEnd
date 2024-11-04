@@ -2,6 +2,7 @@ package Team02.BackEnd.jwt.service;
 
 
 import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
+import Team02.BackEnd.apiPayload.exception.handler.AccessTokenHandler;
 import Team02.BackEnd.apiPayload.exception.handler.RefreshTokenHandler;
 import Team02.BackEnd.domain.RefreshToken;
 import Team02.BackEnd.exception.TokenInvalidException;
@@ -155,7 +156,7 @@ public class JwtService {
                     .asString());
         } catch (Exception e) {
             log.error("AccessToken이 유효하지 않습니다.");
-            return Optional.empty();
+            throw new AccessTokenHandler(ErrorStatus._ACCESSTOKEN_NOT_VALID);
         }
     }
 

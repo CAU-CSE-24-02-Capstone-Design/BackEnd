@@ -3,12 +3,20 @@ package Team02.BackEnd.domain.oauth;
 
 import Team02.BackEnd.domain.BaseEntity;
 import Team02.BackEnd.domain.Role;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -50,7 +58,6 @@ public class User extends BaseEntity {
 
     @Column(name = "question_number")
     @ColumnDefault("1") // 디폴트 1 (첫번째 질문)
-    @Setter
     private Long questionNumber; // 현재 몇번째 question인지 (질문 중복 방지)
 
     public void updateVoiceUrl(String voiceUrl) {
@@ -59,5 +66,9 @@ public class User extends BaseEntity {
 
     public void updateRole() {
         this.role = Role.USER;
+    }
+
+    public void updateQuestionNumber() {
+        this.questionNumber++;
     }
 }
