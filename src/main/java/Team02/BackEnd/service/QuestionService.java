@@ -1,13 +1,9 @@
 package Team02.BackEnd.service;
 
-import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
-import Team02.BackEnd.apiPayload.exception.handler.AccessTokenHandler;
-import Team02.BackEnd.apiPayload.exception.handler.UserHandler;
 import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.oauth.User;
-import Team02.BackEnd.jwt.service.JwtService;
+import Team02.BackEnd.exception.validator.QuestionValidator;
 import Team02.BackEnd.repository.QuestionRepository;
-import Team02.BackEnd.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,21 +11,22 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class QuestionService {
 
+    private final UserService userService;
+
     private final QuestionRepository questionRepository;
-    private final UserRepository userRepository;
-    private final JwtService jwtService;
 
     public Question getUserQuestion(String accessToken) {
-        String email = jwtService.extractEmail(accessToken).orElse(null);
+        User user = userService.getUserByToken(accessToken);
+        Question question = this.getQuestionByUserQNumber(user.getQuestionNumber());
 
-        User user = userRepository.findByEmail(email).orElse(null);
-        if (user == null) {
-            throw new UserHandler(ErrorStatus._USER_NOT_FOUND);
-        }
-
-        Question question = questionRepository.findByQuestionIndex(user.getQuestionNumber());
         user.updateQuestionNumber();
 
+        return question;
+    }
+
+    public Question getQuestionByUserQNumber(Long questionNumber) {
+        Question question = questionRepository.findByQuestionIndex(questionNumber);
+        QuestionValidator.validateQuestionIsNotNull(question);
         return question;
     }
 }

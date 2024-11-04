@@ -1,9 +1,7 @@
 package Team02.BackEnd.service;
 
 import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
-import Team02.BackEnd.apiPayload.exception.handler.AnswerHandler;
 import Team02.BackEnd.apiPayload.exception.handler.FeedbackHandler;
-import Team02.BackEnd.apiPayload.exception.handler.UserHandler;
 import Team02.BackEnd.converter.FeedbackConverter;
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Feedback;
@@ -12,10 +10,8 @@ import Team02.BackEnd.dto.FeedbackRequestDto;
 import Team02.BackEnd.dto.FeedbackResponseDto;
 import Team02.BackEnd.dto.FeedbackResponseDto.GetFeedbackToFastApiDto;
 import Team02.BackEnd.dto.RecordRequestDto.GetRespondDto;
-import Team02.BackEnd.jwt.service.JwtService;
-import Team02.BackEnd.repository.AnswerRepository;
+import Team02.BackEnd.exception.validator.FeedbackValidator;
 import Team02.BackEnd.repository.FeedbackRepository;
-import Team02.BackEnd.repository.UserRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,24 +33,20 @@ public class FeedbackService {
     private static final int LIMIT_PAST_AUDIO_NUMBER = 5;
 
     private final RestTemplate restTemplate = new RestTemplate();
-    private final JwtService jwtService;
+
+    private final UserService userService;
+    private final AnswerService answerService;
+
     private final FeedbackRepository feedbackRepository;
-    private final UserRepository userRepository;
-    private final AnswerRepository answerRepository;
 
     public Feedback getFeedback(String accessToken, Long answerId) {
-        Feedback feedback = feedbackRepository.findByAnswerId(answerId).orElse(null);
-        if (feedback == null) {
-            throw new FeedbackHandler(ErrorStatus._FEEDBACK_NOT_FOUND);
-        }
-        User user = getUser(accessToken);
+        Feedback feedback = this.getFeedbackByAnswerId(answerId);
+        User user = userService.getUserByToken(accessToken);
 
         String beforeAudioLink = feedback.getBeforeAudioLink();
         String name = user.getName();
         String voiceUrl = user.getVoiceUrl();
-
-        // MAX 5개, 5개 이하면 다 가져옴
-        List<String> pastAudioLinks = getPastAudioLinks(user);
+        List<String> pastAudioLinks = getPastAudioLinks(user);  // MAX 5개, 5개 이하면 다 가져옴
 
         ResponseEntity<FeedbackResponseDto.GetFeedbackToFastApiDto> response
                 = getFeedbackToFastApi(beforeAudioLink, name, voiceUrl, pastAudioLinks);
@@ -75,27 +67,24 @@ public class FeedbackService {
     }
 
     public void getBeforeAudioLink(String accessToken, GetRespondDto getRespondDto) {
-        String email = jwtService.extractEmail(accessToken).orElse(null);
-
-        User user = userRepository.findByEmail(email).orElse(null);
-        if (user == null) {
-            throw new UserHandler(ErrorStatus._USER_NOT_FOUND);
-        }
-
-        Answer answer = answerRepository.findById(getRespondDto.getAnswerId()).orElse(null);
-        if (answer == null) {
-            throw new AnswerHandler(ErrorStatus._ANSWER_NOT_FOUND);
-        }
-
+        User user = userService.getUserByToken(accessToken);
+        Answer answer = answerService.getAnswerByUserId(user.getId());
         Feedback feedback = FeedbackConverter.toFeedback(getRespondDto.getBeforeAudioLink(), answer, user);
+
         feedbackRepository.save(feedback);
+    }
+
+    public Feedback getFeedbackByAnswerId(Long answerId) {
+        Feedback feedback = feedbackRepository.findByAnswerId(answerId).orElse(null);
+        FeedbackValidator.validateFeedbackIsNotNull(feedback);
+
+        return feedback;
     }
 
     private List<String> getPastAudioLinks(User user) {
         List<Feedback> feedbackList;
-        if (answerRepository.findByUserId(user.getId()) == null) {
-            throw new AnswerHandler(ErrorStatus._ANSWER_NOT_FOUND);
-        }
+        answerService.getAnswerByUserId(user.getId());
+
         PageRequest pageRequest = PageRequest.of(0, LIMIT_PAST_AUDIO_NUMBER, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Feedback> feedbackPageList = feedbackRepository.findByUserId(user.getId(), pageRequest);
 
@@ -123,16 +112,5 @@ public class FeedbackService {
                 restTemplate.postForEntity(FASTAPI_API_URL, request, FeedbackResponseDto.GetFeedbackToFastApiDto.class);
 
         return response;
-    }
-
-    private User getUser(String accessToken) {
-        String email = jwtService.extractEmail(accessToken).orElse(null);
-
-        User user = userRepository.findByEmail(email).orElse(null);
-        if (user == null) {
-            throw new UserHandler(ErrorStatus._USER_NOT_FOUND);
-        }
-
-        return user;
     }
 }
