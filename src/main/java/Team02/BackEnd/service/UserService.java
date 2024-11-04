@@ -1,9 +1,8 @@
 package Team02.BackEnd.service;
 
-import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
-import Team02.BackEnd.apiPayload.exception.handler.UserHandler;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.RecordRequestDto.GetVoiceUrlDto;
+import Team02.BackEnd.exception.validator.UserValidator;
 import Team02.BackEnd.jwt.service.JwtService;
 import Team02.BackEnd.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -24,12 +23,7 @@ public class UserService {
     }
 
     public void updateRoleAndVoiceUrl(String accessToken, GetVoiceUrlDto getVoiceUrlDto) {
-        String email = jwtService.extractEmail(accessToken).orElse(null);
-
-        User user = userRepository.findByEmail(email).orElse(null);
-        if (user == null) {
-            throw new UserHandler(ErrorStatus._USER_NOT_FOUND);
-        }
+        User user = getUserByToken(accessToken);
 
         user.updateRole();
         user.updateVoiceUrl(getVoiceUrlDto.getVoiceUrl());
@@ -37,7 +31,17 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public User getUserByToken(String accessToken) {
+        String email = jwtService.extractEmail(accessToken).orElse(null);
+
+        User user = userRepository.findByEmail(email).orElse(null);
+        UserValidator.validateUserIsNotNull(user);
+
+        return user;
+    }
+
     public HashMap<String, Long> getDatesWhenUserDid(String year, String month) {
         return null;
     }
+
 }
