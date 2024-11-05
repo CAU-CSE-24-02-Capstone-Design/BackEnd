@@ -3,11 +3,9 @@ package Team02.BackEnd.controller;
 import Team02.BackEnd.apiPayload.ApiResponse;
 import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
 import Team02.BackEnd.converter.SelfFeedbackConverter;
-import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.SelfFeedback;
 import Team02.BackEnd.dto.SelfFeedbackRequestDto;
 import Team02.BackEnd.dto.SelfFeedbackResponseDto;
-import Team02.BackEnd.dto.SelfFeedbackResponseDto.getBeforeSelfFeedbackDto;
 import Team02.BackEnd.service.AnswerService;
 import Team02.BackEnd.service.SelfFeedbackService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,7 +35,7 @@ public class SelfFeedbackController {
     @GetMapping("/self-feedback")
     @Operation(summary = "저번 녹음의 셀프 피드백 받아오기", description = "다음 질문 받기 전 메인에 띄워줄 거")
     public ApiResponse<SelfFeedbackResponseDto.getBeforeSelfFeedbackDto> getBeforeSelfFeedback(@RequestParam("answerId") Long answerId){
-        SelfFeedback selfFeedback = selfFeedbackService.getBeforeSelfFeedback(answerId);
+        SelfFeedback selfFeedback = selfFeedbackService.getBeforeSelfFeedbackByAnswer(answerId);
         return ApiResponse.of(SuccessStatus.GET_SELF_FEEDBACK, SelfFeedbackConverter.toGetBeforeSelfFeedbackDto(selfFeedback));
     }
 
