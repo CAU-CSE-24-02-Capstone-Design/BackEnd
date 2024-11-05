@@ -1,6 +1,5 @@
 package Team02.BackEnd.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,10 +23,11 @@ public class FeedbackRequestDto {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class GetComponentToMakeFeedback{
+    public static class GetComponentToMakeFeedbackDto {
         String beforeAudioLink;
         String name;
         String voiceUrl;
         List<String> pastAudioLinks;
+        Long answerId;
     }
 }

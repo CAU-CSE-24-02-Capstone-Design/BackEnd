@@ -6,7 +6,7 @@ import Team02.BackEnd.converter.FeedbackConverter;
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Feedback;
 import Team02.BackEnd.domain.oauth.User;
-import Team02.BackEnd.dto.FeedbackRequestDto;
+import Team02.BackEnd.dto.FeedbackRequestDto.GetComponentToMakeFeedbackDto;
 import Team02.BackEnd.dto.FeedbackResponseDto;
 import Team02.BackEnd.dto.FeedbackResponseDto.GetFeedbackToFastApiDto;
 import Team02.BackEnd.dto.RecordRequestDto.GetRespondDto;
@@ -49,7 +49,8 @@ public class FeedbackService {
         List<String> pastAudioLinks = getPastAudioLinks(user);  // MAX 5개, 5개 이하면 다 가져옴
 
         ResponseEntity<FeedbackResponseDto.GetFeedbackToFastApiDto> response
-                = getFeedbackToFastApi(beforeAudioLink, name, voiceUrl, pastAudioLinks);
+                = getFeedbackToFastApi(beforeAudioLink, name, voiceUrl, pastAudioLinks,
+                answerId); // fast api로 피드백 받아오기 요청
 
         if (response.getBody() == null) {
             throw new FeedbackHandler(ErrorStatus._FAST_API_FEEDBACK_NULL);
@@ -98,14 +99,16 @@ public class FeedbackService {
     }
 
     private ResponseEntity<GetFeedbackToFastApiDto> getFeedbackToFastApi(String beforeAudioLink, String name,
-                                                                         String voiceUrl, List<String> pastAudioLinks) {
-        FeedbackRequestDto.GetComponentToMakeFeedback getComponentToMakeFeedback =
-                FeedbackConverter.toGetComponentToMakeFeedback(beforeAudioLink, name, voiceUrl, pastAudioLinks);
+                                                                         String voiceUrl, List<String> pastAudioLinks,
+                                                                         Long answerId) {
+        GetComponentToMakeFeedbackDto getComponentToMakeFeedbackDto =
+                FeedbackConverter.toGetComponentToMakeFeedback(beforeAudioLink, name, voiceUrl, pastAudioLinks,
+                        answerId);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<FeedbackRequestDto.GetComponentToMakeFeedback> request = new HttpEntity<>(getComponentToMakeFeedback,
+        HttpEntity<GetComponentToMakeFeedbackDto> request = new HttpEntity<>(getComponentToMakeFeedbackDto,
                 headers);
 
         return restTemplate.postForEntity(FASTAPI_API_URL, request, GetFeedbackToFastApiDto.class);

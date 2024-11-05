@@ -3,7 +3,7 @@ package Team02.BackEnd.converter;
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Feedback;
 import Team02.BackEnd.domain.oauth.User;
-import Team02.BackEnd.dto.FeedbackRequestDto;
+import Team02.BackEnd.dto.FeedbackRequestDto.GetComponentToMakeFeedbackDto;
 import Team02.BackEnd.dto.FeedbackResponseDto.GetFeedbackDto;
 import java.util.List;
 
@@ -26,15 +26,17 @@ public class FeedbackConverter {
                 .build();
     }
 
-    public static FeedbackRequestDto.GetComponentToMakeFeedback toGetComponentToMakeFeedback(String beforeAudioLink, String name,
-                                                                                              String voiceUrl,
-                                                                                              List<String> pastAudioLinks) {
-        return FeedbackRequestDto.GetComponentToMakeFeedback
+    public static GetComponentToMakeFeedbackDto toGetComponentToMakeFeedback(String beforeAudioLink, String name,
+                                                                             String voiceUrl,
+                                                                             List<String> pastAudioLinks,
+                                                                             Long answerId) {
+        return GetComponentToMakeFeedbackDto
                 .builder()
                 .beforeAudioLink(beforeAudioLink)
                 .name(name)
                 .voiceUrl(voiceUrl)
                 .pastAudioLinks(pastAudioLinks)
+                .answerId(answerId)
                 .build();
     }
 }
