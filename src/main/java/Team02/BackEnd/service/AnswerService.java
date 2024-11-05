@@ -30,4 +30,10 @@ public class AnswerService {
         AnswerValidator.validateAnswerIsNotNull(answer);
         return answer;
     }
+
+    public Answer getAnswer(Long answerId) {
+        Answer answer = answerRepository.findById(answerId).orElse(null);
+        AnswerValidator.validateAnswerIsNotNull(answer);
+        return answer;
+    }
 }
