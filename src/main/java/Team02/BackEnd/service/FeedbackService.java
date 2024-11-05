@@ -108,9 +108,6 @@ public class FeedbackService {
         HttpEntity<FeedbackRequestDto.GetComponentToMakeFeedback> request = new HttpEntity<>(getComponentToMakeFeedback,
                 headers);
 
-        ResponseEntity<FeedbackResponseDto.GetFeedbackToFastApiDto> response =
-                restTemplate.postForEntity(FASTAPI_API_URL, request, FeedbackResponseDto.GetFeedbackToFastApiDto.class);
-
-        return response;
+        return restTemplate.postForEntity(FASTAPI_API_URL, request, GetFeedbackToFastApiDto.class);
     }
 }
