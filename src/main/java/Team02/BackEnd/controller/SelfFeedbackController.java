@@ -30,16 +30,14 @@ public class SelfFeedbackController {
     public ApiResponse<Void> saveSelfFeedback(@RequestParam("answerId") Long answerId,
                                               @RequestBody SelfFeedbackRequestDto.SaveSelfFeedbackDto saveSelfFeedbackDto) {
 
-        Answer answer = answerService.getAnswer(answerId);
-        selfFeedbackService.saveSelfFeedback(answer, saveSelfFeedbackDto);
+        selfFeedbackService.saveSelfFeedback(answerId, saveSelfFeedbackDto);
         return ApiResponse.ofNoting(SuccessStatus.SAVE_SELF_FEEDBACK);
     }
 
     @GetMapping("/self-feedback")
     @Operation(summary = "저번 녹음의 셀프 피드백 받아오기", description = "다음 질문 받기 전 메인에 띄워줄 거")
     public ApiResponse<SelfFeedbackResponseDto.getBeforeSelfFeedbackDto> getBeforeSelfFeedback(@RequestParam("answerId") Long answerId){
-        Answer answer = answerService.getAnswer(answerId);
-        SelfFeedback selfFeedback = selfFeedbackService.getBeforeSelfFeedback(answer);
+        SelfFeedback selfFeedback = selfFeedbackService.getBeforeSelfFeedback(answerId);
         return ApiResponse.of(SuccessStatus.GET_SELF_FEEDBACK, SelfFeedbackConverter.toGetBeforeSelfFeedbackDto(selfFeedback));
     }
 

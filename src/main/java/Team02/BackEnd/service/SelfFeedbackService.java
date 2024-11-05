@@ -14,13 +14,16 @@ import org.springframework.stereotype.Service;
 public class SelfFeedbackService {
 
     private final SelfFeedbackRepository selfFeedbackRepository;
+    private final AnswerService answerService;
 
-    public void saveSelfFeedback(Answer answer, SaveSelfFeedbackDto saveSelfFeedbackDto) {
+    public void saveSelfFeedback(Long answerId, SaveSelfFeedbackDto saveSelfFeedbackDto) {
+        Answer answer = answerService.getAnswerByAnswerId(answerId);
         SelfFeedback selfFeedback = SelfFeedbackConverter.toSelfFeedback(answer, saveSelfFeedbackDto);
         selfFeedbackRepository.save(selfFeedback);
     }
 
-    public SelfFeedback getBeforeSelfFeedback(Answer answer) {
+    public SelfFeedback getBeforeSelfFeedback(Long answerId) {
+        Answer answer = answerService.getAnswerByAnswerId(answerId);
         return selfFeedbackRepository.findByAnswerId(answer.getId());
     }
 }

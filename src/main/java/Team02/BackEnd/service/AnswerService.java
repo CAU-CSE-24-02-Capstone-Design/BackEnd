@@ -31,7 +31,7 @@ public class AnswerService {
         return answer;
     }
 
-    public Answer getAnswer(Long answerId) {
+    public Answer getAnswerByAnswerId(Long answerId) {
         Answer answer = answerRepository.findById(answerId).orElse(null);
         AnswerValidator.validateAnswerIsNotNull(answer);
         return answer;
