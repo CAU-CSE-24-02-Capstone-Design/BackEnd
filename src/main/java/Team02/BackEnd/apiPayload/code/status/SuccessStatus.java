@@ -23,7 +23,9 @@ public enum SuccessStatus implements BaseCode {
     //Statistics
     SAVE_STATISTICS(HttpStatus.OK, "STATISTICS2000", "통계 횟수 저장 성공"),
     GET_DATES_WHEN_USER_DID(HttpStatus.OK, "USER2000", "유저가 참여한 날짜 가져오기 성공"),
-    GET_STATISTICS(HttpStatus.OK, "STATISTICS2001", "유저 통계 데이터 가져오기 성공" );
+    GET_STATISTICS(HttpStatus.OK, "STATISTICS2001", "유저 통계 데이터 가져오기 성공"),
+    SAVE_SELF_FEEDBACK(HttpStatus.CREATED, "SELFFEEDBACK2000", "셀프 피드백 저장 성공"),
+    GET_SELF_FEEDBACK(HttpStatus.OK, "SELFFEEDBACK2001", "셀프 피드백 가져오기 성공");
 
     private final HttpStatus httpStatus;
     private final String code;
