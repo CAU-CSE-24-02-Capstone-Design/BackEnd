@@ -38,17 +38,17 @@ public class StatisticsController {
     @Operation(
             summary = "통계 데이터 불러오기 react -> spring",
             description = """
-                **filter**
-                - filter=gantour
-                - filter=silent
-                - filter=word
-                - filter=context
-        
-            헤더에 토큰 
-            """
+                        **filter**
+                        - filter=gantour
+                        - filter=silent
+                        - filter=word
+                        - filter=context
+                            
+                    헤더에 토큰 
+                    """
     )
     public ApiResponse<HashMap<String, String>> getFilterStatistics(@RequestParam("filter") String filter,
-                                                                    @RequestHeader("authorization") String authorization){
+                                                                    @RequestHeader("authorization") String authorization) {
         /**
          * 필터 확인하고 statistics에서 지금 로그인 된 user 데이터만 created at 기준으로 정렬해서 가져옴
          */

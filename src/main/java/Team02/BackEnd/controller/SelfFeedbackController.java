@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SelfFeedbackController {
     private final SelfFeedbackService selfFeedbackService;
     private final AnswerService answerService;
+
     @PostMapping("/self-feedback")
     @Operation(summary = "셀프 피드백 작성", description = "beforeAudio는 프론트에서 처리, post된 self feedback DB 저장")
     public ApiResponse<Void> saveSelfFeedback(@RequestParam("answerId") Long answerId,
@@ -34,9 +35,11 @@ public class SelfFeedbackController {
 
     @GetMapping("/self-feedback")
     @Operation(summary = "저번 녹음의 셀프 피드백 받아오기", description = "다음 질문 받기 전 메인에 띄워줄 거")
-    public ApiResponse<SelfFeedbackResponseDto.getBeforeSelfFeedbackDto> getBeforeSelfFeedback(@RequestParam("answerId") Long answerId){
+    public ApiResponse<SelfFeedbackResponseDto.getBeforeSelfFeedbackDto> getBeforeSelfFeedback(
+            @RequestParam("answerId") Long answerId) {
         SelfFeedback selfFeedback = selfFeedbackService.getBeforeSelfFeedbackByAnswer(answerId);
-        return ApiResponse.of(SuccessStatus.GET_SELF_FEEDBACK, SelfFeedbackConverter.toGetBeforeSelfFeedbackDto(selfFeedback));
+        return ApiResponse.of(SuccessStatus.GET_SELF_FEEDBACK,
+                SelfFeedbackConverter.toGetBeforeSelfFeedbackDto(selfFeedback));
     }
 
 }
