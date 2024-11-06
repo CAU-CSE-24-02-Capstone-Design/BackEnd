@@ -32,5 +32,4 @@ public class FeedbackController {
         GetFeedbackDto getFeedbackDto = feedbackService.getFeedbackAndAudio(accessToken, answerId);
         return ApiResponse.of(SuccessStatus.GET_FEEDBACK, getFeedbackDto);
     }
-
 }

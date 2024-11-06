@@ -29,7 +29,7 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class FeedbackService {
 
-    private static final String FASTAPI_API_URL = "https://peachmentor.com:8000/api/record/feedback";
+    private static final String FASTAPI_API_URL = "https://peachmentor.com:8000/api/fastapi/record/feedback";
     private static final String FASTAPI_API_URL_LOCAL = "http://localhost:8000/api/fastapi/record/feedback";
     private static final int LIMIT_PAST_AUDIO_NUMBER = 5;
 
