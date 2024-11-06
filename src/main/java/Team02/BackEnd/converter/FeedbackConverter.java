@@ -4,17 +4,19 @@ import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Feedback;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.FeedbackRequestDto.GetComponentToMakeFeedbackDto;
+import Team02.BackEnd.dto.FeedbackResponseDto;
 import Team02.BackEnd.dto.FeedbackResponseDto.GetFeedbackDto;
+import Team02.BackEnd.dto.FeedbackResponseDto.GetFeedbackToFastApiDto;
 import java.util.List;
 
 public class FeedbackConverter {
-    public static GetFeedbackDto toGetFeedbackDto(Feedback feedback) {
+    public static GetFeedbackDto toGetFeedbackDto(GetFeedbackToFastApiDto getFeedbackDto) {
         return GetFeedbackDto.builder()
-                .beforeScript(feedback.getBeforeScript())
-                .beforeAudioLink(feedback.getBeforeAudioLink())
-                .afterScript(feedback.getAfterScript())
-                .afterAudioLink(feedback.getAfterAudioLink())
-                .feedbackText(feedback.getFeedbackText())
+                .beforeScript(getFeedbackDto.getBeforeScript())
+                .beforeAudio(getFeedbackDto.getBeforeAudio())
+                .afterScript(getFeedbackDto.getAfterScript())
+                .afterAudio(getFeedbackDto.getAfterAudio())
+                .feedbackText(getFeedbackDto.getFeedbackText())
                 .build();
     }
 

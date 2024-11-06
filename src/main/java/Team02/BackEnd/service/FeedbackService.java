@@ -8,6 +8,7 @@ import Team02.BackEnd.domain.Feedback;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.FeedbackRequestDto.GetComponentToMakeFeedbackDto;
 import Team02.BackEnd.dto.FeedbackResponseDto;
+import Team02.BackEnd.dto.FeedbackResponseDto.GetFeedbackDto;
 import Team02.BackEnd.dto.FeedbackResponseDto.GetFeedbackToFastApiDto;
 import Team02.BackEnd.dto.RecordRequestDto.GetRespondDto;
 import Team02.BackEnd.exception.validator.FeedbackValidator;
@@ -39,7 +40,7 @@ public class FeedbackService {
 
     private final FeedbackRepository feedbackRepository;
 
-    public Feedback getFeedback(String accessToken, Long answerId) {
+    public GetFeedbackDto getFeedbackAndAudio(String accessToken, Long answerId) {
         Feedback feedback = this.getFeedbackByAnswerId(answerId);
         User user = userService.getUserByToken(accessToken);
 
@@ -48,7 +49,7 @@ public class FeedbackService {
         String voiceUrl = user.getVoiceUrl();
         List<String> pastAudioLinks = getPastAudioLinks(user);  // MAX 5개, 5개 이하면 다 가져옴
 
-        ResponseEntity<FeedbackResponseDto.GetFeedbackToFastApiDto> response
+        ResponseEntity<GetFeedbackToFastApiDto> response
                 = getFeedbackToFastApi(beforeAudioLink, name, voiceUrl, pastAudioLinks,
                 answerId); // fast api로 피드백 받아오기 요청
 
@@ -64,7 +65,7 @@ public class FeedbackService {
                 response.getBody().getFeedbackText()
         );
 
-        return feedback;
+        return FeedbackConverter.toGetFeedbackDto(response.getBody());
     }
 
     public void getBeforeAudioLink(String accessToken, GetRespondDto getRespondDto) {
