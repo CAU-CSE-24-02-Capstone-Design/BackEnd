@@ -30,8 +30,8 @@ public class FeedbackController {
             @RequestHeader("Authorization") String authorizationHeader,
             @RequestParam("answerId") Long answerId) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
-        Feedback feedback = feedbackService.getFeedback(accessToken, answerId);
+        Feedback feedback = feedbackService.getFeedbackAndAudio(accessToken, answerId);
+
         return ApiResponse.of(SuccessStatus.GET_FEEDBACK, FeedbackConverter.toGetFeedbackDto(feedback));
     }
-
 }
