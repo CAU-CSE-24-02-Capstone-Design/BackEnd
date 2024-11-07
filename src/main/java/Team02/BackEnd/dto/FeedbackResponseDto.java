@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 public class FeedbackResponseDto {
 
@@ -13,10 +14,10 @@ public class FeedbackResponseDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class GetFeedbackDto {
-        String beforeAudioLink;
         String beforeScript;
-        String afterAudioLink;
+        String beforeAudioLink;
         String afterScript;
+        String afterAudioLink;
         String feedbackText;
     }
 
@@ -28,9 +29,9 @@ public class FeedbackResponseDto {
         @NotNull
         String beforeScript;
         @NotNull
-        String afterAudioLink;
-        @NotNull
         String afterScript;
+        @NotNull
+        String afterAudioLink;
         @NotNull
         String feedbackText;
     }
