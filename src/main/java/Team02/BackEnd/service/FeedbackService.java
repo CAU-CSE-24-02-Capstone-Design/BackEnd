@@ -7,8 +7,6 @@ import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Feedback;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.FeedbackRequestDto.GetComponentToMakeFeedbackDto;
-import Team02.BackEnd.dto.FeedbackResponseDto;
-import Team02.BackEnd.dto.FeedbackResponseDto.GetFeedbackDto;
 import Team02.BackEnd.dto.FeedbackResponseDto.GetFeedbackToFastApiDto;
 import Team02.BackEnd.dto.RecordRequestDto.GetRespondDto;
 import Team02.BackEnd.exception.validator.FeedbackValidator;
@@ -40,7 +38,7 @@ public class FeedbackService {
 
     private final FeedbackRepository feedbackRepository;
 
-    public GetFeedbackDto getFeedbackAndAudio(String accessToken, Long answerId) {
+    public Feedback getFeedbackAndAudio(String accessToken, Long answerId) {
         Feedback feedback = this.getFeedbackByAnswerId(answerId);
         User user = userService.getUserByToken(accessToken);
 
@@ -50,7 +48,7 @@ public class FeedbackService {
         List<String> pastAudioLinks = getPastAudioLinks(user);  // MAX 5개, 5개 이하면 다 가져옴
 
         ResponseEntity<GetFeedbackToFastApiDto> response
-                = getFeedbackToFastApi(beforeAudioLink, name, voiceUrl, pastAudioLinks,
+                = getFeedbackToFastApi(accessToken, beforeAudioLink, name, voiceUrl, pastAudioLinks,
                 answerId); // fast api로 피드백 받아오기 요청
 
         if (response.getBody() == null) {
@@ -65,10 +63,11 @@ public class FeedbackService {
                 response.getBody().getFeedbackText()
         );
 
-        return FeedbackConverter.toGetFeedbackDto(response.getBody());
+        return feedback;
     }
 
     public void getBeforeAudioLink(String accessToken, GetRespondDto getRespondDto) {
+        System.out.println(accessToken);
         User user = userService.getUserByToken(accessToken);
         Answer answer = answerService.getAnswerByUserId(user.getId());
         Feedback feedback = FeedbackConverter.toFeedback(getRespondDto.getBeforeAudioLink(), answer, user);
@@ -99,7 +98,8 @@ public class FeedbackService {
         return feedbackList.stream().map(Feedback::getBeforeAudioLink).toList();
     }
 
-    private ResponseEntity<GetFeedbackToFastApiDto> getFeedbackToFastApi(String beforeAudioLink, String name,
+    private ResponseEntity<GetFeedbackToFastApiDto> getFeedbackToFastApi(String accessToken, String beforeAudioLink,
+                                                                         String name,
                                                                          String voiceUrl, List<String> pastAudioLinks,
                                                                          Long answerId) {
         GetComponentToMakeFeedbackDto getComponentToMakeFeedbackDto =
@@ -108,10 +108,11 @@ public class FeedbackService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + accessToken);
 
         HttpEntity<GetComponentToMakeFeedbackDto> request = new HttpEntity<>(getComponentToMakeFeedbackDto,
                 headers);
 
-        return restTemplate.postForEntity(FASTAPI_API_URL, request, GetFeedbackToFastApiDto.class);
+        return restTemplate.postForEntity(FASTAPI_API_URL_LOCAL, request, GetFeedbackToFastApiDto.class);
     }
 }

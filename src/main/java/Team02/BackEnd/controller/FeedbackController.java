@@ -5,8 +5,9 @@ import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_REPLACEMENT;
 
 import Team02.BackEnd.apiPayload.ApiResponse;
 import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
+import Team02.BackEnd.converter.FeedbackConverter;
+import Team02.BackEnd.domain.Feedback;
 import Team02.BackEnd.dto.FeedbackResponseDto;
-import Team02.BackEnd.dto.FeedbackResponseDto.GetFeedbackDto;
 import Team02.BackEnd.service.FeedbackService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,8 @@ public class FeedbackController {
             @RequestHeader("Authorization") String authorizationHeader,
             @RequestParam("answerId") Long answerId) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
-        GetFeedbackDto getFeedbackDto = feedbackService.getFeedbackAndAudio(accessToken, answerId);
-        return ApiResponse.of(SuccessStatus.GET_FEEDBACK, getFeedbackDto);
+        Feedback feedback = feedbackService.getFeedbackAndAudio(accessToken, answerId);
+
+        return ApiResponse.of(SuccessStatus.GET_FEEDBACK, FeedbackConverter.toGetFeedbackDto(feedback));
     }
 }

@@ -15,9 +15,9 @@ public class FeedbackResponseDto {
     @NoArgsConstructor
     public static class GetFeedbackDto {
         String beforeScript;
-        MultipartFile beforeAudio;
+        String beforeAudioLink;
         String afterScript;
-        MultipartFile afterAudio;
+        String afterAudioLink;
         String feedbackText;
     }
 
@@ -29,11 +29,7 @@ public class FeedbackResponseDto {
         @NotNull
         String beforeScript;
         @NotNull
-        MultipartFile beforeAudio;
-        @NotNull
         String afterScript;
-        @NotNull
-        MultipartFile afterAudio;
         @NotNull
         String afterAudioLink;
         @NotNull
