@@ -55,6 +55,8 @@ public class FeedbackService {
             throw new FeedbackHandler(ErrorStatus._FAST_API_FEEDBACK_NULL);
         }
 
+        System.out.println(response.getBody());
+
         // feedback.update(받아온 response);
         feedback.update(
                 response.getBody().getBeforeScript(),
