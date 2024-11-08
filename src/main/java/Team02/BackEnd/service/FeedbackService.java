@@ -13,6 +13,7 @@ import Team02.BackEnd.exception.validator.FeedbackValidator;
 import Team02.BackEnd.repository.FeedbackRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -25,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FeedbackService {
 
     private static final String FASTAPI_API_URL = "https://peachmentor.com/api/fastapi/record/feedback";
@@ -55,8 +57,6 @@ public class FeedbackService {
             throw new FeedbackHandler(ErrorStatus._FAST_API_FEEDBACK_NULL);
         }
 
-        System.out.println(response.getBody());
-
         // feedback.update(받아온 response);
         feedback.update(
                 response.getBody().getBeforeScript(),
@@ -64,6 +64,8 @@ public class FeedbackService {
                 response.getBody().getAfterScript(),
                 response.getBody().getFeedbackText()
         );
+
+        feedbackRepository.save(feedback);
 
         return feedback;
     }
