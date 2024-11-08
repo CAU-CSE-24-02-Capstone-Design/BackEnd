@@ -13,6 +13,7 @@ import Team02.BackEnd.exception.validator.FeedbackValidator;
 import Team02.BackEnd.repository.FeedbackRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -25,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FeedbackService {
 
     private static final String FASTAPI_API_URL = "https://peachmentor.com/api/fastapi/record/feedback";
@@ -55,8 +57,6 @@ public class FeedbackService {
             throw new FeedbackHandler(ErrorStatus._FAST_API_FEEDBACK_NULL);
         }
 
-        System.out.println(response.getBody());
-
         // feedback.update(받아온 response);
         feedback.update(
                 response.getBody().getBeforeScript(),
@@ -65,13 +65,14 @@ public class FeedbackService {
                 response.getBody().getFeedbackText()
         );
 
+        feedbackRepository.save(feedback);
+
         return feedback;
     }
 
     public void getBeforeAudioLink(String accessToken, GetRespondDto getRespondDto) {
-        System.out.println(accessToken);
         User user = userService.getUserByToken(accessToken);
-        Answer answer = answerService.getAnswerByUserId(user.getId());
+        Answer answer = answerService.getAnswerByAnswerId(getRespondDto.getAnswerId());
         Feedback feedback = FeedbackConverter.toFeedback(getRespondDto.getBeforeAudioLink(), answer, user);
 
         feedbackRepository.save(feedback);
@@ -86,7 +87,9 @@ public class FeedbackService {
 
     private List<String> getPastAudioLinks(User user) {
         List<Feedback> feedbackList;
-        answerService.getAnswerByUserId(user.getId());
+
+//        user에 대한 answer가 있는지 검증하는 로직인 것 같은데 1개가 아니라 여러 개를 return하는 바람에 문제가 생김
+//        answerService.getAnswersByUserId(user.getId());
 
         PageRequest pageRequest = PageRequest.of(0, LIMIT_PAST_AUDIO_NUMBER, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Feedback> feedbackPageList = feedbackRepository.findByUserId(user.getId(), pageRequest);
