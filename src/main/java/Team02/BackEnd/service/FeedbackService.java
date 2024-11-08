@@ -71,9 +71,8 @@ public class FeedbackService {
     }
 
     public void getBeforeAudioLink(String accessToken, GetRespondDto getRespondDto) {
-        System.out.println(accessToken);
         User user = userService.getUserByToken(accessToken);
-        Answer answer = answerService.getAnswerByUserId(user.getId());
+        Answer answer = answerService.getAnswerByAnswerId(getRespondDto.getAnswerId());
         Feedback feedback = FeedbackConverter.toFeedback(getRespondDto.getBeforeAudioLink(), answer, user);
 
         feedbackRepository.save(feedback);
