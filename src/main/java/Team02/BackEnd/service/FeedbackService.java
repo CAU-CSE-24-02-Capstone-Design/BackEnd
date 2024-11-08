@@ -41,6 +41,7 @@ public class FeedbackService {
     private final FeedbackRepository feedbackRepository;
 
     public Feedback getFeedbackAndAudio(String accessToken, Long answerId) {
+        System.out.println("피드백 받아올 때 answerId : " + answerId);
         Feedback feedback = this.getFeedbackByAnswerId(answerId);
         User user = userService.getUserByToken(accessToken);
 
@@ -71,7 +72,7 @@ public class FeedbackService {
     }
 
     public void getBeforeAudioLink(String accessToken, GetRespondDto getRespondDto) {
-        System.out.println(getRespondDto.getAnswerId());
+        System.out.println("1분 스피치 하고 나서 answerId : " + getRespondDto.getAnswerId());
         User user = userService.getUserByToken(accessToken);
         Answer answer = answerService.getAnswerByAnswerId(getRespondDto.getAnswerId());
         Feedback feedback = FeedbackConverter.toFeedback(getRespondDto.getBeforeAudioLink(), answer, user);
