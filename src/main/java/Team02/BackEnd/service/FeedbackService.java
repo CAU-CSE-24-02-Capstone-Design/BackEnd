@@ -41,7 +41,6 @@ public class FeedbackService {
     private final FeedbackRepository feedbackRepository;
 
     public Feedback getFeedbackAndAudio(String accessToken, Long answerId) {
-        System.out.println("피드백 받아올 때 answerId : " + answerId);
         Feedback feedback = this.getFeedbackByAnswerId(answerId);
         User user = userService.getUserByToken(accessToken);
 
@@ -72,7 +71,6 @@ public class FeedbackService {
     }
 
     public void getBeforeAudioLink(String accessToken, GetRespondDto getRespondDto) {
-        System.out.println("1분 스피치 하고 나서 answerId : " + getRespondDto.getAnswerId());
         User user = userService.getUserByToken(accessToken);
         Answer answer = answerService.getAnswerByAnswerId(getRespondDto.getAnswerId());
         Feedback feedback = FeedbackConverter.toFeedback(getRespondDto.getBeforeAudioLink(), answer, user);
@@ -89,7 +87,9 @@ public class FeedbackService {
 
     private List<String> getPastAudioLinks(User user) {
         List<Feedback> feedbackList;
-        answerService.getAnswerByUserId(user.getId());
+
+//        user에 대한 answer가 있는지 검증하는 로직인 것 같은데 1개가 아니라 여러 개를 return하는 바람에 문제가 생김
+//        answerService.getAnswersByUserId(user.getId());
 
         PageRequest pageRequest = PageRequest.of(0, LIMIT_PAST_AUDIO_NUMBER, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Feedback> feedbackPageList = feedbackRepository.findByUserId(user.getId(), pageRequest);
