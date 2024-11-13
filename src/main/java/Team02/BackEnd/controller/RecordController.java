@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/spring/record")
+@RequestMapping("/api/spring/records")
 public class RecordController {
 
     private final UserService userService;
     private final FeedbackService feedbackService;
 
-    @PostMapping("/voice")
+    @PostMapping("/voices")
     @Operation(summary = "fast api -> spring", description = "첫 로그인 녹음 파일 url 저장용 api")
     public ApiResponse<Void> getVoiceUrl(@RequestHeader("Authorization") String authorizationHeader,
                                          @RequestBody RecordRequestDto.GetVoiceUrlDto getVoiceUrlDto) {
@@ -32,7 +32,7 @@ public class RecordController {
         return ApiResponse.onSuccess(null);
     }
 
-    @PostMapping("/respond")
+    @PostMapping("/speeches")
     @Operation(summary = "fast api -> spring", description = "before_audio_link 미리 저장, feedback 객체 생성")
     public ApiResponse<Void> setBeforeAudioLink(@RequestHeader("Authorization") String authorizationHeader,
                                                 @RequestBody RecordRequestDto.GetRespondDto getRespondDto) {

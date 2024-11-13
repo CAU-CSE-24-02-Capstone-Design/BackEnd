@@ -32,7 +32,7 @@ public class UserController {
         return ApiResponse.onSuccess(null);
     }
 
-    @GetMapping("/calendar")
+    @GetMapping("/calendars")
     @Operation(summary = "달력 데이터", description = "쿼리파라미터로 년,월 제공 => 기록 있는 날만 map 형태로 (날짜 : 해당 날짜 answerId) 리턴")
     public ApiResponse<HashMap<String, Long>> getDatesWhenUserDid(@RequestParam("year") String year,
                                                                   @RequestParam("month") String month) {
