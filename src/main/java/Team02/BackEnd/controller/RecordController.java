@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/spring/record")
+@RequestMapping("/api/spring/records")
 public class RecordController {
 
     private final UserService userService;
     private final FeedbackService feedbackService;
 
-    @PostMapping("/voice")
+    @PostMapping("/voices")
     @Operation(summary = "fast api -> spring", description = "첫 로그인 녹음 파일 url 저장용 api")
     public ApiResponse<Void> getVoiceUrl(@RequestHeader("Authorization") String authorizationHeader,
                                          @RequestBody RecordRequestDto.GetVoiceUrlDto getVoiceUrlDto) {

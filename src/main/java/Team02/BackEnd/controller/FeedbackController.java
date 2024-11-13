@@ -24,7 +24,7 @@ public class FeedbackController {
 
     private final FeedbackService feedbackService;
 
-    @GetMapping("/feedback")
+    @GetMapping("/feedbacks")
     @Operation(summary = "피드백 받아오기 react -> spring", description = "질문요청에서 받은 answerId로 쿼리 파라미터")
     public ApiResponse<FeedbackResponseDto.GetFeedbackDto> getFeedback(
             @RequestHeader("Authorization") String authorizationHeader,
