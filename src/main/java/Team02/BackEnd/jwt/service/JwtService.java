@@ -62,6 +62,17 @@ public class JwtService {
                 .sign(Algorithm.HMAC512(secretKey));
     }
 
+    // 테스트용 토큰 생성 메서드 추가
+    public String generateTest2Token() {
+        Date now = new Date();
+        return JWT.create()
+                .withSubject(ACCESS_TOKEN_SUBJECT)
+                .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
+                .withClaim("unique_id", UUID.randomUUID().toString())
+                .withClaim(EMAIL_CLAIM, "test2@example.com")
+                .sign(Algorithm.HMAC512(secretKey));
+    }
+
     /**
      * AccessToken 생성 메서드
      */
@@ -155,6 +166,7 @@ public class JwtService {
                     .getClaim(EMAIL_CLAIM)
                     .asString());
         } catch (Exception e) {
+            System.out.println("검사 할 때 " + accessToken);
             log.error("AccessToken이 유효하지 않습니다.");
             throw new AccessTokenHandler(ErrorStatus._ACCESSTOKEN_NOT_VALID);
         }
