@@ -29,8 +29,8 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class FeedbackService {
 
-    private static final String FASTAPI_API_URL = "https://peachmentor.com/api/fastapi/record/feedback";
-    private static final String FASTAPI_API_URL_LOCAL = "http://localhost:8000/api/fastapi/record/feedback";
+    private static final String FASTAPI_API_URL = "https://peachmentor.com/api/fastapi/records/feedbacks";
+    private static final String FASTAPI_API_URL_LOCAL = "http://localhost:8000/api/fastapi/records/feedbacks";
     private static final int LIMIT_PAST_AUDIO_NUMBER = 5;
 
     private final RestTemplate restTemplate = new RestTemplate();
