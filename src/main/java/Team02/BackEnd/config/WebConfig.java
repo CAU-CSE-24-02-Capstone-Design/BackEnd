@@ -18,6 +18,11 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/api/**")
+                .allowedOrigins("http://localhost:3000", "http://react:3000", "http://localhost:8000", "http://fastapi:8000")
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedHeaders("*")
+                .allowCredentials(true);
         registry.addMapping("/v3/api-docs/**").allowedOrigins("https://peachmentor.com");
         registry.addMapping("/swagger-ui/**").allowedOrigins("https://peachmentor.com");
     }
