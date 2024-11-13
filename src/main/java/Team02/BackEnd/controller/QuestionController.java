@@ -25,7 +25,7 @@ public class QuestionController {
     private final QuestionService questionService;
     private final AnswerService answerService;
 
-    @GetMapping("/question")
+    @GetMapping("/questions")
     @Operation(summary = "질문 요청", description = "유저가 클릭시 공개 될 질문 가져오기")
     public ApiResponse<QuestionResponseDto.GetQuestionDto> getQuestion(
             @RequestHeader("Authorization") String authorizationHeader) {
