@@ -32,6 +32,7 @@ public class SelfFeedbackController {
     @Operation(summary = "셀프 피드백 작성", description = "beforeAudio는 프론트에서 처리, post된 self feedback DB 저장")
     public ApiResponse<Void> saveSelfFeedback(@RequestParam("answerId") Long answerId,
                                               @RequestBody SelfFeedbackRequestDto.SaveSelfFeedbackDto saveSelfFeedbackDto) {
+        System.out.println("셀프 피드백 작성 : " + answerId);
         selfFeedbackService.saveSelfFeedback(answerId, saveSelfFeedbackDto);
         return ApiResponse.ofNoting(SuccessStatus.SAVE_SELF_FEEDBACK);
     }

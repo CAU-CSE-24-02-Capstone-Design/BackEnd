@@ -30,6 +30,7 @@ public class FeedbackController {
     public ApiResponse<Void> getFeedback(
             @RequestHeader("Authorization") String authorizationHeader,
             @RequestParam("answerId") Long answerId) {
+        System.out.println("피드백 생성 : " + answerId);
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
         feedbackService.createFeedbackData(accessToken, answerId);
         return ApiResponse.onSuccess(null);
