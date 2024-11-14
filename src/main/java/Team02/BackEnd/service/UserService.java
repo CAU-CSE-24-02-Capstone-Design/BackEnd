@@ -1,12 +1,15 @@
 package Team02.BackEnd.service;
 
+import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.RecordRequestDto.GetVoiceUrlDto;
 import Team02.BackEnd.exception.validator.UserValidator;
 import Team02.BackEnd.jwt.service.JwtService;
+import Team02.BackEnd.repository.AnswerRepository;
 import Team02.BackEnd.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,7 @@ public class UserService {
 
     private final JwtService jwtService;
     private final UserRepository userRepository;
+    private final AnswerRepository answerRepository;
 
     public void signOut(String accessToken) {
         //todo 회원 탈퇴시 이 회원과 관련된 모든 DB 데이터 삭제
@@ -40,8 +44,22 @@ public class UserService {
         return user;
     }
 
-    public HashMap<String, Long> getDatesWhenUserDid(String year, String month) {
-        return null;
+    public Long[] getDatesWhenUserDid(String accessToken, String year, String month) {
+        User user = getUserByToken(accessToken);
+
+        Long[] answerIdDidThisPeriod = new Long[32];
+        Arrays.fill(answerIdDidThisPeriod, 0L);
+
+        int yearInt = Integer.parseInt(year);
+        int monthInt = Integer.parseInt(month);
+        List<Answer> answersInPeriod = answerRepository.findByUserAndYearAndMonth(user, yearInt, monthInt);
+
+        for (Answer answer : answersInPeriod) {
+            int day = answer.getCreatedAt().getDayOfMonth();
+            answerIdDidThisPeriod[day - 1] = answer.getId();
+        }
+
+        return answerIdDidThisPeriod;
     }
 
 }

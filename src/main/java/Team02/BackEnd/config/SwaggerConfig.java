@@ -32,11 +32,12 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         String testToken = jwtService.generateTestToken(); // 스웨거 용 테스트 토큰 생성
+        String test2Token = jwtService.generateTest2Token();
 
         SecurityScheme securityScheme = new SecurityScheme()
                 .type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")
                 .in(SecurityScheme.In.HEADER).name("Authorization")
-                .description("test token: " + testToken); // 디폴트 토큰 나타내기
+                .description("test token: " + testToken + " 구분\n" + test2Token); // 디폴트 토큰 나타내기
 
         SecurityRequirement securityRequirement = new SecurityRequirement().addList("bearerAuth");
 
