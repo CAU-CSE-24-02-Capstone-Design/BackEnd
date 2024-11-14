@@ -1,5 +1,8 @@
 package Team02.BackEnd.service;
 
+import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_HEADER_NAME;
+import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_PREFIX;
+
 import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
 import Team02.BackEnd.apiPayload.exception.handler.FeedbackHandler;
 import Team02.BackEnd.converter.FeedbackConverter;
@@ -9,7 +12,6 @@ import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.FeedbackRequestDto.GetComponentToMakeFeedbackDto;
 import Team02.BackEnd.dto.FeedbackResponseDto.GetFeedbackToFastApiDto;
 import Team02.BackEnd.dto.RecordRequestDto.GetRespondDto;
-import Team02.BackEnd.exception.validator.FeedbackValidator;
 import Team02.BackEnd.repository.FeedbackRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -34,44 +36,23 @@ public class FeedbackService {
     private static final int LIMIT_PAST_AUDIO_NUMBER = 5;
 
     private final RestTemplate restTemplate = new RestTemplate();
-
+    private final FeedbackRepository feedbackRepository;
     private final UserService userService;
     private final AnswerService answerService;
 
-    private final FeedbackRepository feedbackRepository;
-
-    public void createFeedbackData(String accessToken, Long answerId) {
-        Feedback feedback = this.getFeedbackByAnswerId(answerId);
+    public void createFeedbackData(final String accessToken, final Long answerId) {
+        Feedback feedback = getFeedbackByAnswerId(answerId);
         User user = userService.getUserByToken(accessToken);
 
-        String beforeAudioLink = feedback.getBeforeAudioLink();
-        String name = user.getName();
-        String voiceUrl = user.getVoiceUrl();
-        List<String> pastAudioLinks = getPastAudioLinks(user);  // MAX 5개, 5개 이하면 다 가져옴
+        ResponseEntity<GetFeedbackToFastApiDto> response =
+                getFeedbackFromFastApi(accessToken, feedback, user, answerId);
+        validateFeedbackFromFastApi(response);
 
-        ResponseEntity<GetFeedbackToFastApiDto> response
-                = getFeedbackToFastApi(accessToken, beforeAudioLink, name, voiceUrl, pastAudioLinks,
-                answerId);
-
-        if (response.getBody() == null) {
-            throw new FeedbackHandler(ErrorStatus._FAST_API_FEEDBACK_NULL);
-        }
-
-        feedback.update(
-                response.getBody().getBeforeScript(),
-                response.getBody().getAfterAudioLink(),
-                response.getBody().getAfterScript(),
-                response.getBody().getFeedbackText()
-        );
-
+        feedback.updateFeedbackData(feedback);
         feedbackRepository.save(feedback);
     }
 
-    public Feedback getFeedbackData(Long answerId) {
-        return this.getFeedbackByAnswerId(answerId);
-    }
-
-    public void getBeforeAudioLink(String accessToken, GetRespondDto getRespondDto) {
+    public void getBeforeAudioLink(final String accessToken, final GetRespondDto getRespondDto) {
         User user = userService.getUserByToken(accessToken);
         Answer answer = answerService.getAnswerByAnswerId(getRespondDto.getAnswerId());
         Feedback feedback = FeedbackConverter.toFeedback(getRespondDto.getBeforeAudioLink(), answer, user);
@@ -79,46 +60,55 @@ public class FeedbackService {
         feedbackRepository.save(feedback);
     }
 
-    public Feedback getFeedbackByAnswerId(Long answerId) {
+    public Feedback getFeedbackByAnswerId(final Long answerId) {
         Feedback feedback = feedbackRepository.findByAnswerId(answerId).orElse(null);
-        FeedbackValidator.validateFeedbackIsNotNull(feedback);
-
+        validateFeedbackIsNotNull(feedback);
         return feedback;
     }
 
-    private List<String> getPastAudioLinks(User user) {
-        List<Feedback> feedbackList;
-
-//        user에 대한 answer가 있는지 검증하는 로직인 것 같은데 1개가 아니라 여러 개를 return하는 바람에 문제가 생김
-//        answerService.getAnswersByUserId(user.getId());
-
+    private List<String> getPastAudioLinks(final User user) {
         PageRequest pageRequest = PageRequest.of(0, LIMIT_PAST_AUDIO_NUMBER, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Feedback> feedbackPageList = feedbackRepository.findByUserId(user.getId(), pageRequest);
 
+        List<Feedback> feedbackList = feedbackPageList.getContent();
         if (feedbackPageList.isEmpty()) {
             feedbackList = feedbackRepository.findAllByUserId(user.getId());
-        } else {
-            feedbackList = feedbackPageList.getContent();
         }
-
         return feedbackList.stream().map(Feedback::getBeforeAudioLink).toList();
     }
 
-    private ResponseEntity<GetFeedbackToFastApiDto> getFeedbackToFastApi(String accessToken, String beforeAudioLink,
-                                                                         String name,
-                                                                         String voiceUrl, List<String> pastAudioLinks,
-                                                                         Long answerId) {
-        GetComponentToMakeFeedbackDto getComponentToMakeFeedbackDto =
-                FeedbackConverter.toGetComponentToMakeFeedback(beforeAudioLink, name, voiceUrl, pastAudioLinks,
-                        answerId);
+    private ResponseEntity<GetFeedbackToFastApiDto> getFeedbackFromFastApi(final String accessToken,
+                                                                           final Feedback feedback,
+                                                                           final User user,
+                                                                           final Long answerId) {
+        String beforeAudioLink = feedback.getBeforeAudioLink();
+        List<String> pastAudioLinks = getPastAudioLinks(user);  // MAX 5개, 5개 이하면 다 가져옴
 
+        GetComponentToMakeFeedbackDto getComponentToMakeFeedbackDto =
+                FeedbackConverter.toGetComponentToMakeFeedback(beforeAudioLink, user, pastAudioLinks,
+                        answerId);
+        return makeApiCallToFastApi(accessToken, getComponentToMakeFeedbackDto);
+    }
+
+    private ResponseEntity<GetFeedbackToFastApiDto> makeApiCallToFastApi(final String accessToken,
+                                                                         final GetComponentToMakeFeedbackDto getComponentToMakeFeedbackDto) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Bearer " + accessToken);
-
+        headers.set(ACCESS_TOKEN_HEADER_NAME, ACCESS_TOKEN_PREFIX + accessToken);
         HttpEntity<GetComponentToMakeFeedbackDto> request = new HttpEntity<>(getComponentToMakeFeedbackDto,
                 headers);
-
         return restTemplate.postForEntity(FASTAPI_API_URL, request, GetFeedbackToFastApiDto.class);
+    }
+
+    private void validateFeedbackIsNotNull(final Feedback feedback) {
+        if (feedback == null) {
+            throw new FeedbackHandler(ErrorStatus._FEEDBACK_NOT_FOUND);
+        }
+    }
+
+    private void validateFeedbackFromFastApi(final ResponseEntity<GetFeedbackToFastApiDto> response) {
+        if (response.getBody() == null) {
+            throw new FeedbackHandler(ErrorStatus._FAST_API_FEEDBACK_NULL);
+        }
     }
 }

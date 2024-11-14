@@ -42,10 +42,10 @@ public class Feedback extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public void update(String beforeScript, String afterAudioLink, String afterScript, String feedbackText) {
-        this.beforeScript = beforeScript;
-        this.afterAudioLink = afterAudioLink;
-        this.afterScript = afterScript;
-        this.feedbackText = feedbackText;
+    public void updateFeedbackData(final Feedback feedback) {
+        this.beforeScript = feedback.getBeforeScript();
+        this.afterAudioLink = feedback.getAfterAudioLink();
+        this.afterScript = feedback.getAfterScript();
+        this.feedbackText = feedback.getFeedbackText();
     }
 }

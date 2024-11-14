@@ -28,7 +28,7 @@ public class QuestionController {
     @GetMapping("/questions")
     @Operation(summary = "질문 요청", description = "유저가 클릭시 공개 될 질문 가져오기")
     public ApiResponse<QuestionResponseDto.GetQuestionDto> getQuestion(
-            @RequestHeader("Authorization") String authorizationHeader) {
+            @RequestHeader("Authorization") final String authorizationHeader) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
         Question question = questionService.getUserQuestion(accessToken);
         Long answerId = answerService.getAnswerId(accessToken, question);
