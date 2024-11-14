@@ -6,7 +6,9 @@ import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.exception.validator.AnswerValidator;
 import Team02.BackEnd.repository.AnswerRepository;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,13 @@ public class AnswerService {
         List<Answer> answers = answerRepository.findByUserId(userId);
         answers.forEach(AnswerValidator::validateAnswerIsNotNull);
         return answers;
+    }
+
+    public Answer getLatestAnswerByUserId(Long userId) {
+        List<Answer> answers = answerRepository.findByUserId(userId);
+        Optional<Answer> answer = answers.stream().max(Comparator.comparing(Answer::getCreatedAt));
+        AnswerValidator.validateAnswerIsNotNull(answer.orElse(null));
+        return answer.orElse(null);
     }
 
     public Answer getAnswerByAnswerId(Long answerId) {

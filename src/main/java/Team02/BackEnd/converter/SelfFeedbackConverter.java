@@ -9,8 +9,7 @@ public class SelfFeedbackConverter {
     public static SelfFeedbackResponseDto.getBeforeSelfFeedbackDto toGetBeforeSelfFeedbackDto(
             SelfFeedback selfFeedback) {
         return SelfFeedbackResponseDto.getBeforeSelfFeedbackDto.builder()
-                .good(selfFeedback.getGood())
-                .bad(selfFeedback.getBad())
+                .feedback(selfFeedback.getFeedback())
                 .build();
 
     }
@@ -18,8 +17,7 @@ public class SelfFeedbackConverter {
     public static SelfFeedback toSelfFeedback(Answer answer, SaveSelfFeedbackDto saveSelfFeedbackDto) {
         return SelfFeedback.builder()
                 .answer(answer)
-                .good(saveSelfFeedbackDto.getGood())
-                .bad(saveSelfFeedbackDto.getBad())
+                .feedback(saveSelfFeedbackDto.getFeedback())
                 .build();
     }
 }

@@ -71,8 +71,12 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(
-                Arrays.asList("http://localhost:3000", "https://29fc-175-210-231-32.ngrok-free.app",
-                        "http://localhost:8000")); // 허용할 도메인 설정
+                Arrays.asList("http://localhost:3000",
+                        "http://localhost:8000",
+                        "http://react:3000",
+                        "http://fastapi:8000",
+                        "https://peachmentor.com",
+                        "http://peachmentor.com")); // 허용할 도메인 설정
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 허용할 HTTP 메서드 설정
         configuration.setAllowedHeaders(Arrays.asList("*")); // 허용할 헤더 설정
         configuration.setAllowCredentials(true); // 자격 증명 허용 여부 설정

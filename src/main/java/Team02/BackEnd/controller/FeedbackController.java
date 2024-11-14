@@ -12,6 +12,7 @@ import Team02.BackEnd.service.FeedbackService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,14 +25,21 @@ public class FeedbackController {
 
     private final FeedbackService feedbackService;
 
-    @GetMapping("/feedbacks")
-    @Operation(summary = "피드백 받아오기 react -> spring", description = "질문요청에서 받은 answerId로 쿼리 파라미터")
-    public ApiResponse<FeedbackResponseDto.GetFeedbackDto> getFeedback(
+    @PostMapping("/feedbacks")
+    @Operation(summary = "피드백 생성하기 react -> spring", description = "질문요청에서 받은 answerId로 쿼리 파라미터")
+    public ApiResponse<Void> getFeedback(
             @RequestHeader("Authorization") String authorizationHeader,
             @RequestParam("answerId") Long answerId) {
+        System.out.println("피드백 생성 : " + answerId);
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
-        Feedback feedback = feedbackService.getFeedbackAndAudio(accessToken, answerId);
+        feedbackService.createFeedbackData(accessToken, answerId);
+        return ApiResponse.onSuccess(null);
+    }
 
+    @GetMapping("/feedbacks")
+    @Operation(summary = "피드백 데이터 요청하기 react -> spring", description = "질문요청에서 받은 answerId로 쿼리 파라미터")
+    public ApiResponse<FeedbackResponseDto.GetFeedbackDto> geFeedback(@RequestParam("answerId") Long answerId) {
+        Feedback feedback = feedbackService.getFeedbackData(answerId);
         return ApiResponse.of(SuccessStatus.GET_FEEDBACK, FeedbackConverter.toGetFeedbackDto(feedback));
     }
 }
