@@ -8,6 +8,9 @@ import Team02.BackEnd.domain.SelfFeedback;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.SelfFeedbackRequestDto.SaveSelfFeedbackDto;
 import Team02.BackEnd.repository.SelfFeedbackRepository;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,8 +30,14 @@ public class SelfFeedbackService {
 
     public SelfFeedback getLatestSelfFeedback(final String accessToken) {
         User user = userService.getUserByToken(accessToken);
-        Answer answer = answerService.getLatestAnswerByUserId(user.getId());
-        return getSelfFeedbackByAnswerId(answer.getId());
+        List<Answer> answers = answerService.getAnswersByUserId(user.getId());
+        SelfFeedback selfFeedback = answers.stream()
+                .map(answer -> selfFeedbackRepository.findByAnswerId(answer.getId()))
+                .filter(Objects::nonNull)
+                .max(Comparator.comparing(SelfFeedback::getCreatedAt))
+                .orElse(null);
+        validateSelfFeedbackIsNotNull(selfFeedback);
+        return selfFeedback;
     }
 
     public SelfFeedback getSelfFeedbackByAnswerId(final Long answerId) {
