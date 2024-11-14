@@ -31,11 +31,13 @@ public class SelfFeedbackService {
     public SelfFeedback getLatestSelfFeedback(final String accessToken) {
         User user = userService.getUserByToken(accessToken);
         List<Answer> answers = answerService.getAnswersByUserId(user.getId());
-        return answers.stream()
+        SelfFeedback selfFeedback = answers.stream()
                 .map(answer -> selfFeedbackRepository.findByAnswerId(answer.getId()))
                 .filter(Objects::nonNull)
                 .max(Comparator.comparing(SelfFeedback::getCreatedAt))
                 .orElse(null);
+        validateSelfFeedbackIsNotNull(selfFeedback);
+        return selfFeedback;
     }
 
     public SelfFeedback getSelfFeedbackByAnswerId(final Long answerId) {
