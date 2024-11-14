@@ -4,7 +4,10 @@ import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.SelfFeedback;
 import Team02.BackEnd.dto.SelfFeedbackRequestDto.SaveSelfFeedbackDto;
 import Team02.BackEnd.dto.SelfFeedbackResponseDto;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SelfFeedbackConverter {
     public static SelfFeedbackResponseDto.getBeforeSelfFeedbackDto toGetBeforeSelfFeedbackDto(
             SelfFeedback selfFeedback) {
