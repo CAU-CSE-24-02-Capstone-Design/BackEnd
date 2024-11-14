@@ -26,8 +26,7 @@ public class SelfFeedback extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String good;
-    private String bad;
+    private String feedback;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "answer_id")

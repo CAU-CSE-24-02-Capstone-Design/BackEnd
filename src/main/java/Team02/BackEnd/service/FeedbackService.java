@@ -40,7 +40,7 @@ public class FeedbackService {
 
     private final FeedbackRepository feedbackRepository;
 
-    public Feedback getFeedbackAndAudio(String accessToken, Long answerId) {
+    public void createFeedbackData(String accessToken, Long answerId) {
         Feedback feedback = this.getFeedbackByAnswerId(answerId);
         User user = userService.getUserByToken(accessToken);
 
@@ -51,13 +51,12 @@ public class FeedbackService {
 
         ResponseEntity<GetFeedbackToFastApiDto> response
                 = getFeedbackToFastApi(accessToken, beforeAudioLink, name, voiceUrl, pastAudioLinks,
-                answerId); // fast api로 피드백 받아오기 요청
+                answerId);
 
         if (response.getBody() == null) {
             throw new FeedbackHandler(ErrorStatus._FAST_API_FEEDBACK_NULL);
         }
 
-        // feedback.update(받아온 response);
         feedback.update(
                 response.getBody().getBeforeScript(),
                 response.getBody().getAfterAudioLink(),
@@ -66,8 +65,10 @@ public class FeedbackService {
         );
 
         feedbackRepository.save(feedback);
+    }
 
-        return feedback;
+    public Feedback getFeedbackData(Long answerId) {
+        return this.getFeedbackByAnswerId(answerId);
     }
 
     public void getBeforeAudioLink(String accessToken, GetRespondDto getRespondDto) {

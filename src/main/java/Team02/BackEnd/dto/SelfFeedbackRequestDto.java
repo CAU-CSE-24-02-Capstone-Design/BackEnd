@@ -6,7 +6,6 @@ public class SelfFeedbackRequestDto {
 
     @Getter
     public static class SaveSelfFeedbackDto {
-        String good;
-        String bad;
+        String feedback;
     }
 }

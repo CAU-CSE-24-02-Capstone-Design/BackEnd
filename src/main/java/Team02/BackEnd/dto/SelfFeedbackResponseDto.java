@@ -12,7 +12,6 @@ public class SelfFeedbackResponseDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class getBeforeSelfFeedbackDto {
-        String good;
-        String bad;
+        String feedback;
     }
 }
