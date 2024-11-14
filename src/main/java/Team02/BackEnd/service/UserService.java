@@ -1,9 +1,10 @@
 package Team02.BackEnd.service;
 
+import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
+import Team02.BackEnd.apiPayload.exception.handler.UserHandler;
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.RecordRequestDto.GetVoiceUrlDto;
-import Team02.BackEnd.exception.validator.UserValidator;
 import Team02.BackEnd.jwt.service.JwtService;
 import Team02.BackEnd.repository.AnswerRepository;
 import Team02.BackEnd.repository.UserRepository;
@@ -22,11 +23,11 @@ public class UserService {
     private final UserRepository userRepository;
     private final AnswerRepository answerRepository;
 
-    public void signOut(String accessToken) {
+    public void signOut(final String accessToken) {
         //todo 회원 탈퇴시 이 회원과 관련된 모든 DB 데이터 삭제
     }
 
-    public void updateRoleAndVoiceUrl(String accessToken, GetVoiceUrlDto getVoiceUrlDto) {
+    public void updateRoleAndVoiceUrl(final String accessToken, final GetVoiceUrlDto getVoiceUrlDto) {
         User user = getUserByToken(accessToken);
 
         user.updateRole();
@@ -35,16 +36,16 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public User getUserByToken(String accessToken) {
+    public User getUserByToken(final String accessToken) {
         String email = jwtService.extractEmail(accessToken).orElse(null);
 
         User user = userRepository.findByEmail(email).orElse(null);
-        UserValidator.validateUserIsNotNull(user);
+        validateUserIsNotNull(user);
 
         return user;
     }
 
-    public Long[] getDatesWhenUserDid(String accessToken, String year, String month) {
+    public Long[] getDatesWhenUserDid(final String accessToken, final String year, final String month) {
         User user = getUserByToken(accessToken);
 
         Long[] answerIdDidThisPeriod = new Long[32];
@@ -62,4 +63,9 @@ public class UserService {
         return answerIdDidThisPeriod;
     }
 
+    private void validateUserIsNotNull(final User user) {
+        if (user == null) {
+            throw new UserHandler(ErrorStatus._USER_NOT_FOUND);
+        }
+    }
 }

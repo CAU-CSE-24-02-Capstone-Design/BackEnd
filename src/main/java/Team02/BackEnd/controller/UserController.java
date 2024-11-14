@@ -23,7 +23,7 @@ public class UserController {
     private final UserService userService;
 
     @DeleteMapping("/sign-out")
-    public ApiResponse<Void> signOut(@RequestHeader("Authorization") String authorizationHeader) {
+    public ApiResponse<Void> signOut(@RequestHeader("Authorization") final String authorizationHeader) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
         userService.signOut(accessToken);
         return ApiResponse.onSuccess(null);
@@ -31,9 +31,9 @@ public class UserController {
 
     @GetMapping("/calendars")
     @Operation(summary = "달력 데이터", description = "쿼리 파라미터로 년,월 제공 => getDatesWneUserId[답변 한 날짜] = answerId, 답변 안한 날짜는 0")
-    public ApiResponse<Long[]> getDatesWhenUserDid(@RequestHeader("Authorization") String authorizationHeader,
-                                                   @RequestParam("year") String year,
-                                                   @RequestParam("month") String month) {
+    public ApiResponse<Long[]> getDatesWhenUserDid(@RequestHeader("Authorization") final String authorizationHeader,
+                                                   @RequestParam("year") final String year,
+                                                   @RequestParam("month") final String month) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
         return ApiResponse.of(SuccessStatus.GET_DATES_WHEN_USER_DID,
                 userService.getDatesWhenUserDid(accessToken, year, month));

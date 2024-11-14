@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class StatisticsService {
 
-    public void saveStatistics(GetStatisticsDto request, String token) {
+    public void saveStatistics(final GetStatisticsDto request, final String token) {
         /**
          * 토큰 까서 유저 이메일 반환 후 유저레포에서 Long id 찾고 저장
          */
     }
 
-    public HashMap<String, String> getFilterStatistics(String filter, String token) {
+    public HashMap<String, String> getFilterStatistics(final String filter, final String token) {
 
         /**
          * 토큰에서 현재 로그인 한 유저 정보 확인하고, 유저레포에서 해당 유저 id 가져옴

@@ -1,6 +1,8 @@
 package Team02.BackEnd.jwt.service;
 
 
+import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_REPLACEMENT;
+
 import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
 import Team02.BackEnd.apiPayload.exception.handler.AccessTokenHandler;
 import Team02.BackEnd.apiPayload.exception.handler.RefreshTokenHandler;
@@ -15,6 +17,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
@@ -32,13 +35,18 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class JwtService {
 
+    private static final String SUCCESS_TOKEN = "AccessToken, RefreshToken 발급 완료";
+    private static final String INVALID_ACCESS_TOKEN = "AccessToken이 유효하지 않습니다.";
+    private static final String INVALID_TOKEN = "유효하지 않은 토큰";
+    private static final String RUNTIME_ERROR_TOKEN_CHECK = "토큰 검증 중 런타임 오류 발생";
+
     private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
     private static final String EMAIL_CLAIM = "email";
     private static final String BEARER = "Bearer ";
-    private final UserRepository userRepository;
 
     private final RedisTemplate<String, Object> redisTemplate;
+    private final UserRepository userRepository;
 
     @Value("${jwt.secretKey}")
     private String secretKey;
@@ -76,7 +84,7 @@ public class JwtService {
     /**
      * AccessToken 생성 메서드
      */
-    public String createAccessToken(String email) {
+    public String createAccessToken(final String email) {
         Date now = new Date();
         return JWT.create()
                 .withSubject(ACCESS_TOKEN_SUBJECT)
@@ -101,7 +109,7 @@ public class JwtService {
     /**
      * AccessToken을 response Header에 담기 : 발급
      */
-    public void sendAccessToken(HttpServletResponse response, String accessToken) {
+    public void sendAccessToken(final HttpServletResponse response, final String accessToken) {
         response.setStatus(HttpServletResponse.SC_OK);
         response.addHeader(accessHeader, accessToken);
         log.info("발급된 AccessToken : {}", accessToken);
@@ -110,7 +118,7 @@ public class JwtService {
     /**
      * RefreshToken을 Cookie에 담기
      */
-    public void sendRefreshToken(HttpServletResponse response, String refreshToken) {
+    public void sendRefreshToken(final HttpServletResponse response, final String refreshToken) {
         response.addCookie(createCookie(refreshHeader, refreshToken));
         log.info("발급된 RefreshToken : {}", refreshToken);
     }
@@ -118,56 +126,51 @@ public class JwtService {
     /**
      * AccessToken을 헤더에, RefreshToken을 쿠키에 담아서 보내기 - 토큰 발급
      */
-    public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
+    public void sendAccessAndRefreshToken(final HttpServletResponse response, final String accessToken,
+                                          final String refreshToken) {
         response.setStatus(HttpServletResponse.SC_OK);
         sendAccessToken(response, accessToken);
         sendRefreshToken(response, refreshToken);
-        log.info("AccessToken, RefreshToken 발급 완료");
+        log.info(SUCCESS_TOKEN);
     }
 
     /**
      * Cookie에서 RefreshToken 추출하기
      */
-    public Optional<String> extractRefreshToken(HttpServletRequest request) {
-        String refresh = null;
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(refreshHeader)) {
-                refresh = cookie.getValue();
-            }
+    public Optional<String> extractRefreshToken(final HttpServletRequest request) {
+        if (request.getCookies() == null) {
+            return Optional.empty();
         }
-
-        assert refresh != null;
-        if (refresh.isEmpty()) {
-            throw new RefreshTokenHandler(ErrorStatus._REFRESHTOKEN_NOT_FOUND);
-        } else {
-            return Optional.of(refresh);
-        }
+        return Arrays.stream(request.getCookies())
+                .filter(cookie -> cookie.getName().equals(refreshHeader))
+                .map(Cookie::getValue)
+                .findFirst()
+                .filter(refresh -> !refresh.isEmpty())
+                .map(Optional::of)
+                .orElseThrow(() -> new RefreshTokenHandler(ErrorStatus._REFRESHTOKEN_NOT_FOUND));
     }
 
     /**
      * Request Header에서 AccessToken 추출하기
      */
-    public Optional<String> extractAccessToken(HttpServletRequest request) {
+    public Optional<String> extractAccessToken(final HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader(accessHeader))
                 .filter(accessToken -> accessToken.startsWith(BEARER))
-                .map(accessToken -> accessToken.replace(BEARER, ""));
+                .map(accessToken -> accessToken.replace(BEARER, ACCESS_TOKEN_REPLACEMENT));
     }
 
     /**
      * AccessToken에서 email을 추출하기
      */
-    public Optional<String> extractEmail(String accessToken) {
+    public Optional<String> extractEmail(final String accessToken) {
         try {
-            // 토큰 유효성 검사하는 데에 사용할 알고리즘이 있는 JWT verifier builder 반환
             return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
                     .build()
                     .verify(accessToken)
                     .getClaim(EMAIL_CLAIM)
                     .asString());
         } catch (Exception e) {
-            System.out.println("검사 할 때 " + accessToken);
-            log.error("AccessToken이 유효하지 않습니다.");
+            log.error(INVALID_ACCESS_TOKEN);
             throw new AccessTokenHandler(ErrorStatus._ACCESSTOKEN_NOT_VALID);
         }
     }
@@ -175,21 +178,19 @@ public class JwtService {
     /**
      * Redis에서 RefreshToken 삭제
      */
-    public void deleteRefreshToken(String refreshToken) {
+    public void deleteRefreshToken(final String refreshToken) {
         redisTemplate.delete(refreshToken);
     }
 
     /**
      * Redis에 RefreshToken 저장
      */
-    public void updateRefreshToken(String email, String refreshToken) {
+    public void updateRefreshToken(final String email, final String refreshToken) {
         RefreshToken token = RefreshToken.builder()
                 .email(email)
                 .refresh(refreshToken)
                 .expiration(refreshTokenExpirationPeriod)
                 .build();
-
-        System.out.println("Saving RefreshToken: " + token);
         redisTemplate.opsForValue()
                 .set(refreshToken, token, (long) refreshTokenExpirationPeriod, TimeUnit.MILLISECONDS);
     }
@@ -197,42 +198,37 @@ public class JwtService {
     /**
      * RefreshToken이 blacklist인지 확인한다
      */
-    public boolean isBlackList(String refreshToken) {
-        RefreshToken token = (RefreshToken) redisTemplate.opsForValue().get(refreshToken);
-        return token == null;
+    public boolean isBlackList(final String refreshToken) {
+        return redisTemplate.opsForValue().get(refreshToken) == null;
     }
 
     /**
      * RefreshToken에서 email 가져오기
      */
-    public String getEmailFromRefreshToken(String refreshToken) {
-        RefreshToken token = (RefreshToken) redisTemplate.opsForValue().get(refreshToken);
-        if (token != null) {
-            return token.getEmail();
-        } else {
-            return null;
-        }
+    public String getEmailFromRefreshToken(final String refreshToken) {
+        return Optional.ofNullable((RefreshToken) redisTemplate.opsForValue().get(refreshToken))
+                .map(RefreshToken::getEmail)
+                .orElse(null);
     }
 
     /**
      * 토큰 유효성 검사
      */
-    public void isTokenValid(String token) {
+    public void isTokenValid(final String token) {
         try {
             JWTVerifier verifier = JWT.require(Algorithm.HMAC512(secretKey)).build();
             DecodedJWT decodedJWT = verifier.verify(token);
         } catch (JWTVerificationException e) {
-            throw new TokenInvalidException("유효하지 않은 토큰");
+            throw new TokenInvalidException(INVALID_TOKEN);
         } catch (Exception e) {
-            throw new RuntimeException("토큰 검증 중 런타임 오류 발생", e);
+            throw new RuntimeException(RUNTIME_ERROR_TOKEN_CHECK, e);
         }
     }
 
     /**
      * 쿠키 생성
      */
-    private Cookie createCookie(String key, String value) {
-
+    private Cookie createCookie(final String key, final String value) {
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(refreshTokenExpirationPeriod);
         cookie.setSecure(true);

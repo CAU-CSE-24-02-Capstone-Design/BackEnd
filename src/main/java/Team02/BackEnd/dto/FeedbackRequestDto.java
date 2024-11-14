@@ -1,6 +1,7 @@
 package Team02.BackEnd.dto;
 
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +16,6 @@ public class FeedbackRequestDto {
         String afterAudioLink;
         String afterScript;
         String feedbackText;
-
         Long answerId;
     }
 

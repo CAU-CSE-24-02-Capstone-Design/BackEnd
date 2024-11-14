@@ -6,9 +6,12 @@ import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.FeedbackRequestDto.GetComponentToMakeFeedbackDto;
 import Team02.BackEnd.dto.FeedbackResponseDto.GetFeedbackDto;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FeedbackConverter {
-    public static GetFeedbackDto toGetFeedbackDto(Feedback feedback) {
+    public static GetFeedbackDto toGetFeedbackDto(final Feedback feedback) {
         return GetFeedbackDto.builder()
                 .beforeScript(feedback.getBeforeScript())
                 .beforeAudioLink(feedback.getBeforeAudioLink())
@@ -18,7 +21,7 @@ public class FeedbackConverter {
                 .build();
     }
 
-    public static Feedback toFeedback(String beforeAudioLink, Answer answer, User user) {
+    public static Feedback toFeedback(final String beforeAudioLink, final Answer answer, final User user) {
         return Feedback.builder()
                 .beforeAudioLink(beforeAudioLink)
                 .answer(answer)
@@ -26,15 +29,15 @@ public class FeedbackConverter {
                 .build();
     }
 
-    public static GetComponentToMakeFeedbackDto toGetComponentToMakeFeedback(String beforeAudioLink, String name,
-                                                                             String voiceUrl,
-                                                                             List<String> pastAudioLinks,
-                                                                             Long answerId) {
+    public static GetComponentToMakeFeedbackDto toGetComponentToMakeFeedback(final String beforeAudioLink,
+                                                                             final User user,
+                                                                             final List<String> pastAudioLinks,
+                                                                             final Long answerId) {
         return GetComponentToMakeFeedbackDto
                 .builder()
                 .beforeAudioLink(beforeAudioLink)
-                .name(name)
-                .voiceUrl(voiceUrl)
+                .name(user.getName())
+                .voiceUrl(user.getVoiceUrl())
                 .pastAudioLinks(pastAudioLinks)
                 .answerId(answerId)
                 .build();

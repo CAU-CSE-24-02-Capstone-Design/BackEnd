@@ -28,9 +28,8 @@ public class FeedbackController {
     @PostMapping("/feedbacks")
     @Operation(summary = "피드백 생성하기 react -> spring", description = "질문요청에서 받은 answerId로 쿼리 파라미터")
     public ApiResponse<Void> getFeedback(
-            @RequestHeader("Authorization") String authorizationHeader,
-            @RequestParam("answerId") Long answerId) {
-        System.out.println("피드백 생성 : " + answerId);
+            @RequestHeader("Authorization") final String authorizationHeader,
+            @RequestParam("answerId") final Long answerId) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
         feedbackService.createFeedbackData(accessToken, answerId);
         return ApiResponse.onSuccess(null);
@@ -38,8 +37,8 @@ public class FeedbackController {
 
     @GetMapping("/feedbacks")
     @Operation(summary = "피드백 데이터 요청하기 react -> spring", description = "질문요청에서 받은 answerId로 쿼리 파라미터")
-    public ApiResponse<FeedbackResponseDto.GetFeedbackDto> geFeedback(@RequestParam("answerId") Long answerId) {
-        Feedback feedback = feedbackService.getFeedbackData(answerId);
+    public ApiResponse<FeedbackResponseDto.GetFeedbackDto> geFeedback(@RequestParam("answerId") final Long answerId) {
+        Feedback feedback = feedbackService.getFeedbackByAnswerId(answerId);
         return ApiResponse.of(SuccessStatus.GET_FEEDBACK, FeedbackConverter.toGetFeedbackDto(feedback));
     }
 }

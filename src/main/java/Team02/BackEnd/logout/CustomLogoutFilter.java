@@ -18,59 +18,50 @@ import org.springframework.web.filter.GenericFilterBean;
 @Slf4j
 public class CustomLogoutFilter extends GenericFilterBean {
 
+    private static final String LOGOUT_URI = "/logout";
+    private static final String LOGOUT_METHOD = "POST";
+
     private final JwtService jwtService;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
             throws IOException, ServletException {
         doFilter((HttpServletRequest) request, (HttpServletResponse) response, chain);
     }
 
-    private void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+    private void doFilter(final HttpServletRequest request, final HttpServletResponse response, final FilterChain chain)
             throws IOException, ServletException {
 
-        // logout api call인지 확인한다
-        String requestURI = request.getRequestURI();
-        if (!requestURI.equals("/logout")) {
+        if (!isLogoutRequest(request)) {
             chain.doFilter(request, response);
             return;
         }
 
-        String requestMethod = request.getMethod();
-        if (!requestMethod.equals("POST")) {
-            chain.doFilter(request, response);
-            return;
-        }
-
-        // logout api call이면 cookie에서 refreshToken을 꺼내 삭제해야 한다.
         Optional<String> refreshToken = jwtService.extractRefreshToken(request);
-
-        // token이 없으면
-        if (refreshToken.isEmpty()) {
+        if (refreshToken.isEmpty() || !isTokenValid(refreshToken.get()) || jwtService.isBlackList(refreshToken.get())) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
-        // token이 유효하지 않다면
+        deleteRefreshTokenInRedis(response, refreshToken.get());
+    }
+
+    private boolean isLogoutRequest(final HttpServletRequest request) {
+        return request.getRequestURI().equals(LOGOUT_URI) && request.getMethod().equals(LOGOUT_METHOD);
+    }
+
+    private boolean isTokenValid(final String refreshToken) {
         try {
-            jwtService.isTokenValid(refreshToken.get());
+            jwtService.isTokenValid(refreshToken);
+            return true;
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
+            return false;
         }
+    }
 
-        // token이 블랙리스트인지 확인한다.
-        if (jwtService.isBlackList(refreshToken.get())) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
+    private void deleteRefreshTokenInRedis(final HttpServletResponse response, final String refreshToken) {
+        jwtService.deleteRefreshToken(refreshToken);
 
-        // token이 올바르면 로그아웃을 진행한다.
-
-        // 1. Redis에서 삭제
-        jwtService.deleteRefreshToken(refreshToken.get());
-
-        // 2. Cookie에서 RefreshToken 값을 0으로 변경
         Cookie cookie = new Cookie(jwtService.getRefreshHeader(), null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
