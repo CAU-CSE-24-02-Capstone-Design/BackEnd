@@ -12,6 +12,7 @@ public class AnswerConverter {
         return Answer.builder()
                 .question(question)
                 .user(user)
+                .evaluation(0)
                 .build();
     }
 }
