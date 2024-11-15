@@ -55,26 +55,6 @@ public class AnswerService {
         return answer;
     }
 
-    public void saveAiInsight(final List<String> insight, final Long answerId) {
-        try {
-            Answer answer = getAnswerByAnswerId(answerId);
-            answer.updateInsight(objectMapper.writeValueAsString(insight));
-            answerRepository.save(answer);
-        } catch (JsonProcessingException e) {
-            throw new AnswerHandler(ErrorStatus._INSIGHT_INVALID_CONVERT);
-        }
-    }
-
-    public List<String> getAiInsight(final Long answerId) {
-        try {
-            Answer answer = getAnswerByAnswerId(answerId);
-            return objectMapper.readValue(answer.getInsight(), new TypeReference<List<String>>() {
-            });
-        } catch (JsonProcessingException e) {
-            throw new AnswerHandler(ErrorStatus._INSIGHT_INVALID_CONVERT);
-        }
-    }
-
     private void validateAnswerIsNotNull(final Answer answer) {
         if (answer == null) {
             throw new AnswerHandler(ErrorStatus._ANSWER_NOT_FOUND);
