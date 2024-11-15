@@ -19,7 +19,10 @@ public class InsightService {
     public void saveAiInsight(final List<String> insights, final Long answerId) {
         Answer answer = answerService.getAnswerByAnswerId(answerId);
         insights.stream()
-                .map(insight -> Insight.builder().insight(insight).answer(answer).build())
+                .map(insight -> Insight.builder()
+                        .insight(insight)
+                        .answer(answer)
+                        .build())
                 .forEach(insightRepository::save);
     }
 
