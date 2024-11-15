@@ -1,11 +1,12 @@
 package Team02.BackEnd.dto;
 
+import java.util.List;
 import lombok.Getter;
 
 public class InsightRequestDto {
 
     @Getter
     public static class GetInsightDto {
-        String insight;
+        List<String> insight;
     }
 }

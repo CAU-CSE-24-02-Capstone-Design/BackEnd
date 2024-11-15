@@ -1,5 +1,6 @@
 package Team02.BackEnd.dto;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +13,6 @@ public class InsightResponseDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class GetInsightDto {
-        String insight;
+        List<String> insight;
     }
 }
