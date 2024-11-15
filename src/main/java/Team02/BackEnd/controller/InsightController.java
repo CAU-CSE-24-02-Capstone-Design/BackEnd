@@ -8,6 +8,7 @@ import Team02.BackEnd.dto.InsightResponseDto;
 import Team02.BackEnd.service.AnswerService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class InsightController {
 
     private final AnswerService answerService;
@@ -24,6 +26,8 @@ public class InsightController {
     @Operation(summary = "인사이트 저장하기 react -> spring", description = "질문요청에서 받은 answerId로 쿼리 파라미터")
     public ApiResponse<Void> saveAiInsight(@RequestParam("answerId") final Long answerId,
                                            @RequestBody final InsightRequestDto.GetInsightDto getInsightDto) {
+        log.info("answerId : {}", answerId);
+        log.info("insight : {}", getInsightDto.getInsight());
         answerService.saveAiInsight(getInsightDto.getInsight(), answerId);
         return ApiResponse.ofNoting(SuccessStatus.SAVE_INSIGHT);
     }
