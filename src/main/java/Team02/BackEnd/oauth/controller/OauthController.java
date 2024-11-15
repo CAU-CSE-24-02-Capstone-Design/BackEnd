@@ -46,6 +46,6 @@ public class OauthController {
             HttpServletResponse response
     ) {
         User user = oauthService.login(response, oauthServerType, code);
-        return ApiResponse.ofNoting(SuccessStatus.OAUTH_LOGIN);
+        return ApiResponse.of(SuccessStatus.OAUTH_LOGIN, user.getRole());
     }
 }
