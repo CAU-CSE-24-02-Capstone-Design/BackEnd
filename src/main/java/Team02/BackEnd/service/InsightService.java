@@ -19,16 +19,13 @@ public class InsightService {
     public void saveAiInsight(final List<String> insights, final Long answerId) {
         Answer answer = answerService.getAnswerByAnswerId(answerId);
         insights.stream()
-                .map(insight -> Insight.builder().insight(insight).build())
-                .forEach(insight -> {
-                    insightRepository.save(insight);
-                    answer.getInsights().add(insight);
-                });
+                .map(insight -> Insight.builder().insight(insight).answer(answer).build())
+                .forEach(insightRepository::save);
     }
 
     public List<String> getAiInsight(final Long answerId) {
         Answer answer = answerService.getAnswerByAnswerId(answerId);
-        return answer.getInsights().stream()
+        return insightRepository.findAllByAnswerId(answer.getId()).stream()
                 .map(Insight::getInsight)
                 .toList();
     }
