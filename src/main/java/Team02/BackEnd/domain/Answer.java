@@ -38,7 +38,7 @@ public class Answer extends BaseEntity {
     @JoinColumn(name = "question_id")
     private Question question;
 
-    @OneToMany
+    @OneToMany(mappedBy = "answer")
     @Builder.Default
     private List<Insight> insights = new ArrayList<>();
 }
