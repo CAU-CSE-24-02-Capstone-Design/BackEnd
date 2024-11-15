@@ -35,5 +35,9 @@ public class Answer extends BaseEntity {
     @JoinColumn(name = "question_id")
     private Question question;
 
+    private String insight;
 
+    public void updateInsight(final String insight) {
+        this.insight = insight;
+    }
 }

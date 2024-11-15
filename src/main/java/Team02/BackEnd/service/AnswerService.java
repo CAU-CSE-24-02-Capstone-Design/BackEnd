@@ -50,6 +50,17 @@ public class AnswerService {
         return answer;
     }
 
+    public void saveAiInsight(final String insight, final Long answerId) {
+        Answer answer = getAnswerByAnswerId(answerId);
+        answer.updateInsight(insight);
+        answerRepository.save(answer);
+    }
+
+    public String getAiInsight(final Long answerId) {
+        Answer answer = getAnswerByAnswerId(answerId);
+        return answer.getInsight();
+    }
+
     private void validateAnswerIsNotNull(final Answer answer) {
         if (answer == null) {
             throw new AnswerHandler(ErrorStatus._ANSWER_NOT_FOUND);

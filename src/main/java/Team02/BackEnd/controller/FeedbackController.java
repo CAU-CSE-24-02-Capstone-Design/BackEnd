@@ -32,7 +32,7 @@ public class FeedbackController {
             @RequestParam("answerId") final Long answerId) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
         feedbackService.createFeedbackData(accessToken, answerId);
-        return ApiResponse.onSuccess(null);
+        return ApiResponse.ofNoting(SuccessStatus.SAVE_FEEDBACK);
     }
 
     @GetMapping("/feedbacks")

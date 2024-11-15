@@ -1,6 +1,7 @@
 package Team02.BackEnd.controller;
 
 import Team02.BackEnd.apiPayload.ApiResponse;
+import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
 import Team02.BackEnd.service.ReissueService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,6 +25,6 @@ public class ReissueController {
         reissueService.validateRefreshTokenIsBlackList(refreshToken);
         reissueService.reissueToken(response, refreshToken);
 
-        return ApiResponse.onSuccess(null);
+        return ApiResponse.ofNoting(SuccessStatus.REISSUE_TOKEN);
     }
 }
