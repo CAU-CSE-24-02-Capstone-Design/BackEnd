@@ -33,7 +33,6 @@ public class ReissueService {
     public void validateRefreshToken(final String refreshToken) {
         try {
             jwtService.isTokenValid(refreshToken);
-            ApiResponse.onSuccess(null);
         } catch (Exception e) {
             ApiResponse.onFailure(ErrorStatus._REFRESHTOKEN_NOT_VALID.getCode(),
                     ErrorStatus._REFRESHTOKEN_NOT_VALID.getMessage(), null);

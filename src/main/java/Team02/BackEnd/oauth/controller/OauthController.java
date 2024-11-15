@@ -1,6 +1,7 @@
 package Team02.BackEnd.oauth.controller;
 
 import Team02.BackEnd.apiPayload.ApiResponse;
+import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
 import Team02.BackEnd.domain.Role;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.oauth.OauthServerType;
@@ -35,7 +36,7 @@ public class OauthController {
     ) {
         String redirectUrl = oauthService.getAuthCodeRequestUrl(oauthServerType);
         response.sendRedirect(redirectUrl);
-        return ApiResponse.onSuccess(null);
+        return ApiResponse.ofNoting(SuccessStatus.OAUTH_REDIRECT);
     }
 
     @GetMapping("/login/{oauthServerType}")
@@ -45,7 +46,6 @@ public class OauthController {
             HttpServletResponse response
     ) {
         User user = oauthService.login(response, oauthServerType, code);
-//        oauthService.saveImage(user);
-        return ApiResponse.onSuccess(user.getRole());
+        return ApiResponse.of(SuccessStatus.OAUTH_LOGIN, user.getRole());
     }
 }
