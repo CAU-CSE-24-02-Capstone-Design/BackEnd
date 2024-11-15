@@ -7,6 +7,6 @@ public class InsightRequestDto {
 
     @Getter
     public static class GetInsightDto {
-        List<String> insights;
+        List<String> insight;
     }
 }

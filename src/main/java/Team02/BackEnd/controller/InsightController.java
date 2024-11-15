@@ -29,7 +29,7 @@ public class InsightController {
     @Operation(summary = "인사이트 저장하기 react -> spring", description = "질문요청에서 받은 answerId로 쿼리 파라미터")
     public ApiResponse<Void> saveAiInsight(@RequestParam("answerId") final Long answerId,
                                            @RequestBody final InsightRequestDto.GetInsightDto getInsightDto) {
-        insightService.saveAiInsight(getInsightDto.getInsights(), answerId);
+        insightService.saveAiInsight(getInsightDto.getInsight(), answerId);
         return ApiResponse.ofNoting(SuccessStatus.SAVE_INSIGHT);
     }
 
