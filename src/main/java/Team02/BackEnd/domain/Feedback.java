@@ -1,6 +1,7 @@
 package Team02.BackEnd.domain;
 
 import Team02.BackEnd.domain.oauth.User;
+import Team02.BackEnd.dto.FeedbackResponseDto.GetFeedbackToFastApiDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -29,9 +30,16 @@ public class Feedback extends BaseEntity {
     private Long id;
 
     private String beforeAudioLink;
+
+    @Column(columnDefinition = "TEXT")
     private String beforeScript;
+
     private String afterAudioLink;
+
+    @Column(columnDefinition = "TEXT")
     private String afterScript;
+
+    @Column(columnDefinition = "TEXT")
     private String feedbackText;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -42,10 +50,10 @@ public class Feedback extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public void updateFeedbackData(final Feedback feedback) {
-        this.beforeScript = feedback.getBeforeScript();
-        this.afterAudioLink = feedback.getAfterAudioLink();
-        this.afterScript = feedback.getAfterScript();
-        this.feedbackText = feedback.getFeedbackText();
+    public void updateFeedbackData(final GetFeedbackToFastApiDto updateFeedback) {
+        this.beforeScript = updateFeedback.getBeforeScript();
+        this.afterAudioLink = updateFeedback.getAfterAudioLink();
+        this.afterScript = updateFeedback.getAfterScript();
+        this.feedbackText = updateFeedback.getFeedbackText();
     }
 }

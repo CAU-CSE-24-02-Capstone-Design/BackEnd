@@ -14,6 +14,7 @@ import Team02.BackEnd.dto.FeedbackResponseDto.GetFeedbackToFastApiDto;
 import Team02.BackEnd.dto.RecordRequestDto.GetRespondDto;
 import Team02.BackEnd.repository.FeedbackRepository;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -48,7 +49,7 @@ public class FeedbackService {
                 getFeedbackFromFastApi(accessToken, feedback, user, answerId);
         validateFeedbackFromFastApi(response);
 
-        feedback.updateFeedbackData(feedback);
+        feedback.updateFeedbackData(Objects.requireNonNull(response.getBody()));
         feedbackRepository.save(feedback);
     }
 
@@ -97,7 +98,7 @@ public class FeedbackService {
         headers.set(ACCESS_TOKEN_HEADER_NAME, ACCESS_TOKEN_PREFIX + accessToken);
         HttpEntity<GetComponentToMakeFeedbackDto> request = new HttpEntity<>(getComponentToMakeFeedbackDto,
                 headers);
-        return restTemplate.postForEntity(FASTAPI_API_URL, request, GetFeedbackToFastApiDto.class);
+        return restTemplate.postForEntity(FASTAPI_API_URL_LOCAL, request, GetFeedbackToFastApiDto.class);
     }
 
     private void validateFeedbackIsNotNull(final Feedback feedback) {
