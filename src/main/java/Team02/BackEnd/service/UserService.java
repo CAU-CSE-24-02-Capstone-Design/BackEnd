@@ -55,10 +55,10 @@ public class UserService {
         int monthInt = Integer.parseInt(month);
         List<Answer> answersInPeriod = answerRepository.findByUserAndYearAndMonth(user, yearInt, monthInt);
 
-        for (Answer answer : answersInPeriod) {
+        answersInPeriod.forEach(answer -> {
             int day = answer.getCreatedAt().getDayOfMonth();
             answerIdDidThisPeriod[day - 1] = answer.getId();
-        }
+        });
 
         return answerIdDidThisPeriod;
     }

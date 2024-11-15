@@ -43,7 +43,8 @@ public enum SuccessStatus implements BaseCode {
 
     //SelfFeedback
     SAVE_SELF_FEEDBACK(HttpStatus.CREATED, "SELFFEEDBACK2000", "셀프 피드백 저장 성공"),
-    GET_SELF_FEEDBACK(HttpStatus.OK, "SELFFEEDBACK2001", "셀프 피드백 가져오기 성공");
+    SAVE_SELF_FEEDBACK_EVALUATION(HttpStatus.CREATED, "SELFFEEDBACK2001", "셀프 피드백 저장 성공"),
+    GET_SELF_FEEDBACK(HttpStatus.OK, "SELFFEEDBACK2002", "셀프 피드백 가져오기 성공");
 
     private final HttpStatus httpStatus;
     private final String code;

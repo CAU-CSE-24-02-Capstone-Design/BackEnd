@@ -7,6 +7,7 @@ import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.SelfFeedback;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.SelfFeedbackRequestDto.SaveSelfFeedbackDto;
+import Team02.BackEnd.repository.AnswerRepository;
 import Team02.BackEnd.repository.SelfFeedbackRepository;
 import java.util.Comparator;
 import java.util.List;
@@ -21,6 +22,7 @@ public class SelfFeedbackService {
     private final SelfFeedbackRepository selfFeedbackRepository;
     private final UserService userService;
     private final AnswerService answerService;
+    private final AnswerRepository answerRepository;
 
     public void saveSelfFeedback(final Long answerId, final SaveSelfFeedbackDto saveSelfFeedbackDto) {
         Answer answer = answerService.getAnswerByAnswerId(answerId);
@@ -38,6 +40,17 @@ public class SelfFeedbackService {
                 .orElse(null);
         validateSelfFeedbackIsNotNull(selfFeedback);
         return selfFeedback;
+    }
+
+    public void saveSelfFeedbackEvaluation(final Long answerId, final int evaluation) {
+        Answer answer = answerService.getAnswerByAnswerId(answerId);
+        answer.updateEvaluation(evaluation);
+        answerRepository.save(answer);
+    }
+
+    public int getSelfFeedbackEvaluation(final Long answerId) {
+        Answer answer = answerService.getAnswerByAnswerId(answerId);
+        return answer.getEvaluation();
     }
 
     public SelfFeedback getSelfFeedbackByAnswerId(final Long answerId) {

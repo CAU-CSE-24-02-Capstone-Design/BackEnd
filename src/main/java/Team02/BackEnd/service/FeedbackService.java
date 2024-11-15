@@ -75,7 +75,9 @@ public class FeedbackService {
         if (feedbackPageList.isEmpty()) {
             feedbackList = feedbackRepository.findAllByUserId(user.getId());
         }
-        return feedbackList.stream().map(Feedback::getBeforeAudioLink).toList();
+        return feedbackList.stream()
+                .map(Feedback::getBeforeAudioLink)
+                .toList();
     }
 
     private ResponseEntity<GetFeedbackToFastApiDto> getFeedbackFromFastApi(final String accessToken,
