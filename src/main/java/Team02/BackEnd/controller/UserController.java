@@ -26,7 +26,7 @@ public class UserController {
     public ApiResponse<Void> signOut(@RequestHeader("Authorization") final String authorizationHeader) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
         userService.signOut(accessToken);
-        return ApiResponse.onSuccess(null);
+        return ApiResponse.ofNoting(SuccessStatus.SIGN_OUT_USER);
     }
 
     @GetMapping("/calendars")
