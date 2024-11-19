@@ -7,10 +7,8 @@ import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.repository.AnswerRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Comparator;
+import jakarta.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +16,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 @Slf4j
 public class AnswerService {
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final AnswerRepository answerRepository;
     private final UserService userService;
@@ -40,19 +37,16 @@ public class AnswerService {
         return answers;
     }
 
-    public Answer getLatestAnswerByUserId(final Long userId) {
-        List<Answer> answers = answerRepository.findByUserId(userId);
-        Answer answer = answers.stream()
-                .max(Comparator.comparing(Answer::getCreatedAt))
-                .orElse(null);
-        validateAnswerIsNotNull(answer);
-        return answer;
-    }
-
     public Answer getAnswerByAnswerId(final Long answerId) {
         Answer answer = answerRepository.findById(answerId).orElse(null);
         validateAnswerIsNotNull(answer);
         return answer;
+    }
+
+    public boolean doAnswerToday(final String accessToken) {
+        User user = userService.getUserByToken(accessToken);
+        return getAnswersByUserId(user.getId()).stream()
+                .anyMatch(answer -> answer.getCreatedAt().toLocalDate().equals(LocalDate.now()));
     }
 
     private void validateAnswerIsNotNull(final Answer answer) {

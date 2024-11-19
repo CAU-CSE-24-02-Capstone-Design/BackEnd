@@ -1,6 +1,7 @@
 package Team02.BackEnd.domain;
 
 import Team02.BackEnd.domain.oauth.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -31,7 +32,7 @@ public class Statistics extends BaseEntity {
     private Long wrongWordCount;
     private Long wrongContextCount;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
 }

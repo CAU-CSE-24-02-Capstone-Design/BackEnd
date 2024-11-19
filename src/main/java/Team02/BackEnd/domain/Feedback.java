@@ -2,6 +2,7 @@ package Team02.BackEnd.domain;
 
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.FeedbackResponseDto.GetFeedbackToFastApiDto;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -42,11 +43,11 @@ public class Feedback extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String feedbackText;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "answer_id")
     private Answer answer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
 

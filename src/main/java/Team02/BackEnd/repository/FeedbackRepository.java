@@ -9,9 +9,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
-    Optional<Feedback> findByAnswerId(Long answerId);
+    Optional<Feedback> findByAnswerId(final Long answerId);
 
-    Page<Feedback> findByUserId(Long userId, PageRequest pageRequest);
+    Page<Feedback> findByUserId(final Long userId, final PageRequest pageRequest);
 
-    List<Feedback> findAllByUserId(Long userId);
+    List<Feedback> findAllByUserId(final Long userId);
 }
