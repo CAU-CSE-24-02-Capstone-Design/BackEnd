@@ -49,6 +49,17 @@ public class AnswerService {
                 .anyMatch(answer -> answer.getCreatedAt().toLocalDate().equals(LocalDate.now()));
     }
 
+    public void saveAnswerEvaluation(final Long answerId, final int evaluation) {
+        Answer answer = getAnswerByAnswerId(answerId);
+        answer.updateEvaluation(evaluation);
+        answerRepository.save(answer);
+    }
+
+    public int getAnswerEvaluation(final Long answerId) {
+        Answer answer = getAnswerByAnswerId(answerId);
+        return answer.getEvaluation();
+    }
+
     private void validateAnswerIsNotNull(final Answer answer) {
         if (answer == null) {
             throw new AnswerHandler(ErrorStatus._ANSWER_NOT_FOUND);
