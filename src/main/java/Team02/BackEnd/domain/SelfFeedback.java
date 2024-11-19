@@ -1,5 +1,6 @@
 package Team02.BackEnd.domain;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -28,8 +29,13 @@ public class SelfFeedback extends BaseEntity {
 
     private String feedback;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "answer_id")
     private Answer answer;
 
+    private int evaluation;
+
+    public void updateEvaluation(final int evaluation) {
+        this.evaluation = evaluation;
+    }
 }

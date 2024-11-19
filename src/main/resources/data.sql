@@ -18,5 +18,5 @@ VALUES ('2024-11-14-00:01:04', 'test@example.com', 'test', '1', 'test voice url'
 INSERT INTO user(created_at, email, name, oauth_server_id, voice_url, oauth_server, role)
 VALUES ('2024-11-13-00:01:04', 'test2@example.com', 'test2', '2', 'test voice url', 'KAKAO', 'USER');
 
-INSERT INTO answer(created_at, user_id, evaluation)
-VALUES ('2024-11-13-00:01:05', '2', 0);
+INSERT INTO answer(created_at, user_id)
+VALUES ('2024-11-13-00:01:05', '2');

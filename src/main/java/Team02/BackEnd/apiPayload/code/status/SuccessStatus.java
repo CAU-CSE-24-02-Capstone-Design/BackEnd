@@ -24,6 +24,7 @@ public enum SuccessStatus implements BaseCode {
     //Answer
     SAVE_INSIGHT(HttpStatus.OK, "ANSWER2000", "인사이트 저장 성공"),
     GET_INSIGHT(HttpStatus.OK, "ANSWER2001", "인사이트 가져오기 성공"),
+    CHECK_TODAY_ANSWER_EXISTS(HttpStatus.OK, "ANSWER2002", "오늘 답변 했는 지 여부 가져오기 성공"),
 
     //Record
     SAVE_VOICE_URL(HttpStatus.OK, "RECORD2000", "첫 로그인 시 녹음 파일 저장 성공"),
