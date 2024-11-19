@@ -10,17 +10,25 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SelfFeedbackConverter {
     public static SelfFeedbackResponseDto.getBeforeSelfFeedbackDto toGetBeforeSelfFeedbackDto(
-            SelfFeedback selfFeedback) {
+            final SelfFeedback selfFeedback) {
         return SelfFeedbackResponseDto.getBeforeSelfFeedbackDto.builder()
                 .feedback(selfFeedback.getFeedback())
                 .build();
 
     }
 
-    public static SelfFeedback toSelfFeedback(Answer answer, SaveSelfFeedbackDto saveSelfFeedbackDto) {
+    public static SelfFeedback toSelfFeedback(final Answer answer, final SaveSelfFeedbackDto saveSelfFeedbackDto) {
         return SelfFeedback.builder()
                 .answer(answer)
                 .feedback(saveSelfFeedbackDto.getFeedback())
                 .build();
+    }
+
+    public static SelfFeedbackResponseDto.getSelfFeedbackEvaluationDto toGetSelfFeedbackEvaluationDto(
+            final int evaluation) {
+        return SelfFeedbackResponseDto.getSelfFeedbackEvaluationDto.builder()
+                .evaluation(evaluation)
+                .build();
+
     }
 }

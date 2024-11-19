@@ -8,10 +8,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
-    List<Answer> findByUserId(Long userId);
+    List<Answer> findByUserId(final Long userId);
 
     @Query("SELECT a FROM Answer a WHERE a.user = :user AND YEAR(a.createdAt) = :year AND MONTH(a.createdAt) = :month ORDER BY a.createdAt ASC")
-    List<Answer> findByUserAndYearAndMonth(@Param("user") User user,
-                                           @Param("year") int year,
-                                           @Param("month") int month);
+    List<Answer> findByUserAndYearAndMonth(@Param("user") final User user,
+                                           @Param("year") final int year,
+                                           @Param("month") final int month);
 }

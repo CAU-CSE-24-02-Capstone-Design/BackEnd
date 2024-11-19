@@ -19,4 +19,4 @@ INSERT INTO user(created_at, email, name, oauth_server_id, voice_url, oauth_serv
 VALUES ('2024-11-13-00:01:04', 'test2@example.com', 'test2', '2', 'test voice url', 'KAKAO', 'USER');
 
 INSERT INTO answer(created_at, user_id)
-VALUES ('2024-11-13-00:01:05', '2')
+VALUES ('2024-11-13-00:01:05', '2');

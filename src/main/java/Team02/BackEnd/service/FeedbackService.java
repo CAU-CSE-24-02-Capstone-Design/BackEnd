@@ -75,7 +75,9 @@ public class FeedbackService {
         if (feedbackPageList.isEmpty()) {
             feedbackList = feedbackRepository.findAllByUserId(user.getId());
         }
-        return feedbackList.stream().map(Feedback::getBeforeAudioLink).toList();
+        return feedbackList.stream()
+                .map(Feedback::getBeforeAudioLink)
+                .toList();
     }
 
     private ResponseEntity<GetFeedbackToFastApiDto> getFeedbackFromFastApi(final String accessToken,
@@ -98,7 +100,7 @@ public class FeedbackService {
         headers.set(ACCESS_TOKEN_HEADER_NAME, ACCESS_TOKEN_PREFIX + accessToken);
         HttpEntity<GetComponentToMakeFeedbackDto> request = new HttpEntity<>(getComponentToMakeFeedbackDto,
                 headers);
-        return restTemplate.postForEntity(FASTAPI_API_URL_LOCAL, request, GetFeedbackToFastApiDto.class);
+        return restTemplate.postForEntity(FASTAPI_API_URL, request, GetFeedbackToFastApiDto.class);
     }
 
     private void validateFeedbackIsNotNull(final Feedback feedback) {

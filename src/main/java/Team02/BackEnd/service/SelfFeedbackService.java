@@ -40,6 +40,17 @@ public class SelfFeedbackService {
         return selfFeedback;
     }
 
+    public void saveSelfFeedbackEvaluation(final Long answerId, final int evaluation) {
+        SelfFeedback selfFeedback = getSelfFeedbackByAnswerId(answerId);
+        selfFeedback.updateEvaluation(evaluation);
+        selfFeedbackRepository.save(selfFeedback);
+    }
+
+    public int getSelfFeedbackEvaluation(final Long answerId) {
+        SelfFeedback selfFeedback = getSelfFeedbackByAnswerId(answerId);
+        return selfFeedback.getEvaluation();
+    }
+
     public SelfFeedback getSelfFeedbackByAnswerId(final Long answerId) {
         SelfFeedback selfFeedback = selfFeedbackRepository.findByAnswerId(answerId);
         validateSelfFeedbackIsNotNull(selfFeedback);

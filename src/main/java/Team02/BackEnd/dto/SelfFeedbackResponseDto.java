@@ -14,4 +14,12 @@ public class SelfFeedbackResponseDto {
     public static class getBeforeSelfFeedbackDto {
         String feedback;
     }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class getSelfFeedbackEvaluationDto {
+        int evaluation;
+    }
 }
