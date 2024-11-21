@@ -12,8 +12,6 @@
 -- values (6, '당신은 어떤 도형을 닮은 것 같나요? 그 도형을 닮은 이유는 무엇인가요? 1분동안 말해보세요!');
 -- Insert INTO question(question_index, description)
 -- values (7, '자신을 한 단어로 표현한다면, 어떤 단어가 가장 적합하다고 생각하나요? 그 단어를 고른 이유를 1분 동안 말해보세요!');
-Insert INTO question(question_index, description)
-values (9, '앞으로 가장 하고싶은 일은 무엇인가요? 1분동안 말해보세요!');
 
 
 -- INSERT INTO user(created_at, email, name, oauth_server_id, voice_url, oauth_server, role)

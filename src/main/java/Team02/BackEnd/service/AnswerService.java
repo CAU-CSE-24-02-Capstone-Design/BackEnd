@@ -9,6 +9,7 @@ import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.repository.AnswerRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,10 +45,10 @@ public class AnswerService {
     }
 
     public boolean doAnswerToday(final String accessToken) {
-        log.info("현재 시각은 : {}", LocalDate.now());
+        log.info("현재 시각은 : {}", LocalDate.now(ZoneId.of("Asia/Seoul")));
         User user = userService.getUserByToken(accessToken);
         return getAnswersByUserId(user.getId()).stream()
-                .anyMatch(answer -> answer.getCreatedAt().toLocalDate().equals(LocalDate.now()));
+                .anyMatch(answer -> answer.getCreatedAt().toLocalDate().equals(LocalDate.now(ZoneId.of("Asia/Seoul"))));
     }
 
     public void saveAnswerEvaluation(final Long answerId, final int evaluation) {
