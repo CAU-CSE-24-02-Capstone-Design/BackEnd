@@ -32,4 +32,8 @@ public class SelfFeedback extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "answer_id")
     private Answer answer;
+
+    public void updateFeedback(final String feedback) {
+        this.feedback = feedback;
+    }
 }

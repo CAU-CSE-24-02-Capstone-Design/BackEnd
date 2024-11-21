@@ -24,6 +24,12 @@ public class SelfFeedbackService {
 
     public void saveSelfFeedback(final Long answerId, final SaveSelfFeedbackDto saveSelfFeedbackDto) {
         Answer answer = answerService.getAnswerByAnswerId(answerId);
+        if (isExistsSelfFeedback(answerId)) {
+            SelfFeedback selfFeedback = getSelfFeedbackByAnswerId(answerId);
+            selfFeedback.updateFeedback(saveSelfFeedbackDto.getFeedback());
+            selfFeedbackRepository.save(selfFeedback);
+            return;
+        }
         SelfFeedback selfFeedback = SelfFeedbackConverter.toSelfFeedback(answer, saveSelfFeedbackDto);
         selfFeedbackRepository.save(selfFeedback);
     }
@@ -41,9 +47,11 @@ public class SelfFeedbackService {
     }
 
     public SelfFeedback getSelfFeedbackByAnswerId(final Long answerId) {
-        SelfFeedback selfFeedback = selfFeedbackRepository.findByAnswerId(answerId);
-        validateSelfFeedbackIsNotNull(selfFeedback);
-        return selfFeedback;
+        return selfFeedbackRepository.findByAnswerId(answerId);
+    }
+
+    public boolean isExistsSelfFeedback(final Long answerId) {
+        return selfFeedbackRepository.findByAnswerId(answerId) != null;
     }
 
     private void validateSelfFeedbackIsNotNull(final SelfFeedback selfFeedback) {
