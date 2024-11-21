@@ -9,6 +9,7 @@ import Team02.BackEnd.jwt.service.JwtService;
 import Team02.BackEnd.repository.AnswerRepository;
 import Team02.BackEnd.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -55,8 +56,14 @@ public class UserService {
         int monthInt = Integer.parseInt(month);
         List<Answer> answersInPeriod = answerRepository.findByUserAndYearAndMonth(user, yearInt, monthInt);
 
+        ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
+
         answersInPeriod.forEach(answer -> {
-            int day = answer.getCreatedAt().getDayOfMonth();
+            // UTC에서 서울 시간대로 변환 후, 해당 날짜의 dayOfMonth 가져오기
+            int day = answer.getCreatedAt()
+                    .atZone(ZoneId.of("UTC"))  // UTC에서
+                    .withZoneSameInstant(seoulZoneId)  // 서울 시간대로 변환
+                    .getDayOfMonth();  // 해당 날짜의 일을 가져옴
             answerIdDidThisPeriod[day - 1] = answer.getId();
         });
 
