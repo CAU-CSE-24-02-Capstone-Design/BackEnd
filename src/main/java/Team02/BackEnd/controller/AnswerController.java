@@ -45,7 +45,7 @@ public class AnswerController {
     }
 
     @GetMapping("/answers/evaluations")
-    @Operation(summary = "스피치에 대한 평가 저장", description = "스피치가 얼마나 만족스러웠는지")
+    @Operation(summary = "스피치에 대한 평가 가져오기", description = "스피치가 얼마나 만족스러웠는지")
     public ApiResponse<AnswerResponseDto.AnswerEvaluationResponseDto> getAnswerEvaluation(
             @RequestParam("answerId") final Long answerId) {
         int evaluation = answerService.getAnswerEvaluation(answerId);
