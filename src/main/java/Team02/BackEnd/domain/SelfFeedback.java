@@ -27,6 +27,7 @@ public class SelfFeedback extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(columnDefinition = "TEXT")
     private String feedback;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
