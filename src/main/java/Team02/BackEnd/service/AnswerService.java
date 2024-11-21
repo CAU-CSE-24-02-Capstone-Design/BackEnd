@@ -44,13 +44,26 @@ public class AnswerService {
         return answer;
     }
 
+//    public boolean doAnswerToday(final String accessToken) {
+//        log.info("현재 시각은 : {}", LocalDate.now(ZoneId.of("Asia/Seoul")));
+//        User user = userService.getUserByToken(accessToken);
+//        getAnswersByUserId(user.getId())
+//                .forEach(answer -> log.info("answer의 createdAt : {}", answer.getCreatedAt().toLocalDate()));
+//        return getAnswersByUserId(user.getId()).stream()
+//                .anyMatch(answer -> answer.getCreatedAt().toLocalDate().equals(LocalDate.now(ZoneId.of("Asia/Seoul"))));
+//    }
+
     public boolean doAnswerToday(final String accessToken) {
         log.info("현재 시각은 : {}", LocalDate.now(ZoneId.of("Asia/Seoul")));
         User user = userService.getUserByToken(accessToken);
         getAnswersByUserId(user.getId())
-                .forEach(answer -> log.info("answer의 createdAt : {}", answer.getCreatedAt().toLocalDate()));
+                .forEach(answer -> log.info("answer의 createdAt : {}",
+                        answer.getCreatedAt().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.of("Asia/Seoul"))
+                                .toLocalDate()));
         return getAnswersByUserId(user.getId()).stream()
-                .anyMatch(answer -> answer.getCreatedAt().toLocalDate().equals(LocalDate.now(ZoneId.of("Asia/Seoul"))));
+                .anyMatch(answer -> answer.getCreatedAt().atZone(ZoneId.of("UTC"))
+                        .withZoneSameInstant(ZoneId.of("Asia/Seoul")).toLocalDate()
+                        .equals(LocalDate.now(ZoneId.of("Asia/Seoul"))));
     }
 
     public void saveAnswerEvaluation(final Long answerId, final int evaluation) {
