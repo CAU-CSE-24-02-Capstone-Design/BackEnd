@@ -47,6 +47,8 @@ public class AnswerService {
     public boolean doAnswerToday(final String accessToken) {
         log.info("현재 시각은 : {}", LocalDate.now(ZoneId.of("Asia/Seoul")));
         User user = userService.getUserByToken(accessToken);
+        getAnswersByUserId(user.getId())
+                .forEach(answer -> log.info("answer의 createdAt : {}", answer.getCreatedAt().toLocalDate()));
         return getAnswersByUserId(user.getId()).stream()
                 .anyMatch(answer -> answer.getCreatedAt().toLocalDate().equals(LocalDate.now(ZoneId.of("Asia/Seoul"))));
     }
