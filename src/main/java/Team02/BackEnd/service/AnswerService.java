@@ -44,6 +44,7 @@ public class AnswerService {
     }
 
     public boolean doAnswerToday(final String accessToken) {
+        log.info("현재 시각은 : {}", LocalDate.now());
         User user = userService.getUserByToken(accessToken);
         return getAnswersByUserId(user.getId()).stream()
                 .anyMatch(answer -> answer.getCreatedAt().toLocalDate().equals(LocalDate.now()));
