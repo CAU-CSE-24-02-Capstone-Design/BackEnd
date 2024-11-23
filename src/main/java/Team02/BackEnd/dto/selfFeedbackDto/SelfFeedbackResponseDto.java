@@ -1,18 +1,17 @@
-package Team02.BackEnd.dto;
+package Team02.BackEnd.dto.selfFeedbackDto;
 
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-public class InsightResponseDto {
+public class SelfFeedbackResponseDto {
 
     @Builder
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class GetInsightDto {
-        List<String> insight;
+    public static class getBeforeSelfFeedbackDto {
+        String feedback;
     }
 }

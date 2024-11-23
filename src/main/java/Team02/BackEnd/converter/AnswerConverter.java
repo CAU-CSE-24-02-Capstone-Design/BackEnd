@@ -3,7 +3,7 @@ package Team02.BackEnd.converter;
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.oauth.User;
-import Team02.BackEnd.dto.AnswerResponseDto;
+import Team02.BackEnd.dto.answerDto.AnswerResponseDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

@@ -2,8 +2,8 @@ package Team02.BackEnd.converter;
 
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.SelfFeedback;
-import Team02.BackEnd.dto.SelfFeedbackRequestDto.SaveSelfFeedbackDto;
-import Team02.BackEnd.dto.SelfFeedbackResponseDto;
+import Team02.BackEnd.dto.selfFeedbackDto.SelfFeedbackRequestDto.SaveSelfFeedbackDto;
+import Team02.BackEnd.dto.selfFeedbackDto.SelfFeedbackResponseDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

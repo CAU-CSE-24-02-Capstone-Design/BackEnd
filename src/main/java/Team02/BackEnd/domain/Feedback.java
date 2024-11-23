@@ -1,7 +1,7 @@
 package Team02.BackEnd.domain;
 
 import Team02.BackEnd.domain.oauth.User;
-import Team02.BackEnd.dto.FeedbackResponseDto.GetFeedbackToFastApiDto;
+import Team02.BackEnd.dto.feedbackDto.FeedbackResponseDto.GetFeedbackToFastApiDto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
