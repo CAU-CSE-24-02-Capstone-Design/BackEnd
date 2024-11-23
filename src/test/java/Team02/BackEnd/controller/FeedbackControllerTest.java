@@ -1,7 +1,5 @@
 package Team02.BackEnd.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -44,9 +42,10 @@ class FeedbackControllerTest {
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
     void createFeedback() throws Exception {
         // given
-        Long answerId = 1L;
         String accessToken = "mockAccessToken";
         given(jwtService.createAccessToken("tlsgusdn4818@gmail.com")).willReturn(accessToken);
+
+        Long answerId = 1L;
 
         // when
         // then
@@ -67,13 +66,7 @@ class FeedbackControllerTest {
     void getFeedback() throws Exception {
         // given
         Long answerId = 1L;
-        Feedback mockFeedback = Feedback.builder()
-                .beforeAudioLink("ba")
-                .beforeScript("bs")
-                .afterAudioLink("aa")
-                .afterScript("as")
-                .feedbackText("ft")
-                .build();
+        Feedback mockFeedback = createMockFeedback();
 
         // when
         given(feedbackService.getFeedbackByAnswerId(answerId))
@@ -100,5 +93,15 @@ class FeedbackControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(expectedJson))
                 .andDo(print());
+    }
+
+    private Feedback createMockFeedback() {
+        return Feedback.builder()
+                .beforeAudioLink("ba")
+                .beforeScript("bs")
+                .afterAudioLink("aa")
+                .afterScript("as")
+                .feedbackText("ft")
+                .build();
     }
 }

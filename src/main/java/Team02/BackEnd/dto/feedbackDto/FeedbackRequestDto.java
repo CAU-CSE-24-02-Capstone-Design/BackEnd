@@ -8,7 +8,10 @@ import lombok.NoArgsConstructor;
 
 public class FeedbackRequestDto {
 
+    @Builder
     @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class GetFeedbackDto {
         String beforeAudioLink;
         String beforeScript;

@@ -44,7 +44,9 @@ public class StatisticsService {
     }
 
     private Statistics getStatisticsByAnswerId(final Answer answer) {
-        return statisticsRepository.findByAnswerId(answer.getId());
+        Statistics statistics = statisticsRepository.findByAnswerId(answer.getId());
+        validateStatistics(statistics);
+        return statistics;
     }
 
     private void validateStatistics(final Statistics statistics) {

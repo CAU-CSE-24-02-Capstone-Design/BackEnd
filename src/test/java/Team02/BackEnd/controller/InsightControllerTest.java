@@ -4,13 +4,15 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import Team02.BackEnd.dto.answerDto.AnswerRequestDto;
+import Team02.BackEnd.dto.insightDto.InsightRequestDto;
 import Team02.BackEnd.jwt.service.JwtService;
-import Team02.BackEnd.service.AnswerService;
+import Team02.BackEnd.service.InsightService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +22,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(AnswerController.class)
-public class AnswerControllerTest {
+@WebMvcTest(InsightController.class)
+class InsightControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -30,82 +32,73 @@ public class AnswerControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private AnswerService answerService;
+    private InsightService insightService;
 
     @MockBean
     private JwtService jwtService;
 
-    @DisplayName("오늘 답변 했는 지 여부 받아오기")
+    @DisplayName("AI 인사이트 저장하기")
     @Test
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
-    void doAnswerToday() throws Exception {
-        // given
-        String accessToken = "mockAccessToken";
-        given(jwtService.createAccessToken("tlsgusdn4818@gmail.com")).willReturn(accessToken);
-
-        // when
-        given(answerService.doAnswerToday(accessToken)).willReturn(true);
-
-        // then
-        mockMvc.perform(get("/api/spring/answers/completions")
-                        .header("Authorization", "Bearer " + accessToken)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true))
-                .andExpect(jsonPath("$.code").value("ANSWER2000"))
-                .andExpect(jsonPath("$.message").value("오늘 답변 했는 지 여부 가져오기 성공"))
-                .andExpect(jsonPath("$.result.answerExists").value(true));
-    }
-
-    @DisplayName("스피치에 대한 평가 점수 저장하기")
-    @Test
-    @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
-    void saveAnswerEvaluation() throws Exception {
+    void saveAiInsight() throws Exception {
         // given
         String accessToken = "mockAccessToken";
         given(jwtService.createAccessToken("tlsgusdn4818@gmail.com")).willReturn(accessToken);
 
         Long answerId = 1L;
-        AnswerRequestDto.AnswerEvaluationRequestDto answerEvaluationRequestDto = AnswerRequestDto.AnswerEvaluationRequestDto.builder()
-                .evaluation(1)
+        List<String> insights = createInsights();
+
+        InsightRequestDto.GetInsightDto getInsightDto = InsightRequestDto.GetInsightDto.builder()
+                .insight(insights)
                 .build();
+
         // when
         // then
-        mockMvc.perform(post("/api/spring/answers/evaluations")
+        mockMvc.perform(post("/api/spring/insights")
                         .with(csrf())
                         .header("Authorization", "Bearer " + accessToken)
                         .param("answerId", String.valueOf(answerId))
-                        .content(objectMapper.writeValueAsString(answerEvaluationRequestDto))
+                        .content(objectMapper.writeValueAsString(getInsightDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.isSuccess").value(true))
-                .andExpect(jsonPath("$.code").value("ANSWER2001"))
-                .andExpect(jsonPath("$.message").value("스스로 평가 저장 성공"));
+                .andExpect(jsonPath("$.code").value("INSIGHT2000"))
+                .andExpect(jsonPath("$.message").value("인사이트 저장 성공"));
     }
 
-    @DisplayName("스피치에 대한 평가 점수 가져오기")
+    @DisplayName("AI 인사이트 가져오기")
     @Test
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
-    void getAnswerEvaluation() throws Exception {
+    void getAiInsight() throws Exception {
         // given
-        Long answerId = 1L;
-        int evaluation = 3;
         String accessToken = "mockAccessToken";
         given(jwtService.createAccessToken("tlsgusdn4818@gmail.com")).willReturn(accessToken);
 
+        Long answerId = 1L;
+
         // when
-        given(answerService.getAnswerEvaluation(answerId)).willReturn(evaluation);
+        List<String> insights = createInsights();
+        given(insightService.getAiInsight(answerId)).willReturn(insights);
 
         // then
-        mockMvc.perform(get("/api/spring/answers/evaluations")
+        String expectedJson = """
+                {
+                  "isSuccess": true,
+                  "code": "INSIGHT2001",
+                  "message": "인사이트 가져오기 성공",
+                  "result":{"insight":["insight1","insight2"]}
+                }
+                """;
+        mockMvc.perform(get("/api/spring/insights")
                         .with(csrf())
                         .header("Authorization", "Bearer " + accessToken)
                         .param("answerId", String.valueOf(answerId))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true))
-                .andExpect(jsonPath("$.code").value("ANSWER2002"))
-                .andExpect(jsonPath("$.message").value("스스로 평가 가져오기 성공"))
-                .andExpect(jsonPath("$.result.evaluation").value(evaluation));
+                .andExpect(content().json(expectedJson));
+    }
+
+    private List<String> createInsights() {
+        return List.of("insight1", "insight2");
     }
 }

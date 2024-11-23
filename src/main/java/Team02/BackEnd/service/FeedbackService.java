@@ -55,7 +55,7 @@ public class FeedbackService {
         log.info("스피치 분석 데이터 생성, feedbackId : {}", feedback.getId());
     }
 
-    public void getBeforeAudioLink(final String accessToken, final GetRespondDto getRespondDto) {
+    public void saveBeforeAudioLink(final String accessToken, final GetRespondDto getRespondDto) {
         User user = userService.getUserByToken(accessToken);
         Answer answer = answerService.getAnswerByAnswerId(getRespondDto.getAnswerId());
         Feedback feedback = FeedbackConverter.toFeedback(getRespondDto.getBeforeAudioLink(), answer, user);
