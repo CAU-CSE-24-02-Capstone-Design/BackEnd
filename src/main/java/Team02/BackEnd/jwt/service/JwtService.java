@@ -112,7 +112,6 @@ public class JwtService {
     public void sendAccessToken(final HttpServletResponse response, final String accessToken) {
         response.setStatus(HttpServletResponse.SC_OK);
         response.addHeader(accessHeader, accessToken);
-        log.info("발급된 AccessToken : {}", accessToken);
     }
 
     /**
@@ -120,7 +119,6 @@ public class JwtService {
      */
     public void sendRefreshToken(final HttpServletResponse response, final String refreshToken) {
         response.addCookie(createCookie(refreshHeader, refreshToken));
-        log.info("발급된 RefreshToken : {}", refreshToken);
     }
 
     /**
