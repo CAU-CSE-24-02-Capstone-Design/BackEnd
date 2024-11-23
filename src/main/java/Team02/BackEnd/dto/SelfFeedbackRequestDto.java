@@ -8,9 +8,4 @@ public class SelfFeedbackRequestDto {
     public static class SaveSelfFeedbackDto {
         String feedback;
     }
-
-    @Getter
-    public static class SaveSelfFeedbackEvaluationDto {
-        int evaluation;
-    }
 }

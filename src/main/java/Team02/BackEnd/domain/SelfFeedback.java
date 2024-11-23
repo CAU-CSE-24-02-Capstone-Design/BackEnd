@@ -27,15 +27,14 @@ public class SelfFeedback extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(columnDefinition = "TEXT")
     private String feedback;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "answer_id")
     private Answer answer;
 
-    private int evaluation;
-
-    public void updateEvaluation(final int evaluation) {
-        this.evaluation = evaluation;
+    public void updateFeedback(final String feedback) {
+        this.feedback = feedback;
     }
 }

@@ -12,10 +12,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SelfFeedbackService {
 
     private final SelfFeedbackRepository selfFeedbackRepository;
@@ -24,8 +26,15 @@ public class SelfFeedbackService {
 
     public void saveSelfFeedback(final Long answerId, final SaveSelfFeedbackDto saveSelfFeedbackDto) {
         Answer answer = answerService.getAnswerByAnswerId(answerId);
+        if (isExistsSelfFeedback(answerId)) {
+            SelfFeedback selfFeedback = getSelfFeedbackByAnswerId(answerId);
+            selfFeedback.updateFeedback(saveSelfFeedbackDto.getFeedback());
+            selfFeedbackRepository.save(selfFeedback);
+            return;
+        }
         SelfFeedback selfFeedback = SelfFeedbackConverter.toSelfFeedback(answer, saveSelfFeedbackDto);
         selfFeedbackRepository.save(selfFeedback);
+        log.info("스피치에 대한 셀프 피드백 저장, selfFeedbackId : {}", selfFeedback.getId());
     }
 
     public SelfFeedback getLatestSelfFeedback(final String accessToken) {
@@ -37,24 +46,16 @@ public class SelfFeedbackService {
                 .max(Comparator.comparing(SelfFeedback::getCreatedAt))
                 .orElse(null);
         validateSelfFeedbackIsNotNull(selfFeedback);
+        log.info("가장 최근 셀프 피드백 가져오기, selfFeedbackId : {}", selfFeedback.getId());
         return selfFeedback;
     }
 
-    public void saveSelfFeedbackEvaluation(final Long answerId, final int evaluation) {
-        SelfFeedback selfFeedback = getSelfFeedbackByAnswerId(answerId);
-        selfFeedback.updateEvaluation(evaluation);
-        selfFeedbackRepository.save(selfFeedback);
+    private SelfFeedback getSelfFeedbackByAnswerId(final Long answerId) {
+        return selfFeedbackRepository.findByAnswerId(answerId);
     }
 
-    public int getSelfFeedbackEvaluation(final Long answerId) {
-        SelfFeedback selfFeedback = getSelfFeedbackByAnswerId(answerId);
-        return selfFeedback.getEvaluation();
-    }
-
-    public SelfFeedback getSelfFeedbackByAnswerId(final Long answerId) {
-        SelfFeedback selfFeedback = selfFeedbackRepository.findByAnswerId(answerId);
-        validateSelfFeedbackIsNotNull(selfFeedback);
-        return selfFeedback;
+    private boolean isExistsSelfFeedback(final Long answerId) {
+        return selfFeedbackRepository.findByAnswerId(answerId) != null;
     }
 
     private void validateSelfFeedbackIsNotNull(final SelfFeedback selfFeedback) {
@@ -63,3 +64,4 @@ public class SelfFeedbackService {
         }
     }
 }
+

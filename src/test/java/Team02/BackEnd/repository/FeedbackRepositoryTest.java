@@ -126,6 +126,7 @@ class FeedbackRepositoryTest {
         return Answer.builder()
                 .user(user)
                 .question(null)
+                .evaluation(0)
                 .build();
     }
 }

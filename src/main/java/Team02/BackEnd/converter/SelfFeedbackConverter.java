@@ -24,11 +24,4 @@ public class SelfFeedbackConverter {
                 .build();
     }
 
-    public static SelfFeedbackResponseDto.getSelfFeedbackEvaluationDto toGetSelfFeedbackEvaluationDto(
-            final int evaluation) {
-        return SelfFeedbackResponseDto.getSelfFeedbackEvaluationDto.builder()
-                .evaluation(evaluation)
-                .build();
-
-    }
 }

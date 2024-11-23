@@ -7,10 +7,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReissueService {
 
     private final JwtService jwtService;
@@ -28,6 +30,8 @@ public class ReissueService {
         jwtService.sendAccessAndRefreshToken(response, newAccessToken, newRefreshToken);
         jwtService.deleteRefreshToken(refreshToken);
         jwtService.updateRefreshToken(email, newRefreshToken);
+
+        log.info("사용자 토큰 재발급, email : {}", email);
     }
 
     public void validateRefreshToken(final String refreshToken) {

@@ -13,4 +13,12 @@ public class AnswerResponseDto {
     public static class AnswerExistsDto {
         boolean isAnswerExists;
     }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class AnswerEvaluationResponseDto {
+        int evaluation;
+    }
 }

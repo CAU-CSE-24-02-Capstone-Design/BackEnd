@@ -13,12 +13,19 @@ public class AnswerConverter {
         return Answer.builder()
                 .question(question)
                 .user(user)
+                .evaluation(0)
                 .build();
     }
 
     public static AnswerResponseDto.AnswerExistsDto toAnswerExistsDto(final Boolean isAnswerExists) {
         return AnswerResponseDto.AnswerExistsDto.builder()
                 .isAnswerExists(isAnswerExists)
+                .build();
+    }
+
+    public static AnswerResponseDto.AnswerEvaluationResponseDto toAnswerEvaluationResponseDto(final int evaluation) {
+        return AnswerResponseDto.AnswerEvaluationResponseDto.builder()
+                .evaluation(evaluation)
                 .build();
     }
 }

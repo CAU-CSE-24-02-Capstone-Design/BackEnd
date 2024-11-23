@@ -51,6 +51,8 @@ public class FeedbackService {
 
         feedback.updateFeedbackData(Objects.requireNonNull(response.getBody()));
         feedbackRepository.save(feedback);
+
+        log.info("스피치 분석 데이터 생성, feedbackId : {}", feedback.getId());
     }
 
     public void getBeforeAudioLink(final String accessToken, final GetRespondDto getRespondDto) {
@@ -59,6 +61,8 @@ public class FeedbackService {
         Feedback feedback = FeedbackConverter.toFeedback(getRespondDto.getBeforeAudioLink(), answer, user);
 
         feedbackRepository.save(feedback);
+
+        log.info("피드백 받기 전 스피치 URL 저장, feedbackId : {}", feedback.getId());
     }
 
     public Feedback getFeedbackByAnswerId(final Long answerId) {
