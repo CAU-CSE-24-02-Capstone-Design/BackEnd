@@ -4,6 +4,8 @@ spring:
       - jwt
       - oauth
       - database
+  jackson:
+    time-zone: Asia/Seoul
 
   servlet:
     multipart:
