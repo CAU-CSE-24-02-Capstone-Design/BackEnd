@@ -9,12 +9,13 @@ import Team02.BackEnd.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
-
+@Slf4j
 /**
  * OauthServerType을 받아서 해당 인증 서버에서 Auth Code를 받아오기 위한 URL 주소 생성
  * 로그인
@@ -43,19 +44,7 @@ public class OauthService {
                 refreshToken); // 응답 헤더에 AccessToken, 응답 쿠키에 RefreshToken 실어서 응답
         jwtService.updateRefreshToken(user.getEmail(), refreshToken); // DB에 RefreshToken 저장
 
+        log.info("사용자 로그인 완료, email : {}", user.getEmail());
         return saved;
     }
-
-//    public void saveImage(OauthUser user) {
-//        Optional<UserImage> image = userImageRepository.findByUser(user);
-//        if (image.isEmpty()) {
-//            UserImage userImage = UserImage.builder()
-//                    .user(user)
-//                    .url(user.getProfileImageUrl())
-//                    .build();
-//
-//            userImage.setUser(user);
-//            userImageRepository.save(userImage);
-//        }
-//    }
 }
