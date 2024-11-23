@@ -6,10 +6,12 @@ import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class QuestionService {
 
     private final QuestionRepository questionRepository;
@@ -18,12 +20,12 @@ public class QuestionService {
     public Question getUserQuestion(final String accessToken) {
         User user = userService.getUserByToken(accessToken);
         Question question = getQuestionByUserQNumber(user.getQuestionNumber());
-
         user.updateQuestionNumber();
+        log.info("사용자가 오늘의 질문 받아오기, questionId : {}", question.getId());
         return question;
     }
 
-    public Question getQuestionByUserQNumber(final Long questionNumber) {
+    private Question getQuestionByUserQNumber(final Long questionNumber) {
         Question question = questionRepository.findByQuestionIndex(questionNumber);
         validateQuestionIsNotNull(question);
         return question;

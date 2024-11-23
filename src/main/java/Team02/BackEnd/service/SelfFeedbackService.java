@@ -12,10 +12,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SelfFeedbackService {
 
     private final SelfFeedbackRepository selfFeedbackRepository;
@@ -32,6 +34,7 @@ public class SelfFeedbackService {
         }
         SelfFeedback selfFeedback = SelfFeedbackConverter.toSelfFeedback(answer, saveSelfFeedbackDto);
         selfFeedbackRepository.save(selfFeedback);
+        log.info("스피치에 대한 셀프 피드백 저장, selfFeedbackId : {}", selfFeedback.getId());
     }
 
     public SelfFeedback getLatestSelfFeedback(final String accessToken) {
@@ -43,14 +46,15 @@ public class SelfFeedbackService {
                 .max(Comparator.comparing(SelfFeedback::getCreatedAt))
                 .orElse(null);
         validateSelfFeedbackIsNotNull(selfFeedback);
+        log.info("가장 최근 셀프 피드백 가져오기, selfFeedbackId : {}", selfFeedback.getId());
         return selfFeedback;
     }
 
-    public SelfFeedback getSelfFeedbackByAnswerId(final Long answerId) {
+    private SelfFeedback getSelfFeedbackByAnswerId(final Long answerId) {
         return selfFeedbackRepository.findByAnswerId(answerId);
     }
 
-    public boolean isExistsSelfFeedback(final Long answerId) {
+    private boolean isExistsSelfFeedback(final Long answerId) {
         return selfFeedbackRepository.findByAnswerId(answerId) != null;
     }
 
