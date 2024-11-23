@@ -6,7 +6,7 @@ import Team02.BackEnd.converter.SelfFeedbackConverter;
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.SelfFeedback;
 import Team02.BackEnd.domain.oauth.User;
-import Team02.BackEnd.dto.SelfFeedbackRequestDto.SaveSelfFeedbackDto;
+import Team02.BackEnd.dto.selfFeedbackDto.SelfFeedbackRequestDto.SaveSelfFeedbackDto;
 import Team02.BackEnd.repository.SelfFeedbackRepository;
 import java.util.Comparator;
 import java.util.List;

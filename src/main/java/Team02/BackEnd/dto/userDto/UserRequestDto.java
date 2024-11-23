@@ -1,18 +1,18 @@
-package Team02.BackEnd.dto;
+package Team02.BackEnd.dto.userDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-public class QuestionResponseDto {
+public class UserRequestDto {
 
     @Builder
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class GetQuestionDto {
-        String questionDescription;
-        Long answerId;
+    public static class UserFamilyInfoRequestDto {
+        String isParent;
+        String familyCode;
     }
 }

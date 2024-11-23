@@ -5,7 +5,7 @@ import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_REPLACEMENT;
 
 import Team02.BackEnd.apiPayload.ApiResponse;
 import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
-import Team02.BackEnd.dto.RecordRequestDto;
+import Team02.BackEnd.dto.recordDto.RecordRequestDto;
 import Team02.BackEnd.service.FeedbackService;
 import Team02.BackEnd.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;

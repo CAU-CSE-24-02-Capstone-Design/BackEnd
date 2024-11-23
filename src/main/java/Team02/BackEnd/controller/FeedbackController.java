@@ -7,7 +7,7 @@ import Team02.BackEnd.apiPayload.ApiResponse;
 import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
 import Team02.BackEnd.converter.FeedbackConverter;
 import Team02.BackEnd.domain.Feedback;
-import Team02.BackEnd.dto.FeedbackResponseDto;
+import Team02.BackEnd.dto.feedbackDto.FeedbackResponseDto;
 import Team02.BackEnd.service.FeedbackService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;

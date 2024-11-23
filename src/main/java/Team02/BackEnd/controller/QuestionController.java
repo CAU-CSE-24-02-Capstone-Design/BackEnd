@@ -7,7 +7,7 @@ import Team02.BackEnd.apiPayload.ApiResponse;
 import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
 import Team02.BackEnd.converter.QuestionConverter;
 import Team02.BackEnd.domain.Question;
-import Team02.BackEnd.dto.QuestionResponseDto;
+import Team02.BackEnd.dto.questionDto.QuestionResponseDto;
 import Team02.BackEnd.service.AnswerService;
 import Team02.BackEnd.service.QuestionService;
 import io.swagger.v3.oas.annotations.Operation;

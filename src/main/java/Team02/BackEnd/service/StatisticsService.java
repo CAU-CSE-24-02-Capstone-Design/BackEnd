@@ -1,28 +1,57 @@
 package Team02.BackEnd.service;
 
-import Team02.BackEnd.dto.StatisticsRequestDto.GetStatisticsDto;
-import java.util.HashMap;
+import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
+import Team02.BackEnd.apiPayload.exception.handler.StatisticsHandler;
+import Team02.BackEnd.converter.StatisticsConverter;
+import Team02.BackEnd.domain.Answer;
+import Team02.BackEnd.domain.Statistics;
+import Team02.BackEnd.domain.oauth.User;
+import Team02.BackEnd.dto.statisticsDto.StatisticsRequestDto.GetStatisticsDto;
+import Team02.BackEnd.dto.statisticsDto.StatisticsResponseDto;
+import Team02.BackEnd.repository.StatisticsRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class StatisticsService {
 
-    public void saveStatistics(final GetStatisticsDto request, final String token) {
-        /**
-         * 토큰 까서 유저 이메일 반환 후 유저레포에서 Long id 찾고 저장
-         */
+    private final StatisticsRepository statisticsRepository;
+    private final UserService userService;
+    private final AnswerService answerService;
+
+    public void saveStatistics(final GetStatisticsDto getStatisticsDto) {
+        Answer answer = answerService.getAnswerByAnswerId(getStatisticsDto.getAnswerId());
+        Statistics statistics = Statistics.builder()
+                .gantourCount(getStatisticsDto.getGantourCount())
+                .silentTime(getStatisticsDto.getSilentTime())
+                .answer(answer)
+                .build();
+        statisticsRepository.saveAndFlush(statistics);
+        log.info("사용자 스피치에 대한 통계 생성, statisticsId : {}", statistics.getId());
     }
 
-    public HashMap<String, String> getFilterStatistics(final String filter, final String token) {
+    public List<StatisticsResponseDto.GetStatisticsDto> getFilterStatistics(final String accessToken) {
+        User user = userService.getUserByToken(accessToken);
+        log.info("사용자의 모든 스피치 통계 가져오기, email : {}", user.getEmail());
+        return answerService.getAnswersByUserId(user.getId()).stream()
+                .map(this::getStatisticsByAnswerId)
+                .map(StatisticsConverter::toGetStatisticsDto)
+                .toList();
+    }
 
-        /**
-         * 토큰에서 현재 로그인 한 유저 정보 확인하고, 유저레포에서 해당 유저 id 가져옴
-         * statistics 테이블에서 해당 유저 id 가진 정보 중에 filter 에 맞는 값만 정렬해서 다 가져옴
-         * map으로 created at이랑 해당 값 toString 화 해서 넘겨줌
-         */
+    private Statistics getStatisticsByAnswerId(final Answer answer) {
+        Statistics statistics = statisticsRepository.findByAnswerId(answer.getId());
+        validateStatistics(statistics);
+        return statistics;
+    }
 
-        return null;
+    private void validateStatistics(final Statistics statistics) {
+        if (statistics == null) {
+            throw new StatisticsHandler(ErrorStatus._STATISTICS_NOT_FOUND);
+        }
     }
 }

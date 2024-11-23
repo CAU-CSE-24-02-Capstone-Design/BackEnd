@@ -1,4 +1,4 @@
-package Team02.BackEnd.dto;
+package Team02.BackEnd.dto.recordDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
