@@ -4,7 +4,7 @@ import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
 import Team02.BackEnd.apiPayload.exception.handler.UserHandler;
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.oauth.User;
-import Team02.BackEnd.dto.RecordRequestDto.GetVoiceUrlDto;
+import Team02.BackEnd.dto.recordDto.RecordRequestDto.GetVoiceUrlDto;
 import Team02.BackEnd.jwt.service.JwtService;
 import Team02.BackEnd.repository.AnswerRepository;
 import Team02.BackEnd.repository.UserRepository;

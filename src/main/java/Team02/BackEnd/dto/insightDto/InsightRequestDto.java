@@ -1,4 +1,4 @@
-package Team02.BackEnd.dto;
+package Team02.BackEnd.dto.insightDto;
 
 import java.util.List;
 import lombok.Getter;

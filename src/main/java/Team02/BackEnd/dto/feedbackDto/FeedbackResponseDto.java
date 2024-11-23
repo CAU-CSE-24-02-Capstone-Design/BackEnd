@@ -1,11 +1,10 @@
-package Team02.BackEnd.dto;
+package Team02.BackEnd.dto.feedbackDto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 public class FeedbackResponseDto {
 

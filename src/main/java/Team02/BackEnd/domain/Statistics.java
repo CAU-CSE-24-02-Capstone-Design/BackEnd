@@ -29,10 +29,8 @@ public class Statistics extends BaseEntity {
 
     private Long gantourCount;
     private Double silentTime;
-    private Long wrongWordCount;
-    private Long wrongContextCount;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "answer_id")
+    private Answer answer;
 }

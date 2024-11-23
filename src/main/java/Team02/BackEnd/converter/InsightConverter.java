@@ -1,6 +1,6 @@
 package Team02.BackEnd.converter;
 
-import Team02.BackEnd.dto.InsightResponseDto.GetInsightDto;
+import Team02.BackEnd.dto.insightDto.InsightResponseDto.GetInsightDto;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

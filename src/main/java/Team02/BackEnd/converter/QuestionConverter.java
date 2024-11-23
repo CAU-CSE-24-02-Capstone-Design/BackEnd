@@ -1,7 +1,7 @@
 package Team02.BackEnd.converter;
 
 import Team02.BackEnd.domain.Question;
-import Team02.BackEnd.dto.QuestionResponseDto;
+import Team02.BackEnd.dto.questionDto.QuestionResponseDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
