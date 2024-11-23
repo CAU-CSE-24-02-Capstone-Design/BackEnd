@@ -9,7 +9,6 @@ import Team02.BackEnd.dto.statisticsDto.StatisticsRequestDto;
 import Team02.BackEnd.dto.statisticsDto.StatisticsResponseDto;
 import Team02.BackEnd.service.StatisticsService;
 import io.swagger.v3.oas.annotations.Operation;
-import java.util.HashMap;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,6 +41,5 @@ public class StatisticsController {
             @RequestHeader("authorization") final String authorization) {
         String accessToken = authorization.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
         return ApiResponse.of(SuccessStatus.GET_STATISTICS, statisticsService.getFilterStatistics(accessToken));
-
     }
 }
