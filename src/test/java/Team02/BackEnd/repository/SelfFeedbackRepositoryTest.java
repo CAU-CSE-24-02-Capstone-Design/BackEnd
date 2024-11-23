@@ -56,6 +56,7 @@ class SelfFeedbackRepositoryTest {
         return Answer.builder()
                 .user(user)
                 .question(null)
+                .evaluation(0)
                 .build();
     }
 
@@ -63,7 +64,6 @@ class SelfFeedbackRepositoryTest {
         return SelfFeedback.builder()
                 .feedback("feedback")
                 .answer(answer)
-                .evaluation(0)
                 .build();
     }
 }

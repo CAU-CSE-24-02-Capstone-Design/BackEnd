@@ -45,21 +45,4 @@ public class SelfFeedbackController {
         return ApiResponse.of(SuccessStatus.GET_SELF_FEEDBACK,
                 SelfFeedbackConverter.toGetBeforeSelfFeedbackDto(selfFeedback));
     }
-
-    @PostMapping("/self-feedbacks/evaluations")
-    @Operation(summary = "셀프 피드백에 대한 평가 저장", description = "이전 셀프 피드백이 얼마나 잘 반영되었는지")
-    public ApiResponse<Void> saveSelfFeedbackEvaluation(@RequestParam("answerId") final Long answerId,
-                                                        @RequestBody final SelfFeedbackRequestDto.SaveSelfFeedbackEvaluationDto saveSelfFeedbackEvaluationDto) {
-        selfFeedbackService.saveSelfFeedbackEvaluation(answerId, saveSelfFeedbackEvaluationDto.getEvaluation());
-        return ApiResponse.ofNoting(SuccessStatus.SAVE_SELF_FEEDBACK_EVALUATION);
-    }
-
-    @GetMapping("/self-feedbacks/evaluations")
-    @Operation(summary = "셀프 피드백에 대한 평가 저장", description = "이전 셀프 피드백이 얼마나 잘 반영되었는지")
-    public ApiResponse<SelfFeedbackResponseDto.getSelfFeedbackEvaluationDto> saveSelfFeedbackEvaluation(
-            @RequestParam("answerId") final Long answerId) {
-        int evaluation = selfFeedbackService.getSelfFeedbackEvaluation(answerId);
-        return ApiResponse.of(SuccessStatus.SAVE_SELF_FEEDBACK_EVALUATION,
-                SelfFeedbackConverter.toGetSelfFeedbackEvaluationDto(evaluation));
-    }
 }

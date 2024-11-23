@@ -24,9 +24,11 @@ public class InsightService {
                         .answer(answer)
                         .build())
                 .forEach(insightRepository::save);
+        log.info("질문에 대한 AI 인사이트 생성, answerId : {}", answerId);
     }
 
     public List<String> getAiInsight(final Long answerId) {
+        log.info("질문에 대한 AI 인사이트 가져오기, answerId : {}", answerId);
         Answer answer = answerService.getAnswerByAnswerId(answerId);
         return insightRepository.findAllByAnswerId(answer.getId()).stream()
                 .map(Insight::getInsight)

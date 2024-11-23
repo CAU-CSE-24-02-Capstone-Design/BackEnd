@@ -25,6 +25,8 @@ public enum SuccessStatus implements BaseCode {
     SAVE_INSIGHT(HttpStatus.OK, "ANSWER2000", "인사이트 저장 성공"),
     GET_INSIGHT(HttpStatus.OK, "ANSWER2001", "인사이트 가져오기 성공"),
     CHECK_TODAY_ANSWER_EXISTS(HttpStatus.OK, "ANSWER2002", "오늘 답변 했는 지 여부 가져오기 성공"),
+    SAVE_EVALUATION(HttpStatus.OK, "ANSWER2003", "스스로 평가 저장 성공"),
+    GET_EVALUATION(HttpStatus.OK, "ANSWER2004", "스스로 평가 가져오기 성공"),
 
     //Record
     SAVE_VOICE_URL(HttpStatus.OK, "RECORD2000", "첫 로그인 시 녹음 파일 저장 성공"),
@@ -44,8 +46,7 @@ public enum SuccessStatus implements BaseCode {
 
     //SelfFeedback
     SAVE_SELF_FEEDBACK(HttpStatus.CREATED, "SELFFEEDBACK2000", "셀프 피드백 저장 성공"),
-    SAVE_SELF_FEEDBACK_EVALUATION(HttpStatus.CREATED, "SELFFEEDBACK2001", "셀프 피드백 저장 성공"),
-    GET_SELF_FEEDBACK(HttpStatus.OK, "SELFFEEDBACK2002", "셀프 피드백 가져오기 성공");
+    GET_SELF_FEEDBACK(HttpStatus.OK, "SELFFEEDBACK2001", "셀프 피드백 가져오기 성공");
 
     private final HttpStatus httpStatus;
     private final String code;

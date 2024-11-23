@@ -4,6 +4,8 @@ spring:
       - jwt
       - oauth
       - database
+  jackson:
+    time-zone: Asia/Seoul
 
   servlet:
     multipart:
@@ -17,7 +19,7 @@ spring:
 
 logging:
   level:
-    org.hibernate.SQL: debug
+    org.hibernate.SQL: info
 
 
 server:
