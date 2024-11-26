@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -43,7 +45,8 @@ public class AnswerCheckService {
     }
 
     public Optional<Answer> getLatestAnswerByUser(final User user) {
-        return answerRepository.findLatestAnswerByUser(user);
+        Pageable pageable = PageRequest.of(0, 1); // 첫 번째 페이지, 한 개의 결과만
+        return answerRepository.findLatestAnswerByUser(user, pageable).stream().findFirst();
     }
 
     private void validateAnswerIsNotNull(final Answer answer) {
