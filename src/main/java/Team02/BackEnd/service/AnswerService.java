@@ -67,6 +67,11 @@ public class AnswerService {
         return answer.getEvaluation();
     }
 
+    public List<Answer> findByUserAndYearAndMonth(final User user, final String year, final String month) {
+        return answerRepository.findByUserAndYearAndMonth(user, Integer.parseInt(year),
+                Integer.parseInt(month));
+    }
+
     private Optional<Answer> getLatestAnswerByUser(final User user) {
         return answerRepository.findLatestAnswerByUser(user);
     }

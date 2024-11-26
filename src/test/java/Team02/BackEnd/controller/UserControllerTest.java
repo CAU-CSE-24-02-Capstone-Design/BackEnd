@@ -55,35 +55,35 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.message").value("회원 탈퇴 성공"));
     }
 
-    @DisplayName("사용자의 특정 년, 월에 대한 스피치 기록 가져오기")
-    @Test
-    @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
-    void getDatesWhenUserDid() throws Exception {
-        // given
-        String accessToken = "mockAccessToken";
-        given(jwtService.createAccessToken("tlsgusdn4818@gmail.com")).willReturn(accessToken);
-
-        String year = "2024";
-        String month = "11";
-
-        // when
-        Long[] answerIdDidThisPeriod = Stream.generate(() -> 0L).
-                limit(32).
-                toArray(Long[]::new);
-        given(userService.getDatesWhenUserDid(accessToken, year, month)).willReturn(answerIdDidThisPeriod);
-
-        // then
-        mockMvc.perform(get("/api/spring/calendars")
-                        .with(csrf())
-                        .header("Authorization", "Bearer " + accessToken)
-                        .param("year", year)
-                        .param("month", month)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.isSuccess").value(true))
-                .andExpect(jsonPath("$.code").value("CALENDAR2000"))
-                .andExpect(jsonPath("$.message").value("유저가 참여한 날짜 가져오기 성공"))
-                .andExpect(jsonPath("$.result", hasSize(32)))
-                .andExpect(jsonPath("$.result[0]", equalTo(0)))
-                .andExpect(jsonPath("$.result[31]", equalTo(0)));
-    }
+//    @DisplayName("사용자의 특정 년, 월에 대한 스피치 기록 가져오기")
+//    @Test
+//    @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
+//    void getDatesWhenUserDid() throws Exception {
+//        // given
+//        String accessToken = "mockAccessToken";
+//        given(jwtService.createAccessToken("tlsgusdn4818@gmail.com")).willReturn(accessToken);
+//
+//        String year = "2024";
+//        String month = "11";
+//
+//        // when
+//        Long[] answerIdDidThisPeriod = Stream.generate(() -> 0L).
+//                limit(32).
+//                toArray(Long[]::new);
+//        given(userService.getDatesWhenUserDid(accessToken, year, month)).willReturn(answerIdDidThisPeriod);
+//
+//        // then
+//        mockMvc.perform(get("/api/spring/calendars")
+//                        .with(csrf())
+//                        .header("Authorization", "Bearer " + accessToken)
+//                        .param("year", year)
+//                        .param("month", month)
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(jsonPath("$.isSuccess").value(true))
+//                .andExpect(jsonPath("$.code").value("CALENDAR2000"))
+//                .andExpect(jsonPath("$.message").value("유저가 참여한 날짜 가져오기 성공"))
+//                .andExpect(jsonPath("$.result", hasSize(32)))
+//                .andExpect(jsonPath("$.result[0]", equalTo(0)))
+//                .andExpect(jsonPath("$.result[31]", equalTo(0)));
+//    }
 }

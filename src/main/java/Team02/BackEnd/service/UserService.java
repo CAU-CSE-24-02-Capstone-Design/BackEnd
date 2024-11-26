@@ -25,12 +25,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class UserService {
 
-    private static final int MONTH_SIZE = 32;
-
     private final JwtService jwtService;
-    private final FeedbackService feedbackService;
     private final UserRepository userRepository;
-    private final AnswerRepository answerRepository;
 
     public void signOut(final String accessToken) {
         log.info("회원 탈퇴");
@@ -43,30 +39,6 @@ public class UserService {
         user.updateVoiceUrl(getVoiceUrlDto.getVoiceUrl());
         userRepository.save(user);
         log.info("사용자의 목소리 저장, userId : {}", user.getId());
-    }
-
-    public Long[] getDatesWhenUserDid(final String accessToken, final String year, final String month) {
-        User user = getUserByToken(accessToken);
-
-        Long[] answerIdDidThisPeriod = Stream.generate(() -> 0L).
-                limit(MONTH_SIZE).
-                toArray(Long[]::new);
-
-        List<Answer> answersInPeriod = answerRepository.findByUserAndYearAndMonth(user, Integer.parseInt(year),
-                Integer.parseInt(month));
-
-        answersInPeriod.stream()
-                .filter(feedbackService::isFeedbackExistsWithAnswer)
-                .forEach(answer -> {
-                    int day = answer.getCreatedAt()
-                            .atZone(ZoneId.of(BASE_TIME_ZONE))
-                            .withZoneSameInstant(ZoneId.of(NEW_TIME_ZONE))
-                            .getDayOfMonth();
-                    answerIdDidThisPeriod[day - 1] = answer.getId();
-                });
-
-        log.info("사용자의 특정 년, 월에 대한 스피치 기록 가져오기, userId : {}, year : {}, month : {}", user.getId(), year, month);
-        return answerIdDidThisPeriod;
     }
 
     public User getUserByToken(final String accessToken) {
