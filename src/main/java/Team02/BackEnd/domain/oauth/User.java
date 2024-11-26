@@ -73,6 +73,6 @@ public class User extends BaseEntity {
     }
 
     public void minusQuestionNumber() {
-        this.questionNumber = Math.max(0, this.questionNumber - 1);
+        this.questionNumber = Math.max(1, this.questionNumber - 1);
     }
 }
