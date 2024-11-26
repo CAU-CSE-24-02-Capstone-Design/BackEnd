@@ -1,5 +1,8 @@
 package Team02.BackEnd.service;
 
+import static Team02.BackEnd.constant.Constants.BASE_TIME_ZONE;
+import static Team02.BackEnd.constant.Constants.NEW_TIME_ZONE;
+
 import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
 import Team02.BackEnd.apiPayload.exception.handler.UserHandler;
 import Team02.BackEnd.domain.Answer;
@@ -22,11 +25,10 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class UserService {
 
-    private static final String BASE_TIME_ZONE = "UTC";
-    private static final String NEW_TIME_ZONE = "Asia/Seoul";
     private static final int MONTH_SIZE = 32;
 
     private final JwtService jwtService;
+    private final FeedbackService feedbackService;
     private final UserRepository userRepository;
     private final AnswerRepository answerRepository;
 
@@ -53,13 +55,15 @@ public class UserService {
         List<Answer> answersInPeriod = answerRepository.findByUserAndYearAndMonth(user, Integer.parseInt(year),
                 Integer.parseInt(month));
 
-        answersInPeriod.forEach(answer -> {
-            int day = answer.getCreatedAt()
-                    .atZone(ZoneId.of(BASE_TIME_ZONE))
-                    .withZoneSameInstant(ZoneId.of(NEW_TIME_ZONE))
-                    .getDayOfMonth();
-            answerIdDidThisPeriod[day - 1] = answer.getId();
-        });
+        answersInPeriod.stream()
+                .filter(feedbackService::isFeedbackExistsWithAnswer)
+                .forEach(answer -> {
+                    int day = answer.getCreatedAt()
+                            .atZone(ZoneId.of(BASE_TIME_ZONE))
+                            .withZoneSameInstant(ZoneId.of(NEW_TIME_ZONE))
+                            .getDayOfMonth();
+                    answerIdDidThisPeriod[day - 1] = answer.getId();
+                });
 
         log.info("사용자의 특정 년, 월에 대한 스피치 기록 가져오기, userId : {}, year : {}, month : {}", user.getId(), year, month);
         return answerIdDidThisPeriod;

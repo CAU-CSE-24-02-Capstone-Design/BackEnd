@@ -68,7 +68,11 @@ public class User extends BaseEntity {
         this.role = Role.USER;
     }
 
-    public void updateQuestionNumber() {
+    public void addQuestionNumber() {
         this.questionNumber++;
+    }
+
+    public void minusQuestionNumber() {
+        this.questionNumber--;
     }
 }

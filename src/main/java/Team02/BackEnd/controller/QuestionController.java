@@ -32,7 +32,6 @@ public class QuestionController {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
         Question question = questionService.getUserQuestion(accessToken);
         Long answerId = answerService.getAnswerId(accessToken, question);
-
         return ApiResponse.of(SuccessStatus.GET_QUESTION, QuestionConverter.toQuestionResponseDto(question, answerId));
     }
 }

@@ -39,7 +39,7 @@ public class SelfFeedbackService {
 
     public SelfFeedback getLatestSelfFeedback(final String accessToken) {
         User user = userService.getUserByToken(accessToken);
-        List<Answer> answers = answerService.getAnswersByUserId(user.getId());
+        List<Answer> answers = answerService.getAnswersByUser(user);
         SelfFeedback selfFeedback = answers.stream()
                 .map(answer -> selfFeedbackRepository.findByAnswerId(answer.getId()))
                 .filter(Objects::nonNull)

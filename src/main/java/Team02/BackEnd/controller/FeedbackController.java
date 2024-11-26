@@ -41,4 +41,14 @@ public class FeedbackController {
         Feedback feedback = feedbackService.getFeedbackByAnswerId(answerId);
         return ApiResponse.of(SuccessStatus.GET_FEEDBACK, FeedbackConverter.toGetFeedbackDto(feedback));
     }
+
+    @GetMapping("/feedbacks/completions")
+    @Operation(summary = "오늘 답변 했는지 여부 받아오기 react -> spring", description = "오늘 답변 했는지 여부 받아오기")
+    public ApiResponse<FeedbackResponseDto.SpeechExistsDto> doSpeechToday(
+            @RequestHeader("Authorization") final String authorizationHeader) {
+        String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
+        Boolean isSpeechExists = feedbackService.doSpeechToday(accessToken);
+        return ApiResponse.of(SuccessStatus.CHECK_TODAY_ANSWER_EXISTS,
+                FeedbackConverter.toGetSpeechExistsDto(isSpeechExists));
+    }
 }

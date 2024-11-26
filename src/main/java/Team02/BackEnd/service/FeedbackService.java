@@ -2,6 +2,8 @@ package Team02.BackEnd.service;
 
 import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_HEADER_NAME;
 import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_PREFIX;
+import static Team02.BackEnd.constant.Constants.BASE_TIME_ZONE;
+import static Team02.BackEnd.constant.Constants.NEW_TIME_ZONE;
 
 import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
 import Team02.BackEnd.apiPayload.exception.handler.FeedbackHandler;
@@ -13,6 +15,8 @@ import Team02.BackEnd.dto.feedbackDto.FeedbackRequestDto.GetComponentToMakeFeedb
 import Team02.BackEnd.dto.feedbackDto.FeedbackResponseDto.GetFeedbackToFastApiDto;
 import Team02.BackEnd.dto.recordDto.RecordRequestDto.GetRespondDto;
 import Team02.BackEnd.repository.FeedbackRepository;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -61,14 +65,28 @@ public class FeedbackService {
         Feedback feedback = FeedbackConverter.toFeedback(getRespondDto.getBeforeAudioLink(), answer, user);
 
         feedbackRepository.save(feedback);
-
         log.info("피드백 받기 전 스피치 URL 저장, feedbackId : {}", feedback.getId());
+    }
+
+    public boolean isFeedbackExistsWithAnswer(final Answer answer) {
+        return feedbackRepository.findByAnswerId(answer.getId()).isPresent();
     }
 
     public Feedback getFeedbackByAnswerId(final Long answerId) {
         Feedback feedback = feedbackRepository.findByAnswerId(answerId).orElse(null);
         validateFeedbackIsNotNull(feedback);
         return feedback;
+    }
+
+    public boolean doSpeechToday(final String accessToken) {
+        User user = userService.getUserByToken(accessToken);
+        log.info("오늘 스피치를 진행했는지 확인하기, userId : {}", user.getId());
+        return answerService.getAnswersByUser(user).stream()
+                .filter(this::isFeedbackExistsWithAnswer)
+                .map(answer -> getFeedbackByAnswerId(answer.getId()))
+                .anyMatch(feedback -> feedback.getCreatedAt().atZone(ZoneId.of(BASE_TIME_ZONE))
+                        .withZoneSameInstant(ZoneId.of(NEW_TIME_ZONE)).toLocalDate()
+                        .equals(LocalDate.now(ZoneId.of(NEW_TIME_ZONE))));
     }
 
     private List<String> getPastAudioLinks(final User user) {

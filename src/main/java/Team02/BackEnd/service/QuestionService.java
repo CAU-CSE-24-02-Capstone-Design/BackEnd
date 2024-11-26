@@ -16,11 +16,14 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
     private final UserService userService;
+    private final AnswerService answerService;
 
     public Question getUserQuestion(final String accessToken) {
         User user = userService.getUserByToken(accessToken);
+        if (answerService.isWrongAnswer(user)) {
+            user.minusQuestionNumber();
+        }
         Question question = getQuestionByUserQNumber(user.getQuestionNumber());
-        user.updateQuestionNumber();
         log.info("사용자가 오늘의 질문 받아오기, questionId : {}", question.getId());
         return question;
     }

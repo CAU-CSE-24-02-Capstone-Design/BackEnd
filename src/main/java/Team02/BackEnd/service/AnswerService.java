@@ -8,9 +8,8 @@ import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.repository.AnswerRepository;
 import jakarta.transaction.Transactional;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,23 +20,32 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class AnswerService {
 
-    private static final String BASE_TIME_ZONE = "UTC";
-    private static final String NEW_TIME_ZONE = "Asia/Seoul";
-
     private final AnswerRepository answerRepository;
     private final UserService userService;
+    private final FeedbackService feedbackService;
 
     public Long getAnswerId(final String accessToken, final Question question) {
         User user = userService.getUserByToken(accessToken);
+        if (isWrongAnswer(user)) {
+            return getLatestAnswerByUser(user).get().getId();
+        }
         Answer answer = AnswerConverter.toAnswer(user, question);
+        user.addQuestionNumber();
         answerRepository.save(answer);
         log.info("answer 엔티티 생성, answerId : {}", answer.getId());
         return answer.getId();
     }
 
-    public List<Answer> getAnswersByUserId(final Long userId) {
-        List<Answer> answers = answerRepository.findByUserId(userId);
-        answers.forEach(this::validateAnswerIsNotNull);
+    public boolean isWrongAnswer(final User user) {
+        Optional<Answer> latestAnswer = getLatestAnswerByUser(user);
+        return latestAnswer.filter(answer -> !feedbackService.isFeedbackExistsWithAnswer(answer)).isPresent();
+    }
+
+    public List<Answer> getAnswersByUser(final User user) {
+        List<Answer> answers = answerRepository.findByUserId(user.getId());
+        if (answers.isEmpty()) {
+            throw new AnswerHandler(ErrorStatus._ANSWER_NOT_FOUND);
+        }
         return answers;
     }
 
@@ -45,15 +53,6 @@ public class AnswerService {
         Answer answer = answerRepository.findById(answerId).orElse(null);
         validateAnswerIsNotNull(answer);
         return answer;
-    }
-
-    public boolean doAnswerToday(final String accessToken) {
-        User user = userService.getUserByToken(accessToken);
-        log.info("오늘 스피치를 진행했는지 확인하기, userId : {}", user.getId());
-        return getAnswersByUserId(user.getId()).stream()
-                .anyMatch(answer -> answer.getCreatedAt().atZone(ZoneId.of(BASE_TIME_ZONE))
-                        .withZoneSameInstant(ZoneId.of(NEW_TIME_ZONE)).toLocalDate()
-                        .equals(LocalDate.now(ZoneId.of(NEW_TIME_ZONE))));
     }
 
     public void saveAnswerEvaluation(final Long answerId, final int evaluation) {
@@ -66,6 +65,10 @@ public class AnswerService {
     public int getAnswerEvaluation(final Long answerId) {
         Answer answer = getAnswerByAnswerId(answerId);
         return answer.getEvaluation();
+    }
+
+    private Optional<Answer> getLatestAnswerByUser(final User user) {
+        return answerRepository.findLatestAnswerByUser(user);
     }
 
     private void validateAnswerIsNotNull(final Answer answer) {

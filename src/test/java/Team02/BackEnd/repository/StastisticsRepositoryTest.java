@@ -35,7 +35,7 @@ public class StastisticsRepositoryTest {
         statisticsRepository.save(statistics);
 
         // when
-        Statistics findStatistics = statisticsRepository.findByAnswerId(answer.getId());
+        Statistics findStatistics = statisticsRepository.findByAnswerId(answer.getId()).orElse(null);
 
         // then
         assertThat(findStatistics.getAnswer()).isEqualTo(answer);

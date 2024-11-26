@@ -35,28 +35,6 @@ public class AnswerControllerTest {
     @MockBean
     private JwtService jwtService;
 
-    @DisplayName("오늘 답변 했는 지 여부 받아오기")
-    @Test
-    @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
-    void doAnswerToday() throws Exception {
-        // given
-        String accessToken = "mockAccessToken";
-        given(jwtService.createAccessToken("tlsgusdn4818@gmail.com")).willReturn(accessToken);
-
-        // when
-        given(answerService.doAnswerToday(accessToken)).willReturn(true);
-
-        // then
-        mockMvc.perform(get("/api/spring/answers/completions")
-                        .header("Authorization", "Bearer " + accessToken)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true))
-                .andExpect(jsonPath("$.code").value("ANSWER2000"))
-                .andExpect(jsonPath("$.message").value("오늘 답변 했는 지 여부 가져오기 성공"))
-                .andExpect(jsonPath("$.result.answerExists").value(true));
-    }
-
     @DisplayName("스피치에 대한 평가 점수 저장하기")
     @Test
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})

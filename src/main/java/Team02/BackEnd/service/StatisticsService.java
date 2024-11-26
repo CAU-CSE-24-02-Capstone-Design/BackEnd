@@ -37,14 +37,19 @@ public class StatisticsService {
     public List<StatisticsResponseDto.GetStatisticsDto> getFilterStatistics(final String accessToken) {
         User user = userService.getUserByToken(accessToken);
         log.info("사용자의 모든 스피치 통계 가져오기, email : {}", user.getEmail());
-        return answerService.getAnswersByUserId(user.getId()).stream()
-                .map(this::getStatisticsByAnswerId)
+        return answerService.getAnswersByUser(user).stream()
+                .filter(this::isStatisticsExistsWithAnswer)
+                .map(this::getStatisticsByAnswer)
                 .map(StatisticsConverter::toGetStatisticsDto)
                 .toList();
     }
 
-    private Statistics getStatisticsByAnswerId(final Answer answer) {
-        Statistics statistics = statisticsRepository.findByAnswerId(answer.getId());
+    public boolean isStatisticsExistsWithAnswer(final Answer answer) {
+        return statisticsRepository.findByAnswerId(answer.getId()).isPresent();
+    }
+
+    private Statistics getStatisticsByAnswer(final Answer answer) {
+        Statistics statistics = statisticsRepository.findByAnswerId(answer.getId()).orElse(null);
         validateStatistics(statistics);
         return statistics;
     }
