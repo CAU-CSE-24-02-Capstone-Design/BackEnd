@@ -1,4 +1,4 @@
-package Team02.BackEnd.service;
+package Team02.BackEnd.service.statistics;
 
 import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
 import Team02.BackEnd.apiPayload.exception.handler.StatisticsHandler;
@@ -6,9 +6,10 @@ import Team02.BackEnd.converter.StatisticsConverter;
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Statistics;
 import Team02.BackEnd.domain.oauth.User;
-import Team02.BackEnd.dto.statisticsDto.StatisticsRequestDto.GetStatisticsDto;
-import Team02.BackEnd.dto.statisticsDto.StatisticsResponseDto;
+import Team02.BackEnd.dto.statisticsDto.StatisticsResponseDto.GetStatisticsDto;
 import Team02.BackEnd.repository.StatisticsRepository;
+import Team02.BackEnd.service.answer.AnswerCheckService;
+import Team02.BackEnd.service.user.UserCheckService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,27 +18,16 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class StatisticsService {
+public class StatisticsCheckService {
 
+    private final UserCheckService userCheckService;
+    private final AnswerCheckService answerCheckService;
     private final StatisticsRepository statisticsRepository;
-    private final UserService userService;
-    private final AnswerService answerService;
 
-    public void saveStatistics(final GetStatisticsDto getStatisticsDto) {
-        Answer answer = answerService.getAnswerByAnswerId(getStatisticsDto.getAnswerId());
-        Statistics statistics = Statistics.builder()
-                .gantourCount(getStatisticsDto.getGantourCount())
-                .silentTime(getStatisticsDto.getSilentTime())
-                .answer(answer)
-                .build();
-        statisticsRepository.saveAndFlush(statistics);
-        log.info("사용자 스피치에 대한 통계 생성, statisticsId : {}", statistics.getId());
-    }
-
-    public List<StatisticsResponseDto.GetStatisticsDto> getFilterStatistics(final String accessToken) {
-        User user = userService.getUserByToken(accessToken);
+    public List<GetStatisticsDto> getFilterStatistics(final String accessToken) {
+        User user = userCheckService.getUserByToken(accessToken);
         log.info("사용자의 모든 스피치 통계 가져오기, email : {}", user.getEmail());
-        return answerService.getAnswersByUser(user).stream()
+        return answerCheckService.getAnswersByUser(user).stream()
                 .filter(this::isStatisticsExistsWithAnswer)
                 .map(this::getStatisticsByAnswer)
                 .map(StatisticsConverter::toGetStatisticsDto)

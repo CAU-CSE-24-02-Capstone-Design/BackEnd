@@ -8,7 +8,8 @@ import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
 import Team02.BackEnd.converter.FeedbackConverter;
 import Team02.BackEnd.domain.Feedback;
 import Team02.BackEnd.dto.feedbackDto.FeedbackResponseDto;
-import Team02.BackEnd.service.FeedbackService;
+import Team02.BackEnd.service.feedback.FeedbackCheckService;
+import Team02.BackEnd.service.feedback.FeedbackService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class FeedbackController {
 
     private final FeedbackService feedbackService;
+    private final FeedbackCheckService feedbackCheckService;
 
     @PostMapping("/feedbacks")
     @Operation(summary = "피드백 생성하기 react -> spring", description = "질문요청에서 받은 answerId로 쿼리 파라미터")
@@ -38,7 +40,7 @@ public class FeedbackController {
     @GetMapping("/feedbacks")
     @Operation(summary = "피드백 데이터 요청하기 react -> spring", description = "질문요청에서 받은 answerId로 쿼리 파라미터")
     public ApiResponse<FeedbackResponseDto.GetFeedbackDto> getFeedback(@RequestParam("answerId") final Long answerId) {
-        Feedback feedback = feedbackService.getFeedbackByAnswerId(answerId);
+        Feedback feedback = feedbackCheckService.getFeedbackByAnswerId(answerId);
         return ApiResponse.of(SuccessStatus.GET_FEEDBACK, FeedbackConverter.toGetFeedbackDto(feedback));
     }
 
@@ -47,7 +49,7 @@ public class FeedbackController {
     public ApiResponse<FeedbackResponseDto.SpeechExistsDto> doSpeechToday(
             @RequestHeader("Authorization") final String authorizationHeader) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
-        Boolean isSpeechExists = feedbackService.doSpeechToday(accessToken);
+        Boolean isSpeechExists = feedbackCheckService.doSpeechToday(accessToken);
         return ApiResponse.of(SuccessStatus.CHECK_TODAY_ANSWER_EXISTS,
                 FeedbackConverter.toGetSpeechExistsDto(isSpeechExists));
     }

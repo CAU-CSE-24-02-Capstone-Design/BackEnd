@@ -10,7 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import Team02.BackEnd.dto.insightDto.InsightRequestDto;
 import Team02.BackEnd.jwt.service.JwtService;
-import Team02.BackEnd.service.InsightService;
+import Team02.BackEnd.service.insight.InsightCheckService;
+import Team02.BackEnd.service.insight.InsightService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +34,9 @@ class InsightControllerTest {
 
     @MockBean
     private InsightService insightService;
+
+    @MockBean
+    private InsightCheckService insightCheckService;
 
     @MockBean
     private JwtService jwtService;
@@ -78,7 +82,7 @@ class InsightControllerTest {
 
         // when
         List<String> insights = createInsights();
-        given(insightService.getAiInsight(answerId)).willReturn(insights);
+        given(insightCheckService.getAiInsight(answerId)).willReturn(insights);
 
         // then
         String expectedJson = """

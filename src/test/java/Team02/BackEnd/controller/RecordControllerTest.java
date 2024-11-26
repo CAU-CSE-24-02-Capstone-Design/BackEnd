@@ -7,8 +7,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import Team02.BackEnd.dto.recordDto.RecordRequestDto;
 import Team02.BackEnd.jwt.service.JwtService;
-import Team02.BackEnd.service.FeedbackService;
-import Team02.BackEnd.service.UserService;
+import Team02.BackEnd.service.feedback.FeedbackService;
+import Team02.BackEnd.service.user.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

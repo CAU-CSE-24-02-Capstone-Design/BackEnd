@@ -6,10 +6,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import Team02.BackEnd.domain.Question;
-import Team02.BackEnd.dto.questionDto.QuestionResponseDto;
 import Team02.BackEnd.jwt.service.JwtService;
-import Team02.BackEnd.service.AnswerService;
-import Team02.BackEnd.service.QuestionService;
+import Team02.BackEnd.service.answer.AnswerCheckService;
+import Team02.BackEnd.service.answer.AnswerService;
+import Team02.BackEnd.service.question.QuestionCheckService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,9 +30,13 @@ class QuestionControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private QuestionService questionService;
+    private QuestionCheckService questionCheckService;
+
     @MockBean
     private AnswerService answerService;
+
+    @MockBean
+    private AnswerCheckService answerCheckService;
 
     @MockBean
     private JwtService jwtService;
@@ -49,8 +53,8 @@ class QuestionControllerTest {
         Long answerId = 1L;
 
         // when
-        given(questionService.getUserQuestion(accessToken)).willReturn(question);
-        given(answerService.getAnswerId(accessToken, question)).willReturn(answerId);
+        given(questionCheckService.getUserQuestion(accessToken)).willReturn(question);
+        given(answerService.createAnswer(accessToken, question)).willReturn(answerId);
 
         // then
         mockMvc.perform(get("/api/spring/questions")

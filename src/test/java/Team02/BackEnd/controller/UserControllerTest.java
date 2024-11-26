@@ -1,6 +1,5 @@
 package Team02.BackEnd.controller;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -9,9 +8,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import Team02.BackEnd.jwt.service.JwtService;
-import Team02.BackEnd.service.UserService;
+import Team02.BackEnd.service.user.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

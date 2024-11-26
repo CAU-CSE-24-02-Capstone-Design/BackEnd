@@ -14,10 +14,12 @@ import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.selfFeedbackDto.SelfFeedbackRequestDto;
 import Team02.BackEnd.jwt.service.JwtService;
 import Team02.BackEnd.oauth.OauthServerType;
-import Team02.BackEnd.service.SelfFeedbackService;
+import Team02.BackEnd.service.selffeedback.SelfFeedbackCheckService;
+import Team02.BackEnd.service.selffeedback.SelfFeedbackService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -36,6 +38,9 @@ class SelfFeedbackControllerTest {
 
     @MockBean
     private SelfFeedbackService selfFeedbackService;
+
+    @MockBean
+    private SelfFeedbackCheckService selfFeedbackCheckService;
 
     @MockBean
     private JwtService jwtService;
@@ -79,7 +84,7 @@ class SelfFeedbackControllerTest {
         SelfFeedback selfFeedback = createSelfFeedback(answer);
 
         // when
-        given(selfFeedbackService.getLatestSelfFeedback(accessToken)).willReturn(selfFeedback);
+        given(selfFeedbackCheckService.getLatestSelfFeedback(accessToken)).willReturn(selfFeedback);
 
         // then
         mockMvc.perform(get("/api/spring/self-feedbacks/latest-feedbacks")

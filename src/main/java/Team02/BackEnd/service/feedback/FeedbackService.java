@@ -1,9 +1,7 @@
-package Team02.BackEnd.service;
+package Team02.BackEnd.service.feedback;
 
 import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_HEADER_NAME;
 import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_PREFIX;
-import static Team02.BackEnd.constant.Constants.BASE_TIME_ZONE;
-import static Team02.BackEnd.constant.Constants.NEW_TIME_ZONE;
 
 import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
 import Team02.BackEnd.apiPayload.exception.handler.FeedbackHandler;
@@ -15,8 +13,8 @@ import Team02.BackEnd.dto.feedbackDto.FeedbackRequestDto.GetComponentToMakeFeedb
 import Team02.BackEnd.dto.feedbackDto.FeedbackResponseDto.GetFeedbackToFastApiDto;
 import Team02.BackEnd.dto.recordDto.RecordRequestDto.GetRespondDto;
 import Team02.BackEnd.repository.FeedbackRepository;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import Team02.BackEnd.service.answer.AnswerCheckService;
+import Team02.BackEnd.service.user.UserCheckService;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -41,13 +39,14 @@ public class FeedbackService {
     private static final int LIMIT_PAST_AUDIO_NUMBER = 5;
 
     private final RestTemplate restTemplate = new RestTemplate();
+    private final FeedbackCheckService feedbackCheckService;
+    private final UserCheckService userCheckService;
+    private final AnswerCheckService answerCheckService;
     private final FeedbackRepository feedbackRepository;
-    private final UserService userService;
-    private final AnswerService answerService;
 
     public void createFeedbackData(final String accessToken, final Long answerId) {
-        Feedback feedback = getFeedbackByAnswerId(answerId);
-        User user = userService.getUserByToken(accessToken);
+        Feedback feedback = feedbackCheckService.getFeedbackByAnswerId(answerId);
+        User user = userCheckService.getUserByToken(accessToken);
 
         ResponseEntity<GetFeedbackToFastApiDto> response =
                 getFeedbackFromFastApi(accessToken, feedback, user, answerId);
@@ -60,33 +59,12 @@ public class FeedbackService {
     }
 
     public void saveBeforeAudioLink(final String accessToken, final GetRespondDto getRespondDto) {
-        User user = userService.getUserByToken(accessToken);
-        Answer answer = answerService.getAnswerByAnswerId(getRespondDto.getAnswerId());
+        User user = userCheckService.getUserByToken(accessToken);
+        Answer answer = answerCheckService.getAnswerByAnswerId(getRespondDto.getAnswerId());
         Feedback feedback = FeedbackConverter.toFeedback(getRespondDto.getBeforeAudioLink(), answer, user);
 
         feedbackRepository.save(feedback);
         log.info("피드백 받기 전 스피치 URL 저장, feedbackId : {}", feedback.getId());
-    }
-
-    public boolean isFeedbackExistsWithAnswer(final Answer answer) {
-        return feedbackRepository.findByAnswerId(answer.getId()).isPresent();
-    }
-
-    public Feedback getFeedbackByAnswerId(final Long answerId) {
-        Feedback feedback = feedbackRepository.findByAnswerId(answerId).orElse(null);
-        validateFeedbackIsNotNull(feedback);
-        return feedback;
-    }
-
-    public boolean doSpeechToday(final String accessToken) {
-        User user = userService.getUserByToken(accessToken);
-        log.info("오늘 스피치를 진행했는지 확인하기, userId : {}", user.getId());
-        return answerService.getAnswersByUser(user).stream()
-                .filter(this::isFeedbackExistsWithAnswer)
-                .map(answer -> getFeedbackByAnswerId(answer.getId()))
-                .anyMatch(feedback -> feedback.getCreatedAt().atZone(ZoneId.of(BASE_TIME_ZONE))
-                        .withZoneSameInstant(ZoneId.of(NEW_TIME_ZONE)).toLocalDate()
-                        .equals(LocalDate.now(ZoneId.of(NEW_TIME_ZONE))));
     }
 
     private List<String> getPastAudioLinks(final User user) {
@@ -123,12 +101,6 @@ public class FeedbackService {
         HttpEntity<GetComponentToMakeFeedbackDto> request = new HttpEntity<>(getComponentToMakeFeedbackDto,
                 headers);
         return restTemplate.postForEntity(FASTAPI_API_URL, request, GetFeedbackToFastApiDto.class);
-    }
-
-    private void validateFeedbackIsNotNull(final Feedback feedback) {
-        if (feedback == null) {
-            throw new FeedbackHandler(ErrorStatus._FEEDBACK_NOT_FOUND);
-        }
     }
 
     private void validateFeedbackFromFastApi(final ResponseEntity<GetFeedbackToFastApiDto> response) {

@@ -1,4 +1,4 @@
-package Team02.BackEnd.service;
+package Team02.BackEnd.service.reissue;
 
 import Team02.BackEnd.apiPayload.ApiResponse;
 import Team02.BackEnd.apiPayload.code.status.ErrorStatus;

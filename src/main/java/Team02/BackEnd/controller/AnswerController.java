@@ -5,7 +5,8 @@ import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
 import Team02.BackEnd.converter.AnswerConverter;
 import Team02.BackEnd.dto.answerDto.AnswerRequestDto;
 import Team02.BackEnd.dto.answerDto.AnswerResponseDto;
-import Team02.BackEnd.service.AnswerService;
+import Team02.BackEnd.service.answer.AnswerCheckService;
+import Team02.BackEnd.service.answer.AnswerService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AnswerController {
 
     private final AnswerService answerService;
+    private final AnswerCheckService answerCheckService;
 
     @PostMapping("/answers/evaluations")
     @Operation(summary = "스피치에 대한 평가 저장", description = "스피치가 얼마나 만족스러웠는지")
@@ -34,7 +36,7 @@ public class AnswerController {
     @Operation(summary = "스피치에 대한 평가 가져오기", description = "스피치가 얼마나 만족스러웠는지")
     public ApiResponse<AnswerResponseDto.AnswerEvaluationResponseDto> getAnswerEvaluation(
             @RequestParam("answerId") final Long answerId) {
-        int evaluation = answerService.getAnswerEvaluation(answerId);
+        int evaluation = answerCheckService.getAnswerEvaluation(answerId);
         return ApiResponse.of(SuccessStatus.GET_EVALUATION,
                 AnswerConverter.toAnswerEvaluationResponseDto(evaluation));
     }

@@ -9,7 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import Team02.BackEnd.dto.answerDto.AnswerRequestDto;
 import Team02.BackEnd.jwt.service.JwtService;
-import Team02.BackEnd.service.AnswerService;
+import Team02.BackEnd.service.answer.AnswerCheckService;
+import Team02.BackEnd.service.answer.AnswerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,9 @@ public class AnswerControllerTest {
 
     @MockBean
     private AnswerService answerService;
+
+    @MockBean
+    private AnswerCheckService answerCheckService;
 
     @MockBean
     private JwtService jwtService;
@@ -72,7 +76,7 @@ public class AnswerControllerTest {
         given(jwtService.createAccessToken("tlsgusdn4818@gmail.com")).willReturn(accessToken);
 
         // when
-        given(answerService.getAnswerEvaluation(answerId)).willReturn(evaluation);
+        given(answerCheckService.getAnswerEvaluation(answerId)).willReturn(evaluation);
 
         // then
         mockMvc.perform(get("/api/spring/answers/evaluations")

@@ -7,7 +7,8 @@ import Team02.BackEnd.apiPayload.ApiResponse;
 import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
 import Team02.BackEnd.dto.statisticsDto.StatisticsRequestDto;
 import Team02.BackEnd.dto.statisticsDto.StatisticsResponseDto;
-import Team02.BackEnd.service.StatisticsService;
+import Team02.BackEnd.service.statistics.StatisticsCheckService;
+import Team02.BackEnd.service.statistics.StatisticsService;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class StatisticsController {
 
     private final StatisticsService statisticsService;
+    private final StatisticsCheckService statisticsCheckService;
 
     @PostMapping("/statistics")
     @Operation(summary = "fast api -> spring", description = "통계(간투어 등 횟수) 디비 저장용 api, answerId 같이 넘겨주기")
@@ -40,6 +42,6 @@ public class StatisticsController {
     public ApiResponse<List<StatisticsResponseDto.GetStatisticsDto>> getFilterStatistics(
             @RequestHeader("authorization") final String authorization) {
         String accessToken = authorization.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
-        return ApiResponse.of(SuccessStatus.GET_STATISTICS, statisticsService.getFilterStatistics(accessToken));
+        return ApiResponse.of(SuccessStatus.GET_STATISTICS, statisticsCheckService.getFilterStatistics(accessToken));
     }
 }

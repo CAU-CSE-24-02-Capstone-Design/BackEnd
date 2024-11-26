@@ -2,7 +2,7 @@ package Team02.BackEnd.controller;
 
 import Team02.BackEnd.apiPayload.ApiResponse;
 import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
-import Team02.BackEnd.service.ReissueService;
+import Team02.BackEnd.service.reissue.ReissueService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

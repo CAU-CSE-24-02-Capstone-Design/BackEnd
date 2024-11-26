@@ -10,7 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import Team02.BackEnd.dto.statisticsDto.StatisticsRequestDto;
 import Team02.BackEnd.dto.statisticsDto.StatisticsResponseDto.GetStatisticsDto;
 import Team02.BackEnd.jwt.service.JwtService;
-import Team02.BackEnd.service.StatisticsService;
+import Team02.BackEnd.service.statistics.StatisticsCheckService;
+import Team02.BackEnd.service.statistics.StatisticsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.util.List;
@@ -34,6 +35,9 @@ class StatisticsControllerTest {
 
     @MockBean
     private StatisticsService statisticsService;
+
+    @MockBean
+    private StatisticsCheckService statisticsCheckService;
 
     @MockBean
     private JwtService jwtService;
@@ -76,7 +80,7 @@ class StatisticsControllerTest {
         List<GetStatisticsDto> getStatisticsDtos = createGetStatisticsDtos();
 
         // when
-        given(statisticsService.getFilterStatistics(accessToken)).willReturn(getStatisticsDtos);
+        given(statisticsCheckService.getFilterStatistics(accessToken)).willReturn(getStatisticsDtos);
 
         // then
         String expectedJson = """

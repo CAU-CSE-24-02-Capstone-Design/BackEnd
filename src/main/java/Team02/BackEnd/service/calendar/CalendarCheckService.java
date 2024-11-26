@@ -1,10 +1,13 @@
-package Team02.BackEnd.service;
+package Team02.BackEnd.service.calendar;
 
 import static Team02.BackEnd.constant.Constants.BASE_TIME_ZONE;
 import static Team02.BackEnd.constant.Constants.NEW_TIME_ZONE;
 
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.oauth.User;
+import Team02.BackEnd.service.answer.AnswerCheckService;
+import Team02.BackEnd.service.feedback.FeedbackCheckService;
+import Team02.BackEnd.service.user.UserCheckService;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Stream;
@@ -15,24 +18,24 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class CalendarService {
+public class CalendarCheckService {
 
     private static final int MONTH_SIZE = 32;
 
-    private final UserService userService;
-    private final AnswerService answerService;
-    private final FeedbackService feedbackService;
+    private final UserCheckService userCheckService;
+    private final AnswerCheckService answerCheckService;
+    private final FeedbackCheckService feedbackCheckService;
 
     public Long[] getDatesWhenUserDid(final String accessToken, final String year, final String month) {
-        User user = userService.getUserByToken(accessToken);
+        User user = userCheckService.getUserByToken(accessToken);
 
         Long[] answerIdDidThisPeriod = Stream.generate(() -> 0L).
                 limit(MONTH_SIZE).
                 toArray(Long[]::new);
-        List<Answer> answersInPeriod = answerService.findByUserAndYearAndMonth(user, year, month);
+        List<Answer> answersInPeriod = answerCheckService.findByUserAndYearAndMonth(user, year, month);
 
         answersInPeriod.stream()
-                .filter(feedbackService::isFeedbackExistsWithAnswer)
+                .filter(feedbackCheckService::isFeedbackExistsWithAnswer)
                 .forEach(answer -> {
                     int day = answer.getCreatedAt()
                             .atZone(ZoneId.of(BASE_TIME_ZONE))
