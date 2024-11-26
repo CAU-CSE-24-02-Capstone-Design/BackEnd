@@ -45,7 +45,7 @@ public class AnswerCheckService {
     }
 
     public Optional<Answer> getLatestAnswerByUser(final User user) {
-        Pageable pageable = PageRequest.of(0, 1); // 첫 번째 페이지, 한 개의 결과만
+        Pageable pageable = PageRequest.of(0, 1);
         return answerRepository.findLatestAnswerByUser(user, pageable).stream().findFirst();
     }
 

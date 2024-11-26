@@ -27,10 +27,11 @@ public class QuestionCheckService {
     public Question getUserQuestion(final String accessToken) {
         User user = userCheckService.getUserByToken(accessToken);
         Optional<Answer> latestAnswer = answerCheckService.getLatestAnswerByUser(user);
-        if (latestAnswer.isPresent() && feedbackCheckService.isFeedbackExistsWithAnswer(latestAnswer.get())) {
-            user.minusQuestionNumber();
-        }
         Question question = getQuestionByUserQNumber(user.getQuestionNumber());
+        if (latestAnswer.isPresent() && !feedbackCheckService.isFeedbackExistsWithAnswer(latestAnswer.get())) {
+            user.minusQuestionNumber();
+            log.info("사용자가 스피치를 진행하지 않았던 질문 받아오기, questionId : {}", user.getQuestionNumber());
+        }
         log.info("사용자가 오늘의 질문 받아오기, questionId : {}", question.getId());
         return question;
     }

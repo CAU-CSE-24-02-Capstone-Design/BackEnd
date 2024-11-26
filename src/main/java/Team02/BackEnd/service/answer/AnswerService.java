@@ -27,7 +27,8 @@ public class AnswerService {
     public Long createAnswer(final String accessToken, final Question question) {
         User user = userCheckService.getUserByToken(accessToken);
         Optional<Answer> latestAnswer = answerCheckService.getLatestAnswerByUser(user);
-        if (latestAnswer.isPresent() && feedbackCheckService.isFeedbackExistsWithAnswer(latestAnswer.get())) {
+        if (latestAnswer.isPresent() && !feedbackCheckService.isFeedbackExistsWithAnswer(latestAnswer.get())) {
+            log.info("녹음이 진행 안 된 answer 엔티티 재사용, answerId : {}", latestAnswer.get().getId());
             return latestAnswer.get().getId();
         }
         Answer answer = AnswerConverter.toAnswer(user, question);
