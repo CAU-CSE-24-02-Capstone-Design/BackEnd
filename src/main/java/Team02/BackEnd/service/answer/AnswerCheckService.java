@@ -22,9 +22,7 @@ public class AnswerCheckService {
 
     public List<Answer> getAnswersByUser(final User user) {
         List<Answer> answers = answerRepository.findByUserId(user.getId());
-        if (answers.isEmpty()) {
-            throw new AnswerHandler(ErrorStatus._ANSWER_NOT_FOUND);
-        }
+        validateAnswersEmpty(answers);
         return answers;
     }
 
@@ -34,9 +32,11 @@ public class AnswerCheckService {
         return answer;
     }
 
-    public List<Answer> findByUserAndYearAndMonth(final User user, final String year, final String month) {
-        return answerRepository.findByUserAndYearAndMonth(user, Integer.parseInt(year),
+    public List<Answer> findAnswersByUserAndYearAndMonth(final User user, final String year, final String month) {
+        List<Answer> answers = answerRepository.findByUserAndYearAndMonth(user, Integer.parseInt(year),
                 Integer.parseInt(month));
+        validateAnswersEmpty(answers);
+        return answers;
     }
 
     public int getAnswerEvaluation(final Long answerId) {
@@ -51,6 +51,12 @@ public class AnswerCheckService {
 
     private void validateAnswerIsNotNull(final Answer answer) {
         if (answer == null) {
+            throw new AnswerHandler(ErrorStatus._ANSWER_NOT_FOUND);
+        }
+    }
+
+    private void validateAnswersEmpty(final List<Answer> answers) {
+        if (answers.isEmpty()) {
             throw new AnswerHandler(ErrorStatus._ANSWER_NOT_FOUND);
         }
     }

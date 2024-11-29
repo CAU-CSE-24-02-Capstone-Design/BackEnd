@@ -31,9 +31,8 @@ public class AnswerService {
             log.info("녹음이 진행 안 된 answer 엔티티 재사용, answerId : {}", latestAnswer.get().getId());
             return latestAnswer.get().getId();
         }
-        Answer answer = AnswerConverter.toAnswer(user, question);
+        Answer answer = answerRepository.saveAndFlush(AnswerConverter.toAnswer(user, question));
         user.addQuestionNumber();
-        answerRepository.save(answer);
         log.info("answer 엔티티 생성, answerId : {}", answer.getId());
         return answer.getId();
     }
@@ -41,7 +40,6 @@ public class AnswerService {
     public void saveAnswerEvaluation(final Long answerId, final int evaluation) {
         Answer answer = answerCheckService.getAnswerByAnswerId(answerId);
         answer.updateEvaluation(evaluation);
-        answerRepository.save(answer);
-        log.info("스피치에 대한 평가 점수 저장, answerId : {}, 점수 : {}", answerId, evaluation);
+        log.info("스피치에 대한 평가 점수 저장, answerId : {}, 점수 : {}", answer.getId(), evaluation);
     }
 }

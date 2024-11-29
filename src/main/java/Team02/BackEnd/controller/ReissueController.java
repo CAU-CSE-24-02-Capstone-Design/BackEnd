@@ -19,12 +19,8 @@ public class ReissueController {
 
     @PostMapping("/reissue")
     public ApiResponse<Void> reissue(final HttpServletRequest request, final HttpServletResponse response) {
-
         String refreshToken = reissueService.getRefreshTokenInCookie(request);
-        reissueService.validateRefreshToken(refreshToken);
-        reissueService.validateRefreshTokenIsBlackList(refreshToken);
         reissueService.reissueToken(response, refreshToken);
-
         return ApiResponse.ofNoting(SuccessStatus.REISSUE_TOKEN);
     }
 }

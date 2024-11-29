@@ -18,8 +18,8 @@ public class InsightCheckService {
     private final InsightRepository insightRepository;
 
     public List<String> getAiInsight(final Long answerId) {
-        log.info("질문에 대한 AI 인사이트 가져오기, answerId : {}", answerId);
         Answer answer = answerCheckService.getAnswerByAnswerId(answerId);
+        log.info("질문에 대한 AI 인사이트 가져오기, answerId : {}", answerId);
         return insightRepository.findAllByAnswerId(answer.getId()).stream()
                 .map(Insight::getInsight)
                 .toList();

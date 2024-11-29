@@ -42,6 +42,6 @@ public class StatisticsController {
     public ApiResponse<List<StatisticsResponseDto.GetStatisticsDto>> getFilterStatistics(
             @RequestHeader("authorization") final String authorization) {
         String accessToken = authorization.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
-        return ApiResponse.of(SuccessStatus.GET_STATISTICS, statisticsCheckService.getFilterStatistics(accessToken));
+        return ApiResponse.of(SuccessStatus.GET_STATISTICS, statisticsCheckService.getUserStatistics(accessToken));
     }
 }

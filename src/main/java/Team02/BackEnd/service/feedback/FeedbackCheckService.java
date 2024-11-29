@@ -13,14 +13,20 @@ import Team02.BackEnd.service.answer.AnswerCheckService;
 import Team02.BackEnd.service.user.UserCheckService;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
 @Slf4j
 public class FeedbackCheckService {
+
+    private static final int LIMIT_PAST_AUDIO_NUMBER = 5;
 
     private final UserCheckService userCheckService;
     private final AnswerCheckService answerCheckService;
@@ -35,6 +41,19 @@ public class FeedbackCheckService {
                 .anyMatch(feedback -> feedback.getCreatedAt().atZone(ZoneId.of(BASE_TIME_ZONE))
                         .withZoneSameInstant(ZoneId.of(NEW_TIME_ZONE)).toLocalDate()
                         .equals(LocalDate.now(ZoneId.of(NEW_TIME_ZONE))));
+    }
+
+    public List<String> getPastAudioLinks(final User user) {
+        PageRequest pageRequest = PageRequest.of(0, LIMIT_PAST_AUDIO_NUMBER, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<Feedback> feedbackPageList = feedbackRepository.findByUserId(user.getId(), pageRequest);
+
+        List<Feedback> feedbackList = feedbackPageList.getContent();
+        if (feedbackPageList.isEmpty()) {
+            feedbackList = feedbackRepository.findAllByUserId(user.getId());
+        }
+        return feedbackList.stream()
+                .map(Feedback::getBeforeAudioLink)
+                .toList();
     }
 
     public boolean isFeedbackExistsWithAnswer(final Answer answer) {

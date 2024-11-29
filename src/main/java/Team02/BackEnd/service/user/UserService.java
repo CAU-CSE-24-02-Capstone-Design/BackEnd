@@ -2,8 +2,12 @@ package Team02.BackEnd.service.user;
 
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.recordDto.RecordRequestDto.GetVoiceUrlDto;
-import Team02.BackEnd.jwt.service.JwtService;
 import Team02.BackEnd.repository.UserRepository;
+import Team02.BackEnd.service.answer.AnswerService;
+import Team02.BackEnd.service.feedback.FeedbackService;
+import Team02.BackEnd.service.insight.InsightService;
+import Team02.BackEnd.service.selffeedback.SelfFeedbackService;
+import Team02.BackEnd.service.statistics.StatisticsService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,12 +19,16 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class UserService {
 
+    private final AnswerService answerService;
+    private final FeedbackService feedbackService;
+    private final SelfFeedbackService selfFeedbackService;
+    private final InsightService insightService;
+    private final StatisticsService statisticsService;
     private final UserCheckService userCheckService;
     private final UserRepository userRepository;
 
     public void signOut(final String accessToken) {
         log.info("회원 탈퇴");
-        //todo 회원 탈퇴시 이 회원과 관련된 모든 DB 데이터 삭제
     }
 
     public void updateRoleAndVoiceUrl(final String accessToken, final GetVoiceUrlDto getVoiceUrlDto) {

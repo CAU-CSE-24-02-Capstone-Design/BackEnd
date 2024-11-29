@@ -31,8 +31,8 @@ public class OauthController {
     @SneakyThrows
     @GetMapping("/{oauthServerType}")
     ApiResponse<Void> redirectAuthCodeRequestUrl(
-            @PathVariable OauthServerType oauthServerType,
-            HttpServletResponse response
+            @PathVariable("oauthServerType") final OauthServerType oauthServerType,
+            final HttpServletResponse response
     ) {
         String redirectUrl = oauthService.getAuthCodeRequestUrl(oauthServerType);
         response.sendRedirect(redirectUrl);
@@ -41,9 +41,9 @@ public class OauthController {
 
     @GetMapping("/login/{oauthServerType}")
     ApiResponse<Role> login(
-            @PathVariable OauthServerType oauthServerType,
-            @RequestParam("code") String code,
-            HttpServletResponse response
+            @PathVariable("oauthServerType") final OauthServerType oauthServerType,
+            @RequestParam("code") final String code,
+            final HttpServletResponse response
     ) {
         User user = oauthService.login(response, oauthServerType, code);
         return ApiResponse.of(SuccessStatus.OAUTH_LOGIN, user.getRole());

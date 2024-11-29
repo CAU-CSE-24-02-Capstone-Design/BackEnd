@@ -36,7 +36,7 @@ public class QuestionCheckService {
         return question;
     }
 
-    private Question getQuestionByUserQNumber(final Long questionNumber) {
+    public Question getQuestionByUserQNumber(final Long questionNumber) {
         Question question = questionRepository.findByQuestionIndex(questionNumber);
         validateQuestionIsNotNull(question);
         return question;

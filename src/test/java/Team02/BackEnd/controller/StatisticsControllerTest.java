@@ -80,7 +80,7 @@ class StatisticsControllerTest {
         List<GetStatisticsDto> getStatisticsDtos = createGetStatisticsDtos();
 
         // when
-        given(statisticsCheckService.getFilterStatistics(accessToken)).willReturn(getStatisticsDtos);
+        given(statisticsCheckService.getUserStatistics(accessToken)).willReturn(getStatisticsDtos);
 
         // then
         String expectedJson = """

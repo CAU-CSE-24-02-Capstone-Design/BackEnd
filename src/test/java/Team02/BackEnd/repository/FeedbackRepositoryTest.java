@@ -106,8 +106,8 @@ class FeedbackRepositoryTest {
                 .afterAudioLink("aa")
                 .afterScript("as")
                 .feedbackText("ft")
-                .answer(answer)
                 .user(user)
+                .answer(answer)
                 .build();
     }
 

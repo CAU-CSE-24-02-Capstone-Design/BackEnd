@@ -41,7 +41,7 @@ public class SelfFeedbackCheckService {
         return selfFeedbackRepository.findByAnswerId(answerId);
     }
 
-    public boolean isExistsSelfFeedback(final Long answerId) {
+    public boolean isExistsSelfFeedbackWithAnswerId(final Long answerId) {
         return selfFeedbackRepository.findByAnswerId(answerId) != null;
     }
 

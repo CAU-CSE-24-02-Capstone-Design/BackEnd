@@ -21,10 +21,10 @@ public class SelfFeedbackService {
 
     public void saveSelfFeedback(final Long answerId, final SaveSelfFeedbackDto saveSelfFeedbackDto) {
         Answer answer = answerCheckService.getAnswerByAnswerId(answerId);
-        if (selfFeedbackCheckService.isExistsSelfFeedback(answerId)) {
+        if (selfFeedbackCheckService.isExistsSelfFeedbackWithAnswerId(answerId)) {
             SelfFeedback selfFeedback = selfFeedbackCheckService.getSelfFeedbackByAnswerId(answerId);
             selfFeedback.updateFeedback(saveSelfFeedbackDto.getFeedback());
-            selfFeedbackRepository.save(selfFeedback);
+            log.info("스피치에 대한 셀프 피드백 업데이트, selfFeedbackId : {}", selfFeedback.getId());
             return;
         }
         SelfFeedback selfFeedback = SelfFeedbackConverter.toSelfFeedback(answer, saveSelfFeedbackDto);

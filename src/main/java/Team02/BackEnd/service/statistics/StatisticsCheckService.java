@@ -24,7 +24,7 @@ public class StatisticsCheckService {
     private final AnswerCheckService answerCheckService;
     private final StatisticsRepository statisticsRepository;
 
-    public List<GetStatisticsDto> getFilterStatistics(final String accessToken) {
+    public List<GetStatisticsDto> getUserStatistics(final String accessToken) {
         User user = userCheckService.getUserByToken(accessToken);
         log.info("사용자의 모든 스피치 통계 가져오기, email : {}", user.getEmail());
         return answerCheckService.getAnswersByUser(user).stream()
@@ -38,7 +38,7 @@ public class StatisticsCheckService {
         return statisticsRepository.findByAnswerId(answer.getId()).isPresent();
     }
 
-    private Statistics getStatisticsByAnswer(final Answer answer) {
+    public Statistics getStatisticsByAnswer(final Answer answer) {
         Statistics statistics = statisticsRepository.findByAnswerId(answer.getId()).orElse(null);
         validateStatistics(statistics);
         return statistics;

@@ -28,11 +28,15 @@ public class CalendarCheckService {
 
     public Long[] getDatesWhenUserDid(final String accessToken, final String year, final String month) {
         User user = userCheckService.getUserByToken(accessToken);
+        List<Answer> answersInPeriod = answerCheckService.findAnswersByUserAndYearAndMonth(user, year, month);
+        log.info("사용자의 특정 년, 월에 대한 스피치 기록 가져오기, userId : {}, year : {}, month : {}", user.getId(), year, month);
+        return createAnswerIdDidThisPeriod(answersInPeriod);
+    }
 
-        Long[] answerIdDidThisPeriod = Stream.generate(() -> 0L).
-                limit(MONTH_SIZE).
-                toArray(Long[]::new);
-        List<Answer> answersInPeriod = answerCheckService.findByUserAndYearAndMonth(user, year, month);
+    private Long[] createAnswerIdDidThisPeriod(final List<Answer> answersInPeriod) {
+        Long[] answerIdDidThisPeriod = Stream.generate(() -> 0L)
+                .limit(MONTH_SIZE)
+                .toArray(Long[]::new);
 
         answersInPeriod.stream()
                 .filter(feedbackCheckService::isFeedbackExistsWithAnswer)
@@ -43,8 +47,6 @@ public class CalendarCheckService {
                             .getDayOfMonth();
                     answerIdDidThisPeriod[day - 1] = answer.getId();
                 });
-
-        log.info("사용자의 특정 년, 월에 대한 스피치 기록 가져오기, userId : {}, year : {}, month : {}", user.getId(), year, month);
         return answerIdDidThisPeriod;
     }
 }
