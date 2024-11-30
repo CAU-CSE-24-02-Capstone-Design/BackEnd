@@ -72,7 +72,7 @@ class StatisticsControllerTest {
     @DisplayName("통계 데이터 가져오기")
     @Test
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
-    void getFilterStatistics() throws Exception {
+    void getStatistics() throws Exception {
         // given
         String accessToken = "mockAccessToken";
         given(jwtService.createAccessToken("tlsgusdn4818@gmail.com")).willReturn(accessToken);
@@ -94,6 +94,41 @@ class StatisticsControllerTest {
 
         mockMvc.perform(get("/api/spring/statistics")
                         .with(csrf())
+                        .header("Authorization", "Bearer " + accessToken)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andExpect(jsonPath("$.code").value("STATISTICS2001"))
+                .andExpect(jsonPath("$.message").value("유저 통계 데이터 가져오기 성공"))
+                .andExpect(content().json(expectedJson));
+    }
+
+    @DisplayName("난이도 별 통계 데이터 가져오기")
+    @Test
+    @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
+    void getStatisticsByLevel() throws Exception {
+        // given
+        String accessToken = "mockAccessToken";
+        Long level = 1L;
+        given(jwtService.createAccessToken("tlsgusdn4818@gmail.com")).willReturn(accessToken);
+
+        List<GetStatisticsDto> getStatisticsDtos = createGetStatisticsDtos();
+
+        // when
+        given(statisticsCheckService.getUserStatisticsByLevel(accessToken, level)).willReturn(getStatisticsDtos);
+
+        // then
+        String expectedJson = """
+                {
+                  "isSuccess": true,
+                  "code": "STATISTICS2001",
+                  "message": "유저 통계 데이터 가져오기 성공",
+                  "result":[{"day":"2024-11-11","gantourCount":1,"silentTime":5.0},{"day":"2024-11-12","gantourCount":2,"silentTime":7.2}]
+                }
+                """;
+
+        mockMvc.perform(get("/api/spring/statistics/levels")
+                        .with(csrf())
+                        .param("level", String.valueOf(level))
                         .header("Authorization", "Bearer " + accessToken)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.isSuccess").value(true))

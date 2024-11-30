@@ -46,7 +46,7 @@ public class StatisticsController {
         return ApiResponse.of(SuccessStatus.GET_STATISTICS, statisticsCheckService.getUserStatistics(accessToken));
     }
 
-    @GetMapping("/statistics")
+    @GetMapping("/statistics/levels")
     @Operation(summary = "난이도 별 통계 데이터 불러오기 react -> spring", description = "통계 데이터 가져오기")
     public ApiResponse<List<StatisticsResponseDto.GetStatisticsDto>> getFilterStatistics(
             @RequestHeader("Authorization") final String authorizationHeader,
