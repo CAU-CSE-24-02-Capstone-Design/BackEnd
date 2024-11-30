@@ -21,12 +21,14 @@ public enum SuccessStatus implements BaseCode {
     OAUTH_LOGIN(HttpStatus.OK, "OAUTH2001", "소셜 로그인 성공"),
     SIGN_OUT_USER(HttpStatus.OK, "USER2000", "회원 탈퇴 성공"),
 
-    //Answer
-    SAVE_INSIGHT(HttpStatus.OK, "ANSWER2000", "인사이트 저장 성공"),
-    GET_INSIGHT(HttpStatus.OK, "ANSWER2001", "인사이트 가져오기 성공"),
-    CHECK_TODAY_ANSWER_EXISTS(HttpStatus.OK, "ANSWER2002", "오늘 답변 했는 지 여부 가져오기 성공"),
-    SAVE_EVALUATION(HttpStatus.OK, "ANSWER2003", "스스로 평가 저장 성공"),
-    GET_EVALUATION(HttpStatus.OK, "ANSWER2004", "스스로 평가 가져오기 성공"),
+    // Insight
+    SAVE_INSIGHT(HttpStatus.OK, "INSIGHT2000", "인사이트 저장 성공"),
+    GET_INSIGHT(HttpStatus.OK, "INSIGHT2001", "인사이트 가져오기 성공"),
+
+    // Answer
+    CHECK_TODAY_ANSWER_EXISTS(HttpStatus.OK, "ANSWER2000", "오늘 답변 했는 지 여부 가져오기 성공"),
+    SAVE_EVALUATION(HttpStatus.OK, "ANSWER2001", "스스로 평가 저장 성공"),
+    GET_EVALUATION(HttpStatus.OK, "ANSWER2002", "스스로 평가 가져오기 성공"),
 
     //Record
     SAVE_VOICE_URL(HttpStatus.OK, "RECORD2000", "첫 로그인 시 녹음 파일 저장 성공"),
@@ -41,7 +43,7 @@ public enum SuccessStatus implements BaseCode {
 
     //Statistics
     SAVE_STATISTICS(HttpStatus.OK, "STATISTICS2000", "통계 횟수 저장 성공"),
-    GET_DATES_WHEN_USER_DID(HttpStatus.OK, "USER2000", "유저가 참여한 날짜 가져오기 성공"),
+    GET_DATES_WHEN_USER_DID(HttpStatus.OK, "CALENDAR2000", "유저가 참여한 날짜 가져오기 성공"),
     GET_STATISTICS(HttpStatus.OK, "STATISTICS2001", "유저 통계 데이터 가져오기 성공"),
 
     //SelfFeedback

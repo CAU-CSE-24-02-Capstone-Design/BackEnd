@@ -1,5 +1,6 @@
 package Team02.BackEnd.repository;
 
+import static Team02.BackEnd.util.TestUtil.createUser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -7,7 +8,9 @@ import Team02.BackEnd.domain.Role;
 import Team02.BackEnd.domain.oauth.OauthId;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.oauth.OauthServerType;
+import jakarta.transaction.Transactional;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +27,18 @@ class UserRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
+    private User user;
+
+    @BeforeEach
+    void setUp() {
+        user = createUser();
+    }
+
     @DisplayName("이메일로 사용자 찾기")
+    @Transactional
     @Test
     void findByEmail() {
         // given
-        User user = createUser();
         userRepository.save(user);
 
         // when
@@ -40,10 +50,10 @@ class UserRepositoryTest {
     }
 
     @DisplayName("OauthId로 사용자 찾기")
+    @Transactional
     @Test
     void findByOauthId() {
         // given
-        User user = createUser();
         userRepository.save(user);
 
         // when
@@ -52,16 +62,5 @@ class UserRepositoryTest {
         // then
         assertTrue(userResult.isPresent());
         assertEquals(user, userResult.get());
-    }
-
-    private User createUser() {
-        return User.builder()
-                .email("tlsgusdn4818@gmail.com")
-                .name("Hyun")
-                .role(Role.USER)
-                .oauthId(new OauthId("1", OauthServerType.GOOGLE))
-                .voiceUrl("voiceUrl")
-                .questionNumber(1L)
-                .build();
     }
 }

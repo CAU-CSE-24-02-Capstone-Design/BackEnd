@@ -1,7 +1,5 @@
 package Team02.BackEnd.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -13,7 +11,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import Team02.BackEnd.domain.Feedback;
 import Team02.BackEnd.jwt.service.JwtService;
-import Team02.BackEnd.service.FeedbackService;
+import Team02.BackEnd.service.feedback.FeedbackCheckService;
+import Team02.BackEnd.service.feedback.FeedbackService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,6 +36,9 @@ class FeedbackControllerTest {
     private FeedbackService feedbackService;
 
     @MockBean
+    private FeedbackCheckService feedbackCheckService;
+
+    @MockBean
     private JwtService jwtService;
 
     @DisplayName("피드백 생성 api")
@@ -44,9 +46,10 @@ class FeedbackControllerTest {
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
     void createFeedback() throws Exception {
         // given
-        Long answerId = 1L;
         String accessToken = "mockAccessToken";
         given(jwtService.createAccessToken("tlsgusdn4818@gmail.com")).willReturn(accessToken);
+
+        Long answerId = 1L;
 
         // when
         // then
@@ -66,17 +69,14 @@ class FeedbackControllerTest {
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
     void getFeedback() throws Exception {
         // given
+        String accessToken = "mockAccessToken";
+        given(jwtService.createAccessToken("tlsgusdn4818@gmail.com")).willReturn(accessToken);
+
         Long answerId = 1L;
-        Feedback mockFeedback = Feedback.builder()
-                .beforeAudioLink("ba")
-                .beforeScript("bs")
-                .afterAudioLink("aa")
-                .afterScript("as")
-                .feedbackText("ft")
-                .build();
+        Feedback mockFeedback = createMockFeedback();
 
         // when
-        given(feedbackService.getFeedbackByAnswerId(answerId))
+        given(feedbackCheckService.getFeedbackByAnswerId(answerId))
                 .willReturn(mockFeedback);
 
         // then
@@ -95,10 +95,44 @@ class FeedbackControllerTest {
                 }
                 """;
         mockMvc.perform(get("/api/spring/feedbacks")
+                        .with(csrf())
+                        .header("Authorization", "Bearer " + accessToken)
                         .param("answerId", String.valueOf(answerId))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(expectedJson))
                 .andDo(print());
+    }
+
+    @DisplayName("오늘 답변 했는지 여부 받아오기")
+    @Test
+    @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
+    void doSpeechToday() throws Exception {
+        // given
+        String accessToken = "mockAccessToken";
+        given(jwtService.createAccessToken("tlsgusdn4818@gmail.com")).willReturn(accessToken);
+
+        // when
+        given(feedbackCheckService.doSpeechToday(accessToken)).willReturn(true);
+
+        // then
+        mockMvc.perform(get("/api/spring/feedbacks/completions")
+                        .with(csrf())
+                        .header("Authorization", "Bearer " + accessToken)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andExpect(jsonPath("$.code").value("ANSWER2000"))
+                .andExpect(jsonPath("$.message").value("오늘 답변 했는 지 여부 가져오기 성공"));
+    }
+
+    private Feedback createMockFeedback() {
+        return Feedback.builder()
+                .beforeAudioLink("ba")
+                .beforeScript("bs")
+                .afterAudioLink("aa")
+                .afterScript("as")
+                .feedbackText("ft")
+                .build();
     }
 }

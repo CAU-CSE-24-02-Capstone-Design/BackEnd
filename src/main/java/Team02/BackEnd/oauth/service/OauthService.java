@@ -28,11 +28,11 @@ public class OauthService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
 
-    public String getAuthCodeRequestUrl(OauthServerType oauthServerType) {
+    public String getAuthCodeRequestUrl(final OauthServerType oauthServerType) {
         return authCodeRequestUrlProviderComposite.provide(oauthServerType);
     }
 
-    public User login(HttpServletResponse response, OauthServerType oauthServerType, String authCode) {
+    public User login(final HttpServletResponse response, final OauthServerType oauthServerType, final String authCode) {
         User user = oauthUserClientComposite.fetch(oauthServerType, authCode);
         User saved = userRepository.findByOauthId(user.getOauthId()).orElseGet(() -> userRepository.save(user));
 

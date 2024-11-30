@@ -27,9 +27,10 @@ public record KakaoMemberResponse(
         return User.builder()
                 .oauthId(new OauthId(String.valueOf(id), KAKAO))
                 .name(kakaoAccount.profile.nickname)
-//                .profileImageUrl(kakaoAccount.profile.profileImageUrl)
                 .email(kakaoAccount.email)
-                .questionNumber(1L)
+                .level1QuestionNumber(1L)
+                .level2QuestionNumber(1L)
+                .level3QuestionNumber(1L)
                 .role(Role.GUEST)
                 .build();
     }
