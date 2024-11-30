@@ -1,10 +1,15 @@
 package Team02.BackEnd.repository;
 
+import static Team02.BackEnd.util.TestUtil.createAnswer;
+import static Team02.BackEnd.util.TestUtil.createInsight;
+import static Team02.BackEnd.util.TestUtil.createQuestion;
+import static Team02.BackEnd.util.TestUtil.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Insight;
+import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.Role;
 import Team02.BackEnd.domain.oauth.OauthId;
 import Team02.BackEnd.domain.oauth.User;
@@ -30,7 +35,8 @@ class InsightRepositoryTest {
     void findAllByAnswerId() {
         // given
         User user = createUser();
-        Answer answer = createAnswer(user);
+        Question question = createQuestion();
+        Answer answer = createAnswer(user, question);
         Insight insight1 = createInsight(answer);
         Insight insight2 = createInsight(answer);
 
@@ -43,31 +49,5 @@ class InsightRepositoryTest {
         // then
         assertEquals(insights.size(), 2);
         assertThat(insights).allMatch(insight -> insight.getAnswer().equals(answer));
-    }
-
-    private User createUser() {
-        return User.builder()
-                .email("tlsgusdn4818@gmail.com")
-                .name("Hyun")
-                .role(Role.USER)
-                .oauthId(new OauthId("1", OauthServerType.GOOGLE))
-                .voiceUrl("voiceUrl")
-                .questionNumber(1L)
-                .build();
-    }
-
-    private Answer createAnswer(final User user) {
-        return Answer.builder()
-                .user(user)
-                .question(null)
-                .evaluation(0)
-                .build();
-    }
-
-    private Insight createInsight(final Answer answer) {
-        return Insight.builder()
-                .insight("insight")
-                .answer(answer)
-                .build();
     }
 }

@@ -1,15 +1,22 @@
 package Team02.BackEnd.repository;
 
+import static Team02.BackEnd.util.TestUtil.createAnswer;
+import static Team02.BackEnd.util.TestUtil.createFeedback;
+import static Team02.BackEnd.util.TestUtil.createQuestion;
+import static Team02.BackEnd.util.TestUtil.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Feedback;
+import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.Role;
 import Team02.BackEnd.domain.oauth.OauthId;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.oauth.OauthServerType;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +42,8 @@ class FeedbackRepositoryTest {
     void findByAnswerId() {
         // given
         User user = createUser();
-        Answer answer = createAnswer(user);
+        Question question = createQuestion();
+        Answer answer = createAnswer(user, question);
         Feedback feedback = createFeedback(user, answer);
 
         feedbackRepository.save(feedback);
@@ -53,9 +61,10 @@ class FeedbackRepositoryTest {
     void findByUserId() {
         // given
         User user = createUser();
-        Answer answer1 = createAnswer(user);
-        Answer answer2 = createAnswer(user);
-        Answer answer3 = createAnswer(user);
+        Question question = createQuestion();
+        Answer answer1 = createAnswer(user, question);
+        Answer answer2 = createAnswer(user, question);
+        Answer answer3 = createAnswer(user, question);
         Feedback feedback1 = createFeedback(user, answer1);
         Feedback feedback2 = createFeedback(user, answer2);
         Feedback feedback3 = createFeedback(user, answer3);
@@ -81,9 +90,9 @@ class FeedbackRepositoryTest {
     void findAllByUserId() {
         // given
         User user = createUser();
-
-        Answer answer1 = createAnswer(user);
-        Answer answer2 = createAnswer(user);
+        Question question = createQuestion();
+        Answer answer1 = createAnswer(user, question);
+        Answer answer2 = createAnswer(user, question);
 
         Feedback feedback1 = createFeedback(user, answer1);
         Feedback feedback2 = createFeedback(user, answer2);
@@ -97,36 +106,5 @@ class FeedbackRepositoryTest {
         // then
         assertEquals(2, feedbacks.size());
         assertThat(feedbacks).allMatch(feedback -> feedback.getAnswer().getUser().equals(user));
-    }
-
-    private Feedback createFeedback(final User user, final Answer answer) {
-        return Feedback.builder()
-                .beforeAudioLink("ba")
-                .beforeScript("bs")
-                .afterAudioLink("aa")
-                .afterScript("as")
-                .feedbackText("ft")
-                .answer(answer)
-                .user(user)
-                .build();
-    }
-
-    private User createUser() {
-        return User.builder()
-                .email("tlsgusdn4818@gmail.com")
-                .name("Hyun")
-                .role(Role.USER)
-                .oauthId(new OauthId("1", OauthServerType.GOOGLE))
-                .voiceUrl("voiceUrl")
-                .questionNumber(1L)
-                .build();
-    }
-
-    private Answer createAnswer(final User user) {
-        return Answer.builder()
-                .user(user)
-                .question(null)
-                .evaluation(0)
-                .build();
     }
 }

@@ -35,4 +35,11 @@ public class FeedbackResponseDto {
         String feedbackText;
     }
 
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class SpeechExistsDto {
+        boolean isSpeechExists;
+    }
 }

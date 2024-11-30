@@ -1,8 +1,14 @@
 package Team02.BackEnd.repository;
 
+import static Team02.BackEnd.util.TestUtil.createQuestion;
+import static Team02.BackEnd.util.TestUtil.createUser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import Team02.BackEnd.domain.Question;
+import Team02.BackEnd.domain.Role;
+import Team02.BackEnd.domain.oauth.OauthId;
+import Team02.BackEnd.domain.oauth.User;
+import Team02.BackEnd.oauth.OauthServerType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,20 +29,15 @@ class QuestionRepositoryTest {
     @Test
     void findByQuestionIndex() {
         // given
+        Long level = 1L;
+        User user = createUser();
         Question question = createQuestion();
         questionRepository.save(question);
 
         // when
-        Question questionResult = questionRepository.findByQuestionIndex(question.getQuestionIndex());
+        Question questionResult = questionRepository.findByQuestionIndexAndLevel(user.getQuestionNumber(level), level);
 
         // then
         assertEquals(question, questionResult);
-    }
-
-    private Question createQuestion() {
-        return Question.builder()
-                .description("description")
-                .questionIndex(7L)
-                .build();
     }
 }

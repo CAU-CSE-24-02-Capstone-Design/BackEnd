@@ -17,7 +17,7 @@ public class AuthCodeRequestUrlProviderComposite {
 
     private final Map<OauthServerType, AuthCodeRequestUrlProvider> mapping;
 
-    public AuthCodeRequestUrlProviderComposite(Set<AuthCodeRequestUrlProvider> providers) {
+    public AuthCodeRequestUrlProviderComposite(final Set<AuthCodeRequestUrlProvider> providers) {
         mapping = providers.stream()
                 .collect(toMap(
                         AuthCodeRequestUrlProvider::supportServer,
@@ -25,11 +25,11 @@ public class AuthCodeRequestUrlProviderComposite {
                 ));
     }
 
-    public String provide(OauthServerType oauthServerType) {
+    public String provide(final OauthServerType oauthServerType) {
         return getProvider(oauthServerType).provide();
     }
 
-    private AuthCodeRequestUrlProvider getProvider(OauthServerType oauthServerType) {
+    private AuthCodeRequestUrlProvider getProvider(final OauthServerType oauthServerType) {
         return Optional.ofNullable(mapping.get(oauthServerType))
                 .orElseThrow(() -> new RuntimeException("지원하지 않는 소셜 로그인 타입입니다."));
     }

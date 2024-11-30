@@ -17,12 +17,6 @@ public class AnswerConverter {
                 .build();
     }
 
-    public static AnswerResponseDto.AnswerExistsDto toAnswerExistsDto(final Boolean isAnswerExists) {
-        return AnswerResponseDto.AnswerExistsDto.builder()
-                .isAnswerExists(isAnswerExists)
-                .build();
-    }
-
     public static AnswerResponseDto.AnswerEvaluationResponseDto toAnswerEvaluationResponseDto(final int evaluation) {
         return AnswerResponseDto.AnswerEvaluationResponseDto.builder()
                 .evaluation(evaluation)

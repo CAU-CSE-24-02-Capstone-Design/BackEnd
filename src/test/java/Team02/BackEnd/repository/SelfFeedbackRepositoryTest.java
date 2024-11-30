@@ -1,13 +1,20 @@
 package Team02.BackEnd.repository;
 
+import static Team02.BackEnd.util.TestUtil.createAnswer;
+import static Team02.BackEnd.util.TestUtil.createQuestion;
+import static Team02.BackEnd.util.TestUtil.createSelfFeedback;
+import static Team02.BackEnd.util.TestUtil.createUser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import Team02.BackEnd.domain.Answer;
+import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.Role;
 import Team02.BackEnd.domain.SelfFeedback;
 import Team02.BackEnd.domain.oauth.OauthId;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.oauth.OauthServerType;
+import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +31,24 @@ class SelfFeedbackRepositoryTest {
     @Autowired
     private SelfFeedbackRepository selfFeedbackRepository;
 
+    private User user;
+    private Question question;
+    private Answer answer;
+    private SelfFeedback selfFeedback;
+
+    @BeforeEach
+    void setUp(){
+        user = createUser();
+        question = createQuestion();
+        answer = createAnswer(user, question);
+        selfFeedback = createSelfFeedback(answer);
+    }
+
     @DisplayName("답변 기록에 대한 셀프 피드백 찾아오기")
+    @Transactional
     @Test
     void findByAnswerId() {
         // given
-        User user = createUser();
-        Answer answer = createAnswer(user);
-        SelfFeedback selfFeedback = createSelfFeedback(answer);
-
         selfFeedbackRepository.save(selfFeedback);
 
         // when
@@ -39,31 +56,5 @@ class SelfFeedbackRepositoryTest {
 
         // then
         assertEquals(selfFeedback, selfFeedbackResult);
-    }
-
-    private User createUser() {
-        return User.builder()
-                .email("tlsgusdn4818@gmail.com")
-                .name("Hyun")
-                .role(Role.USER)
-                .oauthId(new OauthId("1", OauthServerType.GOOGLE))
-                .voiceUrl("voiceUrl")
-                .questionNumber(1L)
-                .build();
-    }
-
-    private Answer createAnswer(final User user) {
-        return Answer.builder()
-                .user(user)
-                .question(null)
-                .evaluation(0)
-                .build();
-    }
-
-    private SelfFeedback createSelfFeedback(final Answer answer) {
-        return SelfFeedback.builder()
-                .feedback("feedback")
-                .answer(answer)
-                .build();
     }
 }

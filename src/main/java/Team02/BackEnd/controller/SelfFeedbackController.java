@@ -9,7 +9,8 @@ import Team02.BackEnd.converter.SelfFeedbackConverter;
 import Team02.BackEnd.domain.SelfFeedback;
 import Team02.BackEnd.dto.selfFeedbackDto.SelfFeedbackRequestDto;
 import Team02.BackEnd.dto.selfFeedbackDto.SelfFeedbackResponseDto;
-import Team02.BackEnd.service.SelfFeedbackService;
+import Team02.BackEnd.service.selffeedback.SelfFeedbackCheckService;
+import Team02.BackEnd.service.selffeedback.SelfFeedbackService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SelfFeedbackController {
 
     private final SelfFeedbackService selfFeedbackService;
+    private final SelfFeedbackCheckService selfFeedbackCheckService;
 
     @PostMapping("/self-feedbacks")
     @Operation(summary = "셀프 피드백 작성", description = "beforeAudio는 프론트에서 처리, post된 self feedback DB 저장")
@@ -41,7 +43,7 @@ public class SelfFeedbackController {
             @RequestHeader("Authorization") final String authorizationHeader
     ) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
-        SelfFeedback selfFeedback = selfFeedbackService.getLatestSelfFeedback(accessToken);
+        SelfFeedback selfFeedback = selfFeedbackCheckService.getLatestSelfFeedback(accessToken);
         return ApiResponse.of(SuccessStatus.GET_SELF_FEEDBACK,
                 SelfFeedbackConverter.toGetBeforeSelfFeedbackDto(selfFeedback));
     }

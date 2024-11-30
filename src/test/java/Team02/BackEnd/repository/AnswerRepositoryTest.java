@@ -1,13 +1,16 @@
 package Team02.BackEnd.repository;
 
+import static Team02.BackEnd.util.TestUtil.createAnswer;
+import static Team02.BackEnd.util.TestUtil.createQuestion;
+import static Team02.BackEnd.util.TestUtil.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import Team02.BackEnd.domain.Answer;
-import Team02.BackEnd.domain.Role;
-import Team02.BackEnd.domain.oauth.OauthId;
+import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.oauth.User;
-import Team02.BackEnd.oauth.OauthServerType;
+import jakarta.transaction.Transactional;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +27,26 @@ class AnswerRepositoryTest {
     @Autowired
     private AnswerRepository answerRepository;
 
+    private User user;
+    private Question question;
+    private Answer answer1;
+    private Answer answer2;
+    private Answer answer3;
+
+    @BeforeEach
+    void setUp() {
+        user = createUser();
+        question = createQuestion();
+        answer1 = createAnswer(user, question);
+        answer2 = createAnswer(user, question);
+        answer3 = createAnswer(user, question);
+    }
+
     @DisplayName("사용자의 모든 답변 기록을 가져온다.")
+    @Transactional
     @Test
     void findByUserId() {
         // given
-        User user = createUser();
-
-        Answer answer1 = createAnswer(user);
-        Answer answer2 = createAnswer(user);
-        Answer answer3 = createAnswer(user);
-
         answerRepository.save(answer1);
         answerRepository.save(answer2);
         answerRepository.save(answer3);
@@ -48,14 +61,10 @@ class AnswerRepositoryTest {
     }
 
     @DisplayName("사용자의 답변 기록 중 해당 년, 월에 속한 답변 기록을 가져온다.")
+    @Transactional
     @Test
     void findByUserAndYearAndMonth() {
         // given
-        User user = createUser();
-
-        Answer answer1 = createAnswer(user);
-        Answer answer2 = createAnswer(user);
-        Answer answer3 = createAnswer(user);
 
         answerRepository.save(answer1);
         answerRepository.save(answer2);
@@ -68,24 +77,5 @@ class AnswerRepositoryTest {
         assertThat(answers).hasSize(3);
         assertThat(answers)
                 .allMatch(answer -> answer.getUser().equals(user));
-    }
-
-    private User createUser() {
-        return User.builder()
-                .email("tlsgusdn4818@gmail.com")
-                .name("Hyun")
-                .role(Role.USER)
-                .oauthId(new OauthId("1", OauthServerType.GOOGLE))
-                .voiceUrl("voiceUrl")
-                .questionNumber(1L)
-                .build();
-    }
-
-    private Answer createAnswer(final User user) {
-        return Answer.builder()
-                .user(user)
-                .question(null)
-                .evaluation(0)
-                .build();
     }
 }
