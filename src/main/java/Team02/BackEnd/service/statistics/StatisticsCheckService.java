@@ -34,6 +34,17 @@ public class StatisticsCheckService {
                 .toList();
     }
 
+    public List<GetStatisticsDto> getUserStatisticsByLevel(final String accessToken, final Long level) {
+        User user = userCheckService.getUserByToken(accessToken);
+        log.info("사용자의 난이도 별 스피치 통계 가져오기, level : {}, email : {}", level, user.getEmail());
+        return answerCheckService.getAnswersByUser(user).stream()
+                .filter(this::isStatisticsExistsWithAnswer)
+                .filter(answer -> answerCheckService.checkSpeechLevel(answer, level))
+                .map(this::getStatisticsByAnswer)
+                .map(StatisticsConverter::toGetStatisticsDto)
+                .toList();
+    }
+
     public boolean isStatisticsExistsWithAnswer(final Answer answer) {
         return statisticsRepository.findByAnswerId(answer.getId()).isPresent();
     }

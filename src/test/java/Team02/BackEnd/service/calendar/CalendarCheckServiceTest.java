@@ -8,10 +8,15 @@ import static org.mockito.BDDMockito.given;
 
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Question;
+import Team02.BackEnd.domain.Role;
+import Team02.BackEnd.domain.oauth.OauthId;
 import Team02.BackEnd.domain.oauth.User;
+import Team02.BackEnd.oauth.OauthServerType;
 import Team02.BackEnd.service.answer.AnswerCheckService;
 import Team02.BackEnd.service.feedback.FeedbackCheckService;
 import Team02.BackEnd.service.user.UserCheckService;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -68,5 +73,30 @@ class CalendarCheckServiceTest {
 
         // then
         assertThat(answerIdDidThisPeriod[20]).isEqualTo(1L);
+    }
+
+    private User createUser() {
+        return User.builder()
+                .id(1L)
+                .email("tlsgusdn4818@gmail.com")
+                .name("Hyun")
+                .role(Role.USER)
+                .oauthId(new OauthId("1", OauthServerType.GOOGLE))
+                .voiceUrl("voiceUrl")
+                .level1QuestionNumber(1L)
+                .level2QuestionNumber(1L)
+                .level3QuestionNumber(1L)
+                .build();
+    }
+
+    private Answer createAnswer(final User user, final Question question) {
+        return Answer.builder()
+                .id(1L)
+                .user(user)
+                .question(question)
+                .evaluation(1)
+                .createdAt(LocalDateTime.of(2024, 11, 20, 15, 30)
+                        .atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime())
+                .build();
     }
 }

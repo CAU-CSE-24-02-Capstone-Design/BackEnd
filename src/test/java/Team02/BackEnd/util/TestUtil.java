@@ -17,19 +17,19 @@ public class TestUtil {
 
     public static User createUser() {
         return User.builder()
-                .id(1L)
                 .email("tlsgusdn4818@gmail.com")
                 .name("Hyun")
                 .role(Role.USER)
                 .oauthId(new OauthId("1", OauthServerType.GOOGLE))
                 .voiceUrl("voiceUrl")
-                .questionNumber(1L)
+                .level1QuestionNumber(1L)
+                .level2QuestionNumber(1L)
+                .level3QuestionNumber(1L)
                 .build();
     }
 
     public static Answer createAnswer(final User user, final Question question) {
         return Answer.builder()
-                .id(1L)
                 .user(user)
                 .question(question)
                 .evaluation(1)
@@ -40,9 +40,9 @@ public class TestUtil {
 
     public static Question createQuestion() {
         return Question.builder()
-                .id(1L)
                 .description("description")
                 .questionIndex(1L)
+                .level(1L)
                 .build();
     }
 
@@ -61,7 +61,6 @@ public class TestUtil {
 
     public static Insight createInsight(final Answer answer) {
         return Insight.builder()
-                .id(1L)
                 .answer(answer)
                 .insight("insight")
                 .build();
@@ -69,7 +68,6 @@ public class TestUtil {
 
     public static SelfFeedback createSelfFeedback(final Answer answer) {
         return SelfFeedback.builder()
-                .id(1L)
                 .feedback("feedback")
                 .answer(answer)
                 .build();

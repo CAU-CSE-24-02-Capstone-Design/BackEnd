@@ -42,6 +42,7 @@ class QuestionCheckServiceTest {
     private QuestionCheckService questionCheckService;
 
     private String accessToken;
+    private Long level;
     private User user;
     private Question question;
     private Answer answer;
@@ -49,6 +50,7 @@ class QuestionCheckServiceTest {
     @BeforeEach
     void setUp() {
         accessToken = "accessToken";
+        level = 1L;
         user = createUser();
         question = createQuestion();
         answer = createAnswer(user, question);
@@ -64,9 +66,10 @@ class QuestionCheckServiceTest {
         given(userCheckService.getUserByToken(accessToken)).willReturn(user);
         given(answerCheckService.getLatestAnswerByUser(user)).willReturn(Optional.of(answer));
         given(feedbackCheckService.isFeedbackExistsWithAnswer(answer)).willReturn(true);
-        given(questionRepository.findByQuestionIndex(user.getQuestionNumber())).willReturn(question);
+        given(questionRepository.findByQuestionIndexAndLevel(user.getQuestionNumber(level), level)).willReturn(
+                question);
 
-        Question userQuestion = questionCheckService.getUserQuestion(accessToken);
+        Question userQuestion = questionCheckService.getUserQuestion(accessToken, level);
 
         // then
         assertThat(question).isEqualTo(userQuestion);
@@ -82,9 +85,10 @@ class QuestionCheckServiceTest {
         given(userCheckService.getUserByToken(accessToken)).willReturn(user);
         given(answerCheckService.getLatestAnswerByUser(user)).willReturn(Optional.of(answer));
         given(feedbackCheckService.isFeedbackExistsWithAnswer(answer)).willReturn(false);
-        given(questionRepository.findByQuestionIndex(user.getQuestionNumber())).willReturn(question);
+        given(questionRepository.findByQuestionIndexAndLevel(user.getQuestionNumber(level), level)).willReturn(
+                question);
 
-        Question userQuestion = questionCheckService.getUserQuestion(accessToken);
+        Question userQuestion = questionCheckService.getUserQuestion(accessToken, level);
 
         // then
         assertThat(question).isEqualTo(userQuestion);
@@ -97,8 +101,10 @@ class QuestionCheckServiceTest {
         // given
 
         // when
-        given(questionRepository.findByQuestionIndex(user.getQuestionNumber())).willReturn(question);
-        Question userQuestion = questionCheckService.getQuestionByUserQNumber(user.getQuestionNumber());
+        given(questionRepository.findByQuestionIndexAndLevel(user.getQuestionNumber(level), level)).willReturn(
+                question);
+        Question userQuestion = questionCheckService.getQuestionByUserQNumberAndLevel(user.getQuestionNumber(level),
+                level);
 
         // then
         assertThat(question).isEqualTo(userQuestion);
@@ -111,9 +117,9 @@ class QuestionCheckServiceTest {
         // given
 
         // when
-        given(questionRepository.findByQuestionIndex(user.getQuestionNumber())).willReturn(null);
+        given(questionRepository.findByQuestionIndexAndLevel(user.getQuestionNumber(level), level)).willReturn(null);
         QuestionHandler exception = assertThrows(QuestionHandler.class, () -> {
-            questionCheckService.getQuestionByUserQNumber(user.getQuestionNumber());
+            questionCheckService.getQuestionByUserQNumberAndLevel(user.getQuestionNumber(level), level);
         });
 
         // then

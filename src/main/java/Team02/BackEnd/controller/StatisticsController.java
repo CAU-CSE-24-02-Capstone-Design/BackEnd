@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -40,8 +41,19 @@ public class StatisticsController {
             description = "모든 스피치 내역 가져오기"
     )
     public ApiResponse<List<StatisticsResponseDto.GetStatisticsDto>> getFilterStatistics(
-            @RequestHeader("authorization") final String authorization) {
-        String accessToken = authorization.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
+            @RequestHeader("Authorization") final String authorizationHeader) {
+        String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
         return ApiResponse.of(SuccessStatus.GET_STATISTICS, statisticsCheckService.getUserStatistics(accessToken));
+    }
+
+    @GetMapping("/statistics")
+    @Operation(summary = "난이도 별 통계 데이터 불러오기 react -> spring", description = "통계 데이터 가져오기")
+    public ApiResponse<List<StatisticsResponseDto.GetStatisticsDto>> getFilterStatistics(
+            @RequestHeader("Authorization") final String authorizationHeader,
+            @RequestParam("level") final Long level
+    ) {
+        String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
+        return ApiResponse.of(SuccessStatus.GET_STATISTICS,
+                statisticsCheckService.getUserStatisticsByLevel(accessToken, level));
     }
 }

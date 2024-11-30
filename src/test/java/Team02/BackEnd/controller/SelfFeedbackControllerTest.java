@@ -1,5 +1,9 @@
 package Team02.BackEnd.controller;
 
+import static Team02.BackEnd.util.TestUtil.createAnswer;
+import static Team02.BackEnd.util.TestUtil.createQuestion;
+import static Team02.BackEnd.util.TestUtil.createSelfFeedback;
+import static Team02.BackEnd.util.TestUtil.createUser;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -7,19 +11,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import Team02.BackEnd.domain.Answer;
-import Team02.BackEnd.domain.Role;
+import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.SelfFeedback;
-import Team02.BackEnd.domain.oauth.OauthId;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.selfFeedbackDto.SelfFeedbackRequestDto;
 import Team02.BackEnd.jwt.service.JwtService;
-import Team02.BackEnd.oauth.OauthServerType;
 import Team02.BackEnd.service.selffeedback.SelfFeedbackCheckService;
 import Team02.BackEnd.service.selffeedback.SelfFeedbackService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -80,7 +81,8 @@ class SelfFeedbackControllerTest {
         given(jwtService.createAccessToken("tlsgusdn4818@gmail.com")).willReturn(accessToken);
 
         User user = createUser();
-        Answer answer = createAnswer(user);
+        Question question = createQuestion();
+        Answer answer = createAnswer(user, question);
         SelfFeedback selfFeedback = createSelfFeedback(answer);
 
         // when
@@ -95,31 +97,5 @@ class SelfFeedbackControllerTest {
                 .andExpect(jsonPath("$.code").value("SELFFEEDBACK2001"))
                 .andExpect(jsonPath("$.message").value("셀프 피드백 가져오기 성공"))
                 .andExpect(jsonPath("$.result.feedback").value(selfFeedback.getFeedback()));
-    }
-
-    private User createUser() {
-        return User.builder()
-                .email("tlsgusdn4818@gmail.com")
-                .name("Hyun")
-                .role(Role.USER)
-                .oauthId(new OauthId("1", OauthServerType.GOOGLE))
-                .voiceUrl("voiceUrl")
-                .questionNumber(1L)
-                .build();
-    }
-
-    private Answer createAnswer(final User user) {
-        return Answer.builder()
-                .user(user)
-                .question(null)
-                .evaluation(0)
-                .build();
-    }
-
-    private SelfFeedback createSelfFeedback(final Answer answer) {
-        return SelfFeedback.builder()
-                .feedback("feedback")
-                .answer(answer)
-                .build();
     }
 }

@@ -18,7 +18,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
@@ -56,9 +55,15 @@ public class User extends BaseEntity {
     @Column
     private String voiceUrl;
 
-    @Column(name = "question_number")
-    @ColumnDefault("1") // 디폴트 1 (첫번째 질문)
-    private Long questionNumber; // 현재 몇번째 question인지 (질문 중복 방지)
+    @Column(name = "level1_question_number")
+    private Long level1QuestionNumber;
+
+    @Column(name = "level2_question_number")
+    private Long level2QuestionNumber;
+
+    @Column(name = "level3_question_number")
+    private Long level3QuestionNumber;
+
 
     public void updateVoiceUrl(String voiceUrl) {
         this.voiceUrl = voiceUrl;
@@ -68,11 +73,34 @@ public class User extends BaseEntity {
         this.role = Role.USER;
     }
 
-    public void addQuestionNumber() {
-        this.questionNumber++;
+    public Long getQuestionNumber(final Long level) {
+        if (level == 1) {
+            return this.level1QuestionNumber;
+        } else if (level == 2) {
+            return this.level2QuestionNumber;
+        } else if (level == 3) {
+            return this.level3QuestionNumber;
+        }
+        return null;
     }
 
-    public void minusQuestionNumber() {
-        this.questionNumber = Math.max(1, this.questionNumber - 1);
+    public void addQuestionNumber(final Long level) {
+        if (level == 1) {
+            this.level1QuestionNumber++;
+        } else if (level == 2) {
+            this.level2QuestionNumber++;
+        } else if (level == 3) {
+            this.level3QuestionNumber++;
+        }
+    }
+
+    public void minusQuestionNumber(final Long level) {
+        if (level == 1) {
+            this.level1QuestionNumber = Math.max(1, this.level1QuestionNumber - 1);
+        } else if (level == 2) {
+            this.level2QuestionNumber = Math.max(1, this.level2QuestionNumber - 1);
+        } else if (level == 3) {
+            this.level3QuestionNumber = Math.max(1, this.level3QuestionNumber - 1);
+        }
     }
 }

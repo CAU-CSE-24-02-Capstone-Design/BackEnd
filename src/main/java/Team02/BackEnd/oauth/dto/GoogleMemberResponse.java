@@ -26,8 +26,9 @@ public record GoogleMemberResponse(
                 .oauthId(new OauthId(id, GOOGLE))
                 .email(email)
                 .name(name)
-//                .profileImageUrl(picture)
-                .questionNumber(1L)
+                .level1QuestionNumber(1L)
+                .level2QuestionNumber(1L)
+                .level3QuestionNumber(1L)
                 .role(Role.GUEST)
                 .build();
     }

@@ -177,4 +177,17 @@ class AnswerCheckServiceTest {
         assertTrue(findAnswer.isPresent());
         assertThat(findAnswer.get().getId()).isEqualTo(answer2.getId());
     }
+
+    @DisplayName("스피치의 난이도를 비교한다")
+    @Test
+    @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
+    void checkSpeechLevel() {
+        // given
+
+        // when
+        Boolean checkSpeechLevel = answerCheckService.checkSpeechLevel(answer, 1L);
+
+        // then
+        assertThat(checkSpeechLevel).isTrue();
+    }
 }

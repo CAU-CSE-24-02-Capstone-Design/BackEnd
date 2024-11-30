@@ -24,13 +24,11 @@ public record NaverMemberResponse(
         return User.builder()
                 .oauthId(new OauthId(String.valueOf(response.id), NAVER))
                 .name(response.name)
-//                .profileImageUrl(response.profileImage)
                 .email(response.email)
-                .questionNumber(1L)
+                .level1QuestionNumber(1L)
+                .level2QuestionNumber(1L)
+                .level3QuestionNumber(1L)
                 .role(Role.GUEST)
-//                .age(calculateAge(response.birthyear))
-//                .gender(response.gender)
-//                .birth(getBirthDate(response().birthyear, response.birthday))
                 .build();
     }
 

@@ -51,14 +51,16 @@ class QuestionControllerTest {
 
         Question question = createQuestion();
         Long answerId = 1L;
+        Long level = 1L;
 
         // when
-        given(questionCheckService.getUserQuestion(accessToken)).willReturn(question);
-        given(answerService.createAnswer(accessToken, question)).willReturn(answerId);
+        given(questionCheckService.getUserQuestion(accessToken, level)).willReturn(question);
+        given(answerService.createAnswer(accessToken, question, level)).willReturn(answerId);
 
         // then
         mockMvc.perform(get("/api/spring/questions")
                         .with(csrf())
+                        .param("level", String.valueOf(level))
                         .header("Authorization", "Bearer " + accessToken)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.isSuccess").value(true))

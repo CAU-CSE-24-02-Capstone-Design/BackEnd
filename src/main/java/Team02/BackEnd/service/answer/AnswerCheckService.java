@@ -6,6 +6,7 @@ import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.repository.AnswerRepository;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +48,10 @@ public class AnswerCheckService {
     public Optional<Answer> getLatestAnswerByUser(final User user) {
         Pageable pageable = PageRequest.of(0, 1);
         return answerRepository.findLatestAnswerByUser(user, pageable).stream().findFirst();
+    }
+
+    public Boolean checkSpeechLevel(final Answer answer, final Long level) {
+        return Objects.equals(answer.getQuestion().getLevel(), level);
     }
 
     private void validateAnswerIsNotNull(final Answer answer) {

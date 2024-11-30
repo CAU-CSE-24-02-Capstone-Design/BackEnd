@@ -13,6 +13,8 @@ import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.repository.AnswerRepository;
 import Team02.BackEnd.service.feedback.FeedbackCheckService;
 import Team02.BackEnd.service.user.UserCheckService;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,6 +42,7 @@ class AnswerServiceTest {
     @InjectMocks
     private AnswerService answerService;
 
+    private Long level;
     private Long expectedAnswerId;
     private String accessToken;
     private User user;
@@ -48,6 +51,7 @@ class AnswerServiceTest {
 
     @BeforeEach
     void setUp() {
+        level = 1L;
         expectedAnswerId = 1L;
         accessToken = "accessToken";
         user = createUser();
@@ -66,7 +70,7 @@ class AnswerServiceTest {
         given(answerCheckService.getLatestAnswerByUser(user)).willReturn(Optional.empty());
         given(answerRepository.saveAndFlush(any())).willReturn(answer);
 
-        Long answerId = answerService.createAnswer(accessToken, question);
+        Long answerId = answerService.createAnswer(accessToken, question, level);
 
         // then
         assertThat(answerId).isEqualTo(expectedAnswerId);
@@ -83,7 +87,7 @@ class AnswerServiceTest {
         given(answerCheckService.getLatestAnswerByUser(user)).willReturn(Optional.of(answer));
         given(feedbackCheckService.isFeedbackExistsWithAnswer(answer)).willReturn(false);
 
-        Long answerId = answerService.createAnswer(accessToken, question);
+        Long answerId = answerService.createAnswer(accessToken, question, level);
 
         // then
         assertThat(answerId).isEqualTo(expectedAnswerId);
@@ -103,5 +107,16 @@ class AnswerServiceTest {
         // then
         assertThat(answer.getEvaluation()).isEqualTo(2);
 
+    }
+
+    private Answer createAnswer(final User user, final Question question) {
+        return Answer.builder()
+                .id(1L)
+                .user(user)
+                .question(question)
+                .evaluation(1)
+                .createdAt(LocalDateTime.of(2024, 11, 20, 15, 30)
+                        .atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime())
+                .build();
     }
 }

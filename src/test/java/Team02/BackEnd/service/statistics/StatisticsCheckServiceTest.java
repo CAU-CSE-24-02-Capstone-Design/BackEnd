@@ -78,6 +78,28 @@ class StatisticsCheckServiceTest {
         assertThat(getStatistics.get(0).getSilentTime()).isEqualTo(statistics.getSilentTime());
     }
 
+    @DisplayName("난이도 별 통계 데이터 가져오기")
+    @Test
+    @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
+    void getUserStatisticsByLevel() {
+        // given
+        List<Answer> answers = List.of(answer);
+
+        // when
+        given(userCheckService.getUserByToken(accessToken)).willReturn(user);
+        given(answerCheckService.getAnswersByUser(user)).willReturn(answers);
+        given(answerCheckService.checkSpeechLevel(answer, 1L)).willReturn(true);
+        given(statisticsRepository.findByAnswerId(answer.getId())).willReturn(Optional.of(statistics));
+
+        List<StatisticsResponseDto.GetStatisticsDto> getStatistics = statisticsCheckService.getUserStatisticsByLevel(
+                accessToken, 1L);
+
+        // then
+        assertThat(getStatistics.size()).isEqualTo(1);
+        assertThat(getStatistics.get(0).getGantourCount()).isEqualTo(statistics.getGantourCount());
+        assertThat(getStatistics.get(0).getSilentTime()).isEqualTo(statistics.getSilentTime());
+    }
+
     @DisplayName("Answer에 대해 통계가 존재하는지 확인한다")
     @Test
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})

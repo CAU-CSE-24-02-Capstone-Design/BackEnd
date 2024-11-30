@@ -24,7 +24,7 @@ public class AnswerService {
     private final FeedbackCheckService feedbackCheckService;
     private final AnswerRepository answerRepository;
 
-    public Long createAnswer(final String accessToken, final Question question) {
+    public Long createAnswer(final String accessToken, final Question question, final Long level) {
         User user = userCheckService.getUserByToken(accessToken);
         Optional<Answer> latestAnswer = answerCheckService.getLatestAnswerByUser(user);
         if (latestAnswer.isPresent() && !feedbackCheckService.isFeedbackExistsWithAnswer(latestAnswer.get())) {
@@ -32,7 +32,7 @@ public class AnswerService {
             return latestAnswer.get().getId();
         }
         Answer answer = answerRepository.saveAndFlush(AnswerConverter.toAnswer(user, question));
-        user.addQuestionNumber();
+        user.addQuestionNumber(level);
         log.info("answer 엔티티 생성, answerId : {}", answer.getId());
         return answer.getId();
     }

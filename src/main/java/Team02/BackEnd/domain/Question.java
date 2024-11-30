@@ -25,4 +25,5 @@ public class Question {
 
     private String description;
     private Long questionIndex;
+    private Long level;
 }
