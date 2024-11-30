@@ -46,7 +46,10 @@ public enum ErrorStatus implements BaseErrorCode {
     _SELF_FEEDBACK_NOT_FOUND(HttpStatus.NOT_FOUND, "SELFFEEDBACK4001", "해당 셀프 피드백이 없습니다"),
 
     // Statistics 관련 응답
-    _STATISTICS_NOT_FOUND(HttpStatus.NOT_FOUND, "STATISTICS4001", "해당 통계가 없습니다.");
+    _STATISTICS_NOT_FOUND(HttpStatus.NOT_FOUND, "STATISTICS4001", "해당 통계가 없습니다."),
+    _FAST_API_ANALYSIS_NULL(HttpStatus.BAD_REQUEST,
+            "ANALYSIS4001", "Fast api return null"),
+    _ANALYSIS_NOT_FOUND(HttpStatus.NOT_FOUND, "ANALYSIS4002", "분석된 리포트가 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
