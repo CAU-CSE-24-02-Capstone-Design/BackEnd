@@ -17,4 +17,12 @@ public class StatisticsResponseDto {
         Long gantourCount;
         Double silentTime;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetAnalysisDto {
+        String analysisText;
+    }
 }

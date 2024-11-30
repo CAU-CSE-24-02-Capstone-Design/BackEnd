@@ -36,6 +36,10 @@ public class Answer extends BaseEntity {
     @JoinColumn(name = "question_id")
     private Question question;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "analysis_id")
+    private Analysis analysis;
+
     private int evaluation;
 
     public void updateEvaluation(final int evaluation) {

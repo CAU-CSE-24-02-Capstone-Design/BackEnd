@@ -5,6 +5,7 @@ import static Team02.BackEnd.constant.Constants.NEW_TIME_ZONE;
 
 import Team02.BackEnd.domain.Statistics;
 import Team02.BackEnd.dto.statisticsDto.StatisticsResponseDto;
+import Team02.BackEnd.dto.statisticsDto.StatisticsResponseDto.GetAnalysisDto;
 import java.time.ZoneId;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,12 @@ public class StatisticsConverter {
                         .withZoneSameInstant(ZoneId.of(NEW_TIME_ZONE)).toLocalDate())
                 .gantourCount(statistics.getGantourCount())
                 .silentTime(statistics.getSilentTime())
+                .build();
+    }
+
+    public static GetAnalysisDto toGetAnalysisDto(String analysisText) {
+        return GetAnalysisDto.builder()
+                .analysisText(analysisText)
                 .build();
     }
 }
