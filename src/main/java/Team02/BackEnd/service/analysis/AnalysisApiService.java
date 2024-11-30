@@ -48,8 +48,6 @@ public class AnalysisApiService {
 
         Analysis analysis = AnalysisConverter.toAnalysis(response.getAnalysisText(), user);
         analysisRepository.save(analysis);
-
-
     }
 
     public GetAnalysisFromFastApiDto getAnalysisFromFastApi(final String accessToken,
