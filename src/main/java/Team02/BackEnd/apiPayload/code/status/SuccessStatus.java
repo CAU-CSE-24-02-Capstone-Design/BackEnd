@@ -46,6 +46,10 @@ public enum SuccessStatus implements BaseCode {
     GET_DATES_WHEN_USER_DID(HttpStatus.OK, "CALENDAR2000", "유저가 참여한 날짜 가져오기 성공"),
     GET_STATISTICS(HttpStatus.OK, "STATISTICS2001", "유저 통계 데이터 가져오기 성공"),
 
+    //Analysis
+    SAVE_ANALYSIS(HttpStatus.OK, "STATISTICS2002", "유저 언어 습관 분석 생성하기 성공"),
+    GET_ANALYSIS(HttpStatus.OK, "STATISTICS2003", "유저 언어 습관 분석 가져오기 성공"),
+
     //SelfFeedback
     SAVE_SELF_FEEDBACK(HttpStatus.CREATED, "SELFFEEDBACK2000", "셀프 피드백 저장 성공"),
     GET_SELF_FEEDBACK(HttpStatus.OK, "SELFFEEDBACK2001", "셀프 피드백 가져오기 성공");
