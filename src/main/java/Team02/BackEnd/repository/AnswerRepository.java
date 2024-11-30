@@ -18,4 +18,8 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     List<Answer> findByUserAndYearAndMonth(@Param("user") final User user,
                                            @Param("year") final int year,
                                            @Param("month") final int month);
+
+    @Query("SELECT q.description FROM Answer a JOIN a.question q WHERE a.user = :user ORDER BY a.createdAt ASC")
+    List<String> findQuestionDescriptionsByUser(@Param("user") User user);
+
 }

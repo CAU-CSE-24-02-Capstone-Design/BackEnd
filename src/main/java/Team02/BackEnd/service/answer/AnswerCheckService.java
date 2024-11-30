@@ -54,6 +54,10 @@ public class AnswerCheckService {
         return Objects.equals(answer.getQuestion().getLevel(), level);
     }
 
+    public List<String> findQuestionDescriptionsByUser(User user) {
+        return answerRepository.findQuestionDescriptionsByUser(user);
+    }
+
     private void validateAnswerIsNotNull(final Answer answer) {
         if (answer == null) {
             throw new AnswerHandler(ErrorStatus._ANSWER_NOT_FOUND);

@@ -56,6 +56,15 @@ public class FeedbackCheckService {
                 .toList();
     }
 
+    public List<String> findBeforeScriptByUser(User user) {
+        return feedbackRepository.findBeforeScriptByUser(user);
+    }
+
+    public List<Answer> findAnswerByUser(User user) {
+        return feedbackRepository.findAnswerByUser(user);
+    }
+
+
     public boolean isFeedbackExistsWithAnswer(final Answer answer) {
         return feedbackRepository.findByAnswerId(answer.getId()).isPresent();
     }
