@@ -20,6 +20,6 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
                                            @Param("month") final int month);
 
     @Query("SELECT q.description FROM Answer a JOIN a.question q WHERE a.user = :user ORDER BY a.createdAt ASC")
-    List<String> findQuestionDescriptionsByUser(@Param("user") User user);
+    List<String> findQuestionDescriptionsByUser(@Param("user") User user, Pageable pageable);
 
 }

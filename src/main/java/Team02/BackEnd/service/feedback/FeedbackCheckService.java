@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -56,12 +57,9 @@ public class FeedbackCheckService {
                 .toList();
     }
 
-    public List<String> findBeforeScriptByUser(User user) {
-        return feedbackRepository.findBeforeScriptByUser(user);
-    }
-
-    public List<Answer> findAnswerByUser(User user) {
-        return feedbackRepository.findAnswerByUser(user);
+    public List<String> findBeforeScriptByUser(User user, int number) {
+        Pageable pageable = PageRequest.of(0, number, Sort.by("createdAt").descending());
+        return feedbackRepository.findBeforeScriptByUser(user, pageable);
     }
 
 

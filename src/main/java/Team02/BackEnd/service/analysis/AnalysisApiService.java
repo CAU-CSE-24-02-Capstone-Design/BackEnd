@@ -41,8 +41,8 @@ public class AnalysisApiService {
     public void createAnalysis(String accessToken) {
         User user = userCheckService.getUserByToken(accessToken);
 
-        List<String> questions = answerCheckService.findQuestionDescriptionsByUser(user);
-        List<String> beforeScripts = feedbackCheckService.findBeforeScriptByUser(user);
+        List<String> questions = answerCheckService.findQuestionDescriptionsByUser(user, NUMBER_OF_USER_SPEECH);
+        List<String> beforeScripts = feedbackCheckService.findBeforeScriptByUser(user, NUMBER_OF_USER_SPEECH);
 
         GetAnalysisFromFastApiDto response = getAnalysisFromFastApi(accessToken, questions, beforeScripts);
 

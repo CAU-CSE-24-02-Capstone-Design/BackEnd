@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -54,8 +55,9 @@ public class AnswerCheckService {
         return Objects.equals(answer.getQuestion().getLevel(), level);
     }
 
-    public List<String> findQuestionDescriptionsByUser(User user) {
-        return answerRepository.findQuestionDescriptionsByUser(user);
+    public List<String> findQuestionDescriptionsByUser(User user, int number) {
+        Pageable pageable = PageRequest.of(0, number, Sort.by("createdAt").descending());
+        return answerRepository.findQuestionDescriptionsByUser(user, pageable);
     }
 
     private void validateAnswerIsNotNull(final Answer answer) {
