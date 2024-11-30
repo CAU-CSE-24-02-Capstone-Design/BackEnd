@@ -37,6 +37,7 @@ public class Answer extends BaseEntity {
     private Question question;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    //todo: 나중에 리포트에서 이 앤써부터 이 앤써까지의 분석내용이다~ 하고 해당거 누르면 해당 피드백 페이지로 넘어갈 수 있었음 좋겠다.
     @JoinColumn(name = "analysis_id")
     private Analysis analysis;
 
