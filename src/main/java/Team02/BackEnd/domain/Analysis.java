@@ -28,6 +28,7 @@ public class Analysis extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "analysis_text", columnDefinition = "TEXT")
     private String analysisText;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
