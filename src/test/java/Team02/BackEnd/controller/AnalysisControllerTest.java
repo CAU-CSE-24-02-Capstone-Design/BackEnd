@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import Team02.BackEnd.dto.analysisDto.AnalysisResponseDto.GetAvailabilityAnalysisDto;
 import Team02.BackEnd.jwt.service.JwtService;
 import Team02.BackEnd.service.analysis.AnalysisCheckService;
 import Team02.BackEnd.service.analysis.AnalysisService;
@@ -36,6 +37,28 @@ class AnalysisControllerTest {
     @MockBean
     private JwtService jwtService;
 
+    @DisplayName("일주일 분석 리포트 생성 가능 여부를 확인한다")
+    @Test
+    @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
+    void canSaveAnalysis() throws Exception {
+        // given
+        String accessToken = "mockAccessToken";
+        given(jwtService.createAccessToken("tlsgusdn4818@gmail.com")).willReturn(accessToken);
+
+        // when
+
+        // then
+        mockMvc.perform(get("/api/spring/analysis/available")
+                        .with(csrf())
+                        .header("Authorization", "Bearer " + accessToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andExpect(jsonPath("$.code").value("STATISTICS2004"))
+                .andExpect(jsonPath("$.message").value("유저 언어 습관 분석 생성하기 가능"))
+                .andExpect(jsonPath("$.result.canSaveAnalysis").value(false));
+        verify(analysisCheckService, times(1)).canSaveAnalysis(accessToken);
+    }
+
     @DisplayName("일주일 분석 리포트를 생성한다")
     @Test
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
@@ -54,7 +77,7 @@ class AnalysisControllerTest {
                 .andExpect(jsonPath("$.isSuccess").value(true))
                 .andExpect(jsonPath("$.code").value("STATISTICS2002"))
                 .andExpect(jsonPath("$.message").value("유저 언어 습관 분석 생성하기 성공"));
-        verify(analysisService, times(1)).createAnalysis(accessToken);
+        verify(analysisService, times(1)).saveAnalysis(accessToken);
     }
 
     @DisplayName("일주일 분석 리포트를 생성한다")

@@ -26,7 +26,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.test.context.support.WithMockUser;
 
 @ExtendWith(MockitoExtension.class)
@@ -184,6 +183,22 @@ class AnswerCheckServiceTest {
         assertThat(findAnswer.get().getId()).isEqualTo(answer2.getId());
     }
 
+    @DisplayName("사용자의 최근 몇 개의 스피치에 대한 Answer 엔티티를 가져온다")
+    @Test
+    @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
+    void getAnswersByUserWithSize() {
+        // given
+        int size = 2;
+
+        // when
+        given(answerRepository.findLatestAnswerByUser(user, PageRequest.of(0, size))).willReturn(
+                List.of(answer1, answer2));
+        List<Answer> answers = answerCheckService.getAnswerByUserWithSize(user, size);
+
+        // then
+        assertThat(answers.size()).isEqualTo(2);
+    }
+
     @DisplayName("스피치의 난이도를 비교한다")
     @Test
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
@@ -202,13 +217,15 @@ class AnswerCheckServiceTest {
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
     void findQuestionDescriptionsByUser() {
         // given
-        Pageable pageable = PageRequest.of(0, 7, Sort.by("createdAt").descending());
+        int size = 7;
+        Pageable pageable = PageRequest.of(0, size);
+        List<Answer> answers = List.of(answer, answer1, answer2);
         List<String> descriptions = List.of(question.getDescription(), question1.getDescription(),
                 question2.getDescription());
 
         // when
-        given(answerRepository.findQuestionDescriptionsByUser(user, pageable)).willReturn(descriptions);
-        List<String> findDescriptions = answerCheckService.findQuestionDescriptionsByUser(user, 7);
+        given(answerRepository.findLatestAnswerByUser(user, pageable)).willReturn(answers);
+        List<String> findDescriptions = answerCheckService.findQuestionDescriptionsByUser(user, size);
 
         // then
         assertThat(findDescriptions.size()).isEqualTo(descriptions.size());

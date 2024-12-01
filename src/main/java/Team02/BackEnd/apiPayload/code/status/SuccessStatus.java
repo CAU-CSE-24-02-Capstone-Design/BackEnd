@@ -49,6 +49,7 @@ public enum SuccessStatus implements BaseCode {
     //Analysis
     SAVE_ANALYSIS(HttpStatus.OK, "STATISTICS2002", "유저 언어 습관 분석 생성하기 성공"),
     GET_ANALYSIS(HttpStatus.OK, "STATISTICS2003", "유저 언어 습관 분석 가져오기 성공"),
+    CAN_SAVE_ANALYSIS(HttpStatus.OK, "STATISTICS2004", "유저 언어 습관 분석 생성하기 가능"),
 
     //SelfFeedback
     SAVE_SELF_FEEDBACK(HttpStatus.CREATED, "SELFFEEDBACK2000", "셀프 피드백 저장 성공"),

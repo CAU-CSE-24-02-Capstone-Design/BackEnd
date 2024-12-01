@@ -64,6 +64,8 @@ public class User extends BaseEntity {
     @Column(name = "level3_question_number")
     private Long level3QuestionNumber;
 
+    @Column
+    private Long analyzeCompleteAnswerIndex;
 
     public void updateVoiceUrl(String voiceUrl) {
         this.voiceUrl = voiceUrl;
@@ -71,6 +73,10 @@ public class User extends BaseEntity {
 
     public void updateRole() {
         this.role = Role.USER;
+    }
+
+    public void updateAnalyzeCompleteAnswerIndex(final Long analyzeCompleteAnswerIndex) {
+        this.analyzeCompleteAnswerIndex = analyzeCompleteAnswerIndex;
     }
 
     public Long getQuestionNumber(final Long level) {

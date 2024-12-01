@@ -25,15 +25,12 @@ public class AnalysisService {
     private final AnalysisApiService analysisApiService;
     private final AnalysisRepository analysisRepository;
 
-    public void createAnalysis(final String accessToken) {
+    public void saveAnalysis(final String accessToken) {
         User user = userCheckService.getUserByToken(accessToken);
-
         List<String> questions = answerCheckService.findQuestionDescriptionsByUser(user, NUMBER_OF_USER_SPEECH);
         List<String> beforeScripts = feedbackCheckService.findBeforeScriptByUser(user, NUMBER_OF_USER_SPEECH);
-
         GetAnalysisFromFastApiDto response = analysisApiService.getAnalysisFromFastApi(accessToken, questions,
                 beforeScripts);
-
         Analysis analysis = AnalysisConverter.toAnalysis(response.getAnalysisText(), user);
         analysisRepository.save(analysis);
         log.info("사용자의 일주일 분석 리포트 저장, analysisId : {}", analysis.getId());
