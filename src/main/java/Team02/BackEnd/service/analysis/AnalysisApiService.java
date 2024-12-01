@@ -6,14 +6,8 @@ import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_PREFIX;
 import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
 import Team02.BackEnd.apiPayload.exception.handler.AnalysisHandler;
 import Team02.BackEnd.converter.AnalysisConverter;
-import Team02.BackEnd.domain.Analysis;
-import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.analysisDto.AnalysisRequestDto.GetComponentToMakeAnalysisDto;
 import Team02.BackEnd.dto.analysisDto.AnalysisResponseDto.GetAnalysisFromFastApiDto;
-import Team02.BackEnd.repository.AnalysisRepository;
-import Team02.BackEnd.service.answer.AnswerCheckService;
-import Team02.BackEnd.service.feedback.FeedbackCheckService;
-import Team02.BackEnd.service.user.UserCheckService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,25 +24,8 @@ import org.springframework.web.client.RestTemplate;
 public class AnalysisApiService {
     private static final String FASTAPI_API_URL = "https://peachmentor.com/api/fastapi/records/analyses";
     private static final String FASTAPI_API_URL_LOCAL = "http://localhost:8000/api/fastapi/records/analyses";
-    private static final int NUMBER_OF_USER_SPEECH = 7;
 
-    private final UserCheckService userCheckService;
-    private final FeedbackCheckService feedbackCheckService;
-    private final AnswerCheckService answerCheckService;
     private final RestTemplate restTemplate;
-    private final AnalysisRepository analysisRepository;
-
-    public void createAnalysis(String accessToken) {
-        User user = userCheckService.getUserByToken(accessToken);
-
-        List<String> questions = answerCheckService.findQuestionDescriptionsByUser(user, NUMBER_OF_USER_SPEECH);
-        List<String> beforeScripts = feedbackCheckService.findBeforeScriptByUser(user, NUMBER_OF_USER_SPEECH);
-
-        GetAnalysisFromFastApiDto response = getAnalysisFromFastApi(accessToken, questions, beforeScripts);
-
-        Analysis analysis = AnalysisConverter.toAnalysis(response.getAnalysisText(), user);
-        analysisRepository.save(analysis);
-    }
 
     public GetAnalysisFromFastApiDto getAnalysisFromFastApi(final String accessToken,
                                                             final List<String> questions,

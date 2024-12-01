@@ -1,5 +1,6 @@
 package Team02.BackEnd.util;
 
+import Team02.BackEnd.domain.Analysis;
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Feedback;
 import Team02.BackEnd.domain.Insight;
@@ -79,6 +80,13 @@ public class TestUtil {
                 .silentTime(5.0)
                 .createdAt(LocalDateTime.now())
                 .answer(answer)
+                .build();
+    }
+
+    public static Analysis createAnalysis(final User user) {
+        return Analysis.builder()
+                .analysisText("text")
+                .user(user)
                 .build();
     }
 }

@@ -55,7 +55,7 @@ public class AnswerCheckService {
         return Objects.equals(answer.getQuestion().getLevel(), level);
     }
 
-    public List<String> findQuestionDescriptionsByUser(User user, int number) {
+    public List<String> findQuestionDescriptionsByUser(final User user, int number) {
         Pageable pageable = PageRequest.of(0, number, Sort.by("createdAt").descending());
         return answerRepository.findQuestionDescriptionsByUser(user, pageable);
     }
