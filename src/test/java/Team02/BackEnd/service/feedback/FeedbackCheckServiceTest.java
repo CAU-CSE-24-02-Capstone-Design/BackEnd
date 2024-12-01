@@ -29,6 +29,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.test.context.support.WithMockUser;
 
@@ -136,5 +137,22 @@ class FeedbackCheckServiceTest {
 
         // then
         assertThat(ErrorStatus._FEEDBACK_NOT_FOUND.getCode()).isEqualTo(exception.getCode().getReason().getCode());
+    }
+
+    @DisplayName("사용자의 이전 스피치에 대한 beforeScript를 가져온다")
+    @Test
+    @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
+    void findBeforeScriptByUser() {
+        // given
+        int number = 7;
+        Pageable pageable = PageRequest.of(0, number, Sort.by("createdAt").descending());
+        List<String> expectedBeforeScripts = List.of(feedback.getBeforeScript());
+
+        // when
+        given(feedbackRepository.findBeforeScriptByUser(user, pageable)).willReturn(expectedBeforeScripts);
+        List<String> beforeScripts = feedbackCheckService.findBeforeScriptByUser(user, number);
+
+        // then
+        assertThat(beforeScripts).isEqualTo(expectedBeforeScripts);
     }
 }

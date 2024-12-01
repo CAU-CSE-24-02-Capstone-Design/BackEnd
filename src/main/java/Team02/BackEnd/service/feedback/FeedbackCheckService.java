@@ -57,7 +57,7 @@ public class FeedbackCheckService {
                 .toList();
     }
 
-    public List<String> findBeforeScriptByUser(User user, int number) {
+    public List<String> findBeforeScriptByUser(final User user, int number) {
         Pageable pageable = PageRequest.of(0, number, Sort.by("createdAt").descending());
         return feedbackRepository.findBeforeScriptByUser(user, pageable);
     }

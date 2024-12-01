@@ -1,8 +1,6 @@
-package Team02.BackEnd.service.feedback;
+package Team02.BackEnd.service.analysis;
 
-import static Team02.BackEnd.util.TestUtil.createAnswer;
-import static Team02.BackEnd.util.TestUtil.createFeedback;
-import static Team02.BackEnd.util.TestUtil.createQuestion;
+import static Team02.BackEnd.util.TestUtil.createAnalysis;
 import static Team02.BackEnd.util.TestUtil.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
@@ -11,11 +9,9 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import Team02.BackEnd.config.TestConfig;
-import Team02.BackEnd.domain.Answer;
-import Team02.BackEnd.domain.Feedback;
-import Team02.BackEnd.domain.Question;
+import Team02.BackEnd.domain.Analysis;
 import Team02.BackEnd.domain.oauth.User;
-import Team02.BackEnd.dto.feedbackDto.FeedbackResponseDto.GetFeedbackToFastApiDto;
+import Team02.BackEnd.dto.analysisDto.AnalysisResponseDto;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,33 +26,24 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
-@RestClientTest(FeedbackApiService.class)
+@RestClientTest(AnalysisApiService.class)
 @Import(TestConfig.class)
-public class FeedbackApiServiceTest {
+class AnalysisApiServiceTest {
 
     @Autowired
     private RestTemplate restTemplate;
     @Autowired
-    private FeedbackApiService feedbackApiService;
+    private AnalysisApiService analysisApiService;
     @Autowired
     private MockRestServiceServer mockServer;
 
-    private static final String FASTAPI_API_URL = "https://peachmentor.com/api/fastapi/records/feedbacks";
+    private static final String FASTAPI_API_URL = "https://peachmentor.com/api/fastapi/records/analyses";
     private String accessToken;
-    private User user;
-    private Question question;
-    private Answer answer;
-    private Feedback feedback;
 
     @BeforeEach
     void setUp() {
         this.mockServer = MockRestServiceServer.bindTo(restTemplate).build();
-
         accessToken = "accessToken";
-        user = createUser();
-        question = createQuestion();
-        answer = createAnswer(user, question);
-        feedback = createFeedback(user, answer);
     }
 
     @AfterEach
@@ -64,30 +51,30 @@ public class FeedbackApiServiceTest {
         mockServer.reset();
     }
 
-    @DisplayName("스피치에 대한 피드백 데이터 생성하기")
+    @DisplayName("사용자의 일주일치 스피치에 대한 분석 데이터 받아오기")
     @Test
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
-    void getFeedbackFromFastApi() {
+    void getAnalysisFromFastApi() {
         // given
-        List<String> pastAudioLinks = List.of("1", "2");
+        List<String> questions = List.of("question1", "question2");
+        List<String> beforeScripts = List.of("beforeScript1", "beforeScript2");
 
         // when
         mockServer.expect(requestTo(FASTAPI_API_URL))
                 .andExpect(method(HttpMethod.POST))
-                .andExpect(header("Authorization", "Bearer accessToken"))
+                .andExpect(header("Authorization", "Bearer " + accessToken))
                 .andRespond(withSuccess(
-                        "{\"beforeScript\": \"Before script content\", \"afterScript\": \"After script content\", \"afterAudioLink\": \"http://audio.link\", \"feedbackText\": \"Feedback message\"}",
+                        "{\"analysisText\": \"GOOD\"}",
                         MediaType.APPLICATION_JSON));
 
-        GetFeedbackToFastApiDto response = feedbackApiService.getFeedbackFromFastApi(accessToken,
-                feedback.getBeforeAudioLink(), pastAudioLinks, user, answer.getId());
+        AnalysisResponseDto.GetAnalysisFromFastApiDto response = analysisApiService.getAnalysisFromFastApi(
+                accessToken,
+                questions,
+                beforeScripts);
 
         // then
         mockServer.verify();
-        assertThat(response.getBeforeScript()).isEqualTo("Before script content");
-        assertThat(response.getAfterScript()).isEqualTo("After script content");
-        assertThat(response.getAfterAudioLink()).isEqualTo("http://audio.link");
-        assertThat(response.getFeedbackText()).isEqualTo("Feedback message");
-
+        assertThat(response.getAnalysisText()).isEqualTo("GOOD");
     }
+
 }

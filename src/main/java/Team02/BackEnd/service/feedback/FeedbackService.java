@@ -46,5 +46,4 @@ public class FeedbackService {
         feedbackRepository.save(feedback);
         log.info("피드백 받기 전 스피치 URL 저장, feedbackId : {}", feedback.getId());
     }
-
 }

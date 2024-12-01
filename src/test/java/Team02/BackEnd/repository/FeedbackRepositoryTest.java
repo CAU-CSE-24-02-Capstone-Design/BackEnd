@@ -11,12 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Feedback;
 import Team02.BackEnd.domain.Question;
-import Team02.BackEnd.domain.Role;
-import Team02.BackEnd.domain.oauth.OauthId;
 import Team02.BackEnd.domain.oauth.User;
-import Team02.BackEnd.oauth.OauthServerType;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -27,6 +23,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
@@ -106,5 +104,26 @@ class FeedbackRepositoryTest {
         // then
         assertEquals(2, feedbacks.size());
         assertThat(feedbacks).allMatch(feedback -> feedback.getAnswer().getUser().equals(user));
+    }
+
+    @DisplayName("사용자의 이전 beforeScript를 가져온다")
+    @Transactional
+    @Test
+    void findBeforeScriptByUser() {
+        // given
+        User user = createUser();
+        Question question = createQuestion();
+        Answer answer = createAnswer(user, question);
+        Feedback feedback = createFeedback(user, answer);
+        feedbackRepository.save(feedback);
+
+        Pageable pageable = PageRequest.of(0, 7, Sort.by("createdAt").descending());
+
+        // when
+        List<String> beforeScripts = feedbackRepository.findBeforeScriptByUser(user, pageable);
+
+        // then
+        List<String> expectedBeforeScripts = List.of(feedback.getBeforeScript());
+        assertThat(beforeScripts).isEqualTo(expectedBeforeScripts);
     }
 }

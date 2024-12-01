@@ -25,6 +25,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.test.context.support.WithMockUser;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,6 +40,8 @@ class AnswerCheckServiceTest {
 
     private User user;
     private Question question;
+    private Question question1;
+    private Question question2;
     private Answer answer;
     private Answer answer1;
     private Answer answer2;
@@ -46,9 +50,11 @@ class AnswerCheckServiceTest {
     void setUp() {
         user = createUser();
         question = createQuestion();
+        question1 = createQuestion();
+        question2 = createQuestion();
         answer = createAnswer(user, question);
-        answer1 = createAnswer(user, question);
-        answer2 = createAnswer(user, question);
+        answer1 = createAnswer(user, question1);
+        answer2 = createAnswer(user, question2);
     }
 
     @DisplayName("사용자가 지금까지 진행한 모든 스피치에 대한 answer를 가져온다")
@@ -189,5 +195,22 @@ class AnswerCheckServiceTest {
 
         // then
         assertThat(checkSpeechLevel).isTrue();
+    }
+
+    @DisplayName("사용자의 이전 스피치 질문을 가져온다")
+    @Test
+    @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
+    void findQuestionDescriptionsByUser() {
+        // given
+        Pageable pageable = PageRequest.of(0, 7, Sort.by("createdAt").descending());
+        List<String> descriptions = List.of(question.getDescription(), question1.getDescription(),
+                question2.getDescription());
+
+        // when
+        given(answerRepository.findQuestionDescriptionsByUser(user, pageable)).willReturn(descriptions);
+        List<String> findDescriptions = answerCheckService.findQuestionDescriptionsByUser(user, 7);
+
+        // then
+        assertThat(findDescriptions.size()).isEqualTo(descriptions.size());
     }
 }
