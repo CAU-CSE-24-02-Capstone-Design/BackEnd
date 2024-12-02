@@ -24,4 +24,12 @@ public class AnalysisResponseDto {
         @NotNull
         String analysisText;
     }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class GetAvailabilityAnalysisDto {
+        boolean canSaveAnalysis;
+    }
 }

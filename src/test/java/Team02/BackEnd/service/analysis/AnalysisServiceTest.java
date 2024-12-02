@@ -1,6 +1,5 @@
 package Team02.BackEnd.service.analysis;
 
-import static Team02.BackEnd.util.TestUtil.createAnalysis;
 import static Team02.BackEnd.util.TestUtil.createAnswer;
 import static Team02.BackEnd.util.TestUtil.createFeedback;
 import static Team02.BackEnd.util.TestUtil.createQuestion;
@@ -81,7 +80,7 @@ class AnalysisServiceTest {
         given(analysisApiService.getAnalysisFromFastApi(accessToken, expectedQuestions,
                 expectedBeforeScripts)).willReturn(response);
 
-        analysisService.createAnalysis(accessToken);
+        analysisService.saveAnalysis(accessToken);
         // then
         verify(analysisRepository, times(1)).save(any(Analysis.class));
     }

@@ -29,6 +29,7 @@ public record GoogleMemberResponse(
                 .level1QuestionNumber(1L)
                 .level2QuestionNumber(1L)
                 .level3QuestionNumber(1L)
+                .analyzeCompleteAnswerIndex(0L)
                 .role(Role.GUEST)
                 .build();
     }

@@ -51,13 +51,22 @@ public class AnswerCheckService {
         return answerRepository.findLatestAnswerByUser(user, pageable).stream().findFirst();
     }
 
+    public List<Answer> getAnswerByUserWithSize(final User user, final int size) {
+        Pageable pageable = PageRequest.of(0, size);
+        return answerRepository.findLatestAnswerByUser(user, pageable);
+    }
+
     public Boolean checkSpeechLevel(final Answer answer, final Long level) {
         return Objects.equals(answer.getQuestion().getLevel(), level);
     }
 
-    public List<String> findQuestionDescriptionsByUser(final User user, int number) {
-        Pageable pageable = PageRequest.of(0, number, Sort.by("createdAt").descending());
-        return answerRepository.findQuestionDescriptionsByUser(user, pageable);
+    public List<String> findQuestionDescriptionsByUser(final User user, final int number) {
+        Pageable pageable = PageRequest.of(0, number);
+        List<Answer> answers = answerRepository.findLatestAnswerByUser(user, pageable);
+        user.updateAnalyzeCompleteAnswerIndex(answers.get(0).getId());
+        return answers.stream()
+                .map(answer -> answer.getQuestion().getDescription())
+                .toList();
     }
 
     private void validateAnswerIsNotNull(final Answer answer) {
