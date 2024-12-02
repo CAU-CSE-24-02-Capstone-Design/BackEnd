@@ -9,7 +9,10 @@ import Team02.BackEnd.dto.recordDto.RecordRequestDto.GetRespondDto;
 import Team02.BackEnd.repository.FeedbackRepository;
 import Team02.BackEnd.service.answer.AnswerCheckService;
 import Team02.BackEnd.service.user.UserCheckService;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,13 +32,25 @@ public class FeedbackService {
         Feedback feedback = feedbackCheckService.getFeedbackByAnswerId(answerId);
         User user = userCheckService.getUserByToken(accessToken);
         String beforeAudioLink = feedback.getBeforeAudioLink();
-        List<String> pastAudioLinks = feedbackCheckService.getPastAudioLinks(user);  // MAX 5개, 5개 이하면 다 가져옴
+        List<String> pastAudioLinks = validatePastAudioLinksIsNotIncludeToNull(
+                feedbackCheckService.getPastAudioLinks(user));  // MAX 5개, 5개 이하면 다 가져옴
+
+        System.out.println(pastAudioLinks);
 
         GetFeedbackToFastApiDto response = feedbackApiService.getFeedbackFromFastApi(accessToken,
                 beforeAudioLink, pastAudioLinks, user, answerId);
         feedback.updateFeedbackData(response);
         feedbackRepository.save(feedback);
         log.info("스피치 분석 데이터 생성, feedbackId : {}", feedback.getId());
+    }
+
+    private List<String> validatePastAudioLinksIsNotIncludeToNull(final List<String> pastAudioLinks) {
+        if (pastAudioLinks == null) { // 전체가 null 일 때
+            return Collections.emptyList();
+        }
+        return pastAudioLinks.stream() // null 포함 되어 있으면 제외 후 리스트
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     public void saveBeforeAudioLink(final String accessToken, final GetRespondDto getRespondDto) {
