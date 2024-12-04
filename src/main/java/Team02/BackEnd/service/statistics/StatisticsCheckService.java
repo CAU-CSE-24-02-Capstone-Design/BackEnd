@@ -29,8 +29,10 @@ public class StatisticsCheckService {
         log.info("사용자의 모든 스피치 통계 가져오기, email : {}", user.getEmail());
         return answerCheckService.getAnswersByUser(user).stream()
                 .filter(this::isStatisticsExistsWithAnswer)
-                .map(this::getStatisticsByAnswer)
-                .map(StatisticsConverter::toGetStatisticsDto)
+                .map(answer -> {
+                    Statistics statistics = getStatisticsByAnswer(answer);
+                    return StatisticsConverter.toGetStatisticsDto(statistics, answer);
+                })
                 .toList();
     }
 
@@ -40,8 +42,10 @@ public class StatisticsCheckService {
         return answerCheckService.getAnswersByUser(user).stream()
                 .filter(this::isStatisticsExistsWithAnswer)
                 .filter(answer -> answerCheckService.checkSpeechLevel(answer, level))
-                .map(this::getStatisticsByAnswer)
-                .map(StatisticsConverter::toGetStatisticsDto)
+                .map(answer -> {
+                    Statistics statistics = getStatisticsByAnswer(answer);
+                    return StatisticsConverter.toGetStatisticsDto(statistics, answer);
+                })
                 .toList();
     }
 
