@@ -11,8 +11,10 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AnalysisConverter {
-    public static GetAnalysisDto toGetAnalysisDto(final String analysisText) {
+    public static GetAnalysisDto toGetAnalysisDto(final String analysisText, final List<String> answerDates) {
         return GetAnalysisDto.builder()
+                .firstDate(answerDates.get(0))
+                .lastDate(answerDates.get(answerDates.size() - 1))
                 .analysisText(analysisText)
                 .build();
     }
