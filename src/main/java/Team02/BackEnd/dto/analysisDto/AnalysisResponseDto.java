@@ -13,6 +13,8 @@ public class AnalysisResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class GetAnalysisDto {
+        String firstDate;
+        String lastDate;
         String analysisText;
     }
 

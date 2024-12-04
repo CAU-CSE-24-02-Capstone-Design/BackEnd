@@ -45,10 +45,10 @@ public class FeedbackService {
     }
 
     private List<String> validatePastAudioLinksIsNotIncludeToNull(final List<String> pastAudioLinks) {
-        if (pastAudioLinks == null) { // 전체가 null 일 때
+        if (pastAudioLinks == null) {
             return Collections.emptyList();
         }
-        return pastAudioLinks.stream() // null 포함 되어 있으면 제외 후 리스트
+        return pastAudioLinks.stream()
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }

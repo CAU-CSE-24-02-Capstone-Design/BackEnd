@@ -14,6 +14,7 @@ import Team02.BackEnd.domain.Analysis;
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.oauth.User;
+import Team02.BackEnd.dto.analysisDto.AnalysisResponseDto.GetAnalysisDto;
 import Team02.BackEnd.repository.AnalysisRepository;
 import Team02.BackEnd.service.answer.AnswerCheckService;
 import Team02.BackEnd.service.feedback.FeedbackCheckService;
@@ -82,14 +83,17 @@ class AnalysisCheckServiceTest {
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
     void getAnalysis() {
         // given
+        List<Answer> answers = List.of(answer);
 
         // when
         given(userCheckService.getUserByToken(accessToken)).willReturn(user);
+        given(answerCheckService.getAnswerByUserWithSize(user, NUMBER_OF_USER_SPEECH)).willReturn(answers);
+        given(feedbackCheckService.isFeedbackExistsWithAnswer(answer)).willReturn(true);
         given(analysisRepository.findMostRecentAnalysisByUserId(user.getId())).willReturn(analysis);
-        String analysisText = analysisCheckService.getAnalysis(accessToken);
+        GetAnalysisDto getAnalysisDto = analysisCheckService.getAnalysis(accessToken);
 
         // then
-        assertThat(analysisText).isEqualTo(analysis.getAnalysisText());
+        assertThat(getAnalysisDto.getAnalysisText()).isEqualTo(analysis.getAnalysisText());
     }
 
     @DisplayName("사용자의 가장 최근 일주일 분석 리포트가 없으면 _ANALYSIS_NOT_FOUND 에러를 반환한다")
