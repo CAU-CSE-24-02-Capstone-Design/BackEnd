@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 public class AnalysisConverter {
     public static GetAnalysisDto toGetAnalysisDto(final String analysisText, final List<String> answerDates) {
         return GetAnalysisDto.builder()
-                .firstDate(answerDates.get(0))
-                .lastDate(answerDates.get(answerDates.size() - 1))
+                .lastDate(answerDates.get(0))
+                .firstDate(answerDates.get(answerDates.size() - 1))
                 .analysisText(analysisText)
                 .build();
     }
