@@ -6,6 +6,7 @@ import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_REPLACEMENT;
 import Team02.BackEnd.apiPayload.ApiResponse;
 import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
 import Team02.BackEnd.converter.AnalysisConverter;
+import Team02.BackEnd.domain.Analysis;
 import Team02.BackEnd.dto.analysisDto.AnalysisResponseDto;
 import Team02.BackEnd.service.analysis.AnalysisCheckService;
 import Team02.BackEnd.service.analysis.AnalysisService;
