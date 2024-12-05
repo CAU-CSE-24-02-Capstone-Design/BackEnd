@@ -1,6 +1,7 @@
 package Team02.BackEnd.dto.analysisDto;
 
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +14,7 @@ public class AnalysisResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class GetAnalysisDto {
-        String analysisText;
+        List<List<String>> analysisText;
     }
 
     @Builder
@@ -22,7 +23,7 @@ public class AnalysisResponseDto {
     @NoArgsConstructor
     public static class GetAnalysisFromFastApiDto {
         @NotNull
-        String analysisText;
+        List<List<String>> analysisText;
     }
 
     @Builder

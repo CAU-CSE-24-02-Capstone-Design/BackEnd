@@ -38,11 +38,11 @@ public class AnalysisCheckService {
                 .noneMatch(id -> user.getAnalyzeCompleteAnswerIndex().equals(id));
     }
 
-    public String getAnalysis(final String accessToken) {
+    public Analysis getAnalysis(final String accessToken) {
         User user = userCheckService.getUserByToken(accessToken);
         Analysis analysis = analysisRepository.findMostRecentAnalysisByUserId(user.getId());
         validateAnalysisIsNotNull(analysis);
-        return analysis.getAnalysisText();
+        return analysis;
     }
 
     private void validateAnalysisIsNotNull(final Analysis analysis) {

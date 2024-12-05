@@ -1,6 +1,8 @@
 package Team02.BackEnd.domain;
 
 import Team02.BackEnd.domain.oauth.User;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,7 +11,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import java.io.IOException;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,9 +34,21 @@ public class Analysis extends BaseEntity {
     private Long id;
 
     @Column(name = "analysis_text", columnDefinition = "TEXT")
+    @Lob
     private String analysisText;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
+
+    // JSON을 List<List<String>>로 변환하는 메서드
+    public List<List<String>> getAnalysisTextAsList() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(this.analysisText, new TypeReference<>() {
+            });
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to parse analysisText JSON", e);
+        }
+    }
 }

@@ -6,6 +6,7 @@ import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_REPLACEMENT;
 import Team02.BackEnd.apiPayload.ApiResponse;
 import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
 import Team02.BackEnd.converter.AnalysisConverter;
+import Team02.BackEnd.domain.Analysis;
 import Team02.BackEnd.dto.analysisDto.AnalysisResponseDto;
 import Team02.BackEnd.service.analysis.AnalysisCheckService;
 import Team02.BackEnd.service.analysis.AnalysisService;
@@ -49,7 +50,8 @@ public class AnalysisController {
     public ApiResponse<AnalysisResponseDto.GetAnalysisDto> getAnalysis(
             @RequestHeader("authorization") final String authorizationHeader) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
-        String analysisText = analysisCheckService.getAnalysis(accessToken);
-        return ApiResponse.of(SuccessStatus.GET_ANALYSIS, AnalysisConverter.toGetAnalysisDto(analysisText));
+        Analysis analysis = analysisCheckService.getAnalysis(accessToken);
+        return ApiResponse.of(SuccessStatus.GET_ANALYSIS,
+                AnalysisConverter.toGetAnalysisDto(analysis.getAnalysisTextAsList()));
     }
 }
