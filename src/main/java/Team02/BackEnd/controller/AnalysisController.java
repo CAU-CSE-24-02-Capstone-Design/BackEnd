@@ -50,8 +50,9 @@ public class AnalysisController {
     public ApiResponse<AnalysisResponseDto.GetAnalysisDto> getAnalysis(
             @RequestHeader("authorization") final String authorizationHeader) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
-        Analysis analysis = analysisCheckService.getAnalysis(accessToken);
-        return ApiResponse.of(SuccessStatus.GET_ANALYSIS,
-                AnalysisConverter.toGetAnalysisDto(analysis.getAnalysisTextAsList()));
+        return ApiResponse.of(SuccessStatus.GET_ANALYSIS, analysisCheckService.getAnalysis(accessToken));
+//        Analysis analysis = analysisCheckService.getAnalysis(accessToken);
+//        return ApiResponse.of(SuccessStatus.GET_ANALYSIS,
+//                AnalysisConverter.toGetAnalysisDto(analysis.getAnalysisTextAsList()));
     }
 }
