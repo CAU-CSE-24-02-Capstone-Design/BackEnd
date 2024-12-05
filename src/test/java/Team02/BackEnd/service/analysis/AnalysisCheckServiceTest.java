@@ -14,6 +14,7 @@ import Team02.BackEnd.domain.Analysis;
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.oauth.User;
+import Team02.BackEnd.dto.analysisDto.AnalysisResponseDto.GetAnalysisDto;
 import Team02.BackEnd.repository.AnalysisRepository;
 import Team02.BackEnd.service.answer.AnswerCheckService;
 import Team02.BackEnd.service.feedback.FeedbackCheckService;

@@ -15,6 +15,9 @@ public class AnalysisResponseDto {
     @AllArgsConstructor
     public static class GetAnalysisDto {
         List<List<String>> analysisText;
+        String firstDate;
+        String lastDate;
+        String analysisText;
     }
 
     @Builder
