@@ -19,6 +19,7 @@ import Team02.BackEnd.repository.AnalysisRepository;
 import Team02.BackEnd.service.answer.AnswerCheckService;
 import Team02.BackEnd.service.feedback.FeedbackCheckService;
 import Team02.BackEnd.service.user.UserCheckService;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -66,11 +67,12 @@ class AnalysisServiceTest {
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
     void createAnalysisData() {
         // given
+        List<List<String>> analysisText = new ArrayList<>();
         int number = 7;
         List<String> expectedQuestions = List.of(question.getDescription());
         List<String> expectedBeforeScripts = List.of(feedback.getBeforeScript());
         GetAnalysisFromFastApiDto response = GetAnalysisFromFastApiDto.builder()
-                .analysisText("text")
+                .analysisText(analysisText)
                 .build();
 
         // when

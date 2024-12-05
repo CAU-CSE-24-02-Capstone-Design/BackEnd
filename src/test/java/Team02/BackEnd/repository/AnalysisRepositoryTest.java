@@ -7,12 +7,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import Team02.BackEnd.domain.Analysis;
 import Team02.BackEnd.domain.oauth.User;
 import jakarta.transaction.Transactional;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
@@ -31,12 +35,14 @@ class AnalysisRepositoryTest {
         User user = createUser();
         Analysis analysis = createAnalysis(user);
         analysisRepository.save(analysis);
+        Pageable pageable = PageRequest.of(0, 1);
 
         // when
-        Analysis findAnalysis = analysisRepository.findMostRecentAnalysisByUserId(user.getId());
+        Page<Analysis> findAnalysis = analysisRepository.findMostRecentAnalysisByUserId(user.getId(), pageable);
+        Optional<Analysis> findAnalysis1 = findAnalysis.stream().findFirst();
 
         // then
-        assertThat(findAnalysis.getAnalysisText()).isEqualTo(analysis.getAnalysisText());
-        assertThat(findAnalysis.getUser()).isEqualTo(user);
+        assertThat(findAnalysis1.get().getAnalysisText()).isEqualTo(analysis.getAnalysisText());
+        assertThat(findAnalysis1.get().getUser()).isEqualTo(user);
     }
 }
