@@ -53,7 +53,7 @@ public class AnalysisCheckService {
                 .toList();
         Analysis analysis = analysisRepository.findMostRecentAnalysisByUserId(user.getId());
         validateAnalysisIsNotNull(analysis);
-        return AnalysisConverter.toGetAnalysisDto(analysis.getAnalysisText(), answerDates);
+        return AnalysisConverter.toGetAnalysisDto(analysis.getAnalysisTextAsList(), answerDates);
     }
 
     private void validateAnalysisIsNotNull(final Analysis analysis) {
