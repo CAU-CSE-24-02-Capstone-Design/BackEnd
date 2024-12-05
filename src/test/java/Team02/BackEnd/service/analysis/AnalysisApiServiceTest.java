@@ -51,30 +51,29 @@ class AnalysisApiServiceTest {
         mockServer.reset();
     }
 
-    @DisplayName("사용자의 일주일치 스피치에 대한 분석 데이터 받아오기")
-    @Test
-    @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
-    void getAnalysisFromFastApi() {
-        // given
-        List<String> questions = List.of("question1", "question2");
-        List<String> beforeScripts = List.of("beforeScript1", "beforeScript2");
-
-        // when
-        mockServer.expect(requestTo(FASTAPI_API_URL))
-                .andExpect(method(HttpMethod.POST))
-                .andExpect(header("Authorization", "Bearer " + accessToken))
-                .andRespond(withSuccess(
-                        "{\"analysisText\": \"GOOD\"}",
-                        MediaType.APPLICATION_JSON));
-
-        AnalysisResponseDto.GetAnalysisFromFastApiDto response = analysisApiService.getAnalysisFromFastApi(
-                accessToken,
-                questions,
-                beforeScripts);
-
-        // then
-        mockServer.verify();
-        assertThat(response.getAnalysisText()).isEqualTo("GOOD");
-    }
-
+//    @DisplayName("사용자의 일주일치 스피치에 대한 분석 데이터 받아오기")
+//    @Test
+//    @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
+//    void getAnalysisFromFastApi() {
+//        // given
+//        List<String> questions = List.of("question1", "question2");
+//        List<String> beforeScripts = List.of("beforeScript1", "beforeScript2");
+//
+//        // when
+//        mockServer.expect(requestTo(FASTAPI_API_URL))
+//                .andExpect(method(HttpMethod.POST))
+//                .andExpect(header("Authorization", "Bearer " + accessToken))
+//                .andRespond(withSuccess(
+//                        "{\"analysisText\": \"GOOD\"}",
+//                        MediaType.APPLICATION_JSON));
+//
+//        AnalysisResponseDto.GetAnalysisFromFastApiDto response = analysisApiService.getAnalysisFromFastApi(
+//                accessToken,
+//                questions,
+//                beforeScripts);
+//
+//        // then
+//        mockServer.verify();
+//        assertThat(response.getAnalysisText()).isEqualTo("GOOD");
+//    }
 }

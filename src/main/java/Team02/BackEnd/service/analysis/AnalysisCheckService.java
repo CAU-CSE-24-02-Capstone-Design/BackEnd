@@ -16,8 +16,12 @@ import Team02.BackEnd.service.feedback.FeedbackCheckService;
 import Team02.BackEnd.service.user.UserCheckService;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -51,9 +55,11 @@ public class AnalysisCheckService {
                 .map(answer -> answer.getCreatedAt().atZone(ZoneId.of(BASE_TIME_ZONE))
                         .withZoneSameInstant(ZoneId.of(NEW_TIME_ZONE)).toLocalDate().toString())
                 .toList();
-        Analysis analysis = analysisRepository.findMostRecentAnalysisByUserId(user.getId());
-        validateAnalysisIsNotNull(analysis);
-        return AnalysisConverter.toGetAnalysisDto(analysis.getAnalysisTextAsList(), answerDates);
+        Pageable pageable = PageRequest.of(0, 1);
+        Page<Analysis> analysisPage = analysisRepository.findMostRecentAnalysisByUserId(user.getId(), pageable);
+        Optional<Analysis> analysis = analysisPage.stream().findFirst();
+        validateAnalysisIsNotNull(analysis.get());
+        return AnalysisConverter.toGetAnalysisDto(analysis.get().getAnalysisTextAsList(), answerDates);
     }
 
     private void validateAnalysisIsNotNull(final Analysis analysis) {
