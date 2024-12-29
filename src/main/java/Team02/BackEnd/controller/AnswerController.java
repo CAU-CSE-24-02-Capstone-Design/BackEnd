@@ -3,6 +3,7 @@ package Team02.BackEnd.controller;
 import Team02.BackEnd.apiPayload.ApiResponse;
 import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
 import Team02.BackEnd.converter.AnswerConverter;
+import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.dto.answerDto.AnswerRequestDto;
 import Team02.BackEnd.dto.answerDto.AnswerResponseDto;
 import Team02.BackEnd.service.answer.AnswerCheckService;
@@ -36,8 +37,8 @@ public class AnswerController {
     @Operation(summary = "스피치에 대한 평가 가져오기", description = "스피치가 얼마나 만족스러웠는지")
     public ApiResponse<AnswerResponseDto.AnswerEvaluationResponseDto> getAnswerEvaluation(
             @RequestParam("answerId") final Long answerId) {
-        int evaluation = answerCheckService.getAnswerEvaluation(answerId);
+        Answer answer = answerCheckService.getAnswerByAnswerId(answerId);
         return ApiResponse.of(SuccessStatus.GET_EVALUATION,
-                AnswerConverter.toAnswerEvaluationResponseDto(evaluation));
+                AnswerConverter.toAnswerEvaluationResponseDto(answer.getEvaluation()));
     }
 }

@@ -13,6 +13,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +25,7 @@ public class QuestionCheckService {
     private final FeedbackCheckService feedbackCheckService;
     private final QuestionRepository questionRepository;
 
+    @Transactional(readOnly = true)
     public Question getUserQuestion(final String accessToken, final Long level) {
         User user = userCheckService.getUserByToken(accessToken);
         Optional<Answer> latestAnswer = answerCheckService.getLatestAnswerByUser(user);
@@ -36,6 +38,7 @@ public class QuestionCheckService {
         return question;
     }
 
+    @Transactional(readOnly = true)
     public Question getQuestionByUserQNumberAndLevel(final Long questionNumber, final Long level) {
         Question question = questionRepository.findByQuestionIndexAndLevel(questionNumber, level);
         validateQuestionIsNotNull(question);

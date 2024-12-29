@@ -14,6 +14,7 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -24,6 +25,7 @@ public class SelfFeedbackCheckService {
     private final AnswerCheckService answerCheckService;
     private final SelfFeedbackRepository selfFeedbackRepository;
 
+    @Transactional(readOnly = true)
     public SelfFeedback getLatestSelfFeedback(final String accessToken) {
         User user = userCheckService.getUserByToken(accessToken);
         List<Answer> answers = answerCheckService.getAnswersByUser(user);
@@ -37,10 +39,12 @@ public class SelfFeedbackCheckService {
         return selfFeedback;
     }
 
+    @Transactional(readOnly = true)
     public SelfFeedback getSelfFeedbackByAnswerId(final Long answerId) {
         return selfFeedbackRepository.findByAnswerId(answerId);
     }
 
+    @Transactional(readOnly = true)
     public boolean isExistsSelfFeedbackWithAnswerId(final Long answerId) {
         return selfFeedbackRepository.findByAnswerId(answerId) != null;
     }

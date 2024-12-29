@@ -153,20 +153,6 @@ class AnswerCheckServiceTest {
         assertThat(ErrorStatus._ANSWER_NOT_FOUND.getCode()).isEqualTo(exception.getCode().getReason().getCode());
     }
 
-    @DisplayName("스피치에 대한 자체 평가 점수를 가져온다")
-    @Test
-    @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
-    void getAnswerEvaluation() {
-        // given
-
-        // when
-        given(answerRepository.findById(user.getId())).willReturn(Optional.ofNullable(answer));
-        int evaluation = answerCheckService.getAnswerEvaluation(answer.getId());
-
-        // then
-        assertThat(evaluation).isEqualTo(answer.getEvaluation());
-    }
-
     @DisplayName("사용자의 가장 최근 스피치에 대한 Answer 엔티티를 가져온다")
     @Test
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})

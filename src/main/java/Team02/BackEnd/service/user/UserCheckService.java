@@ -8,6 +8,7 @@ import Team02.BackEnd.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +18,7 @@ public class UserCheckService {
     private final JwtService jwtService;
     private final UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     public User getUserByToken(final String accessToken) {
         String email = jwtService.extractEmail(accessToken).orElse(null);
         User user = userRepository.findByEmail(email).orElse(null);

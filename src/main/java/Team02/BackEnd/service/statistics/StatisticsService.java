@@ -8,6 +8,7 @@ import Team02.BackEnd.service.answer.AnswerCheckService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +18,7 @@ public class StatisticsService {
     private final AnswerCheckService answerCheckService;
     private final StatisticsRepository statisticsRepository;
 
+    @Transactional
     public void saveStatistics(final GetStatisticsDto getStatisticsDto) {
         Answer answer = answerCheckService.getAnswerByAnswerId(getStatisticsDto.getAnswerId());
         Statistics statistics = Statistics.builder()

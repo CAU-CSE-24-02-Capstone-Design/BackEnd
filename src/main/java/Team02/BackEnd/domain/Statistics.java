@@ -23,6 +23,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Statistics extends BaseEntity {
+
     @Id
     @Column(name = "statistics_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

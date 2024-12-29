@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -26,6 +27,7 @@ public class CalendarCheckService {
     private final AnswerCheckService answerCheckService;
     private final FeedbackCheckService feedbackCheckService;
 
+    @Transactional(readOnly = true)
     public Long[] getDatesWhenUserDid(final String accessToken, final String year, final String month) {
         User user = userCheckService.getUserByToken(accessToken);
         List<Answer> answersInPeriod = answerCheckService.findAnswersByUserAndYearAndMonth(user, year, month);
