@@ -12,6 +12,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +26,7 @@ public class AnalysisService {
     private final AnalysisApiService analysisApiService;
     private final AnalysisRepository analysisRepository;
 
+    @Transactional
     public void saveAnalysis(final String accessToken) {
         User user = userCheckService.getUserByToken(accessToken);
         List<String> questions = answerCheckService.findQuestionDescriptionsByUser(user, NUMBER_OF_USER_SPEECH);

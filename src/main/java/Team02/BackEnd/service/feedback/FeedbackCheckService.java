@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -33,6 +34,7 @@ public class FeedbackCheckService {
     private final AnswerCheckService answerCheckService;
     private final FeedbackRepository feedbackRepository;
 
+    @Transactional(readOnly = true)
     public boolean doSpeechToday(final String accessToken) {
         User user = userCheckService.getUserByToken(accessToken);
         log.info("오늘 스피치를 진행했는지 확인하기, userId : {}", user.getId());
@@ -44,6 +46,7 @@ public class FeedbackCheckService {
                         .equals(LocalDate.now(ZoneId.of(NEW_TIME_ZONE))));
     }
 
+    @Transactional(readOnly = true)
     public List<String> getPastAudioLinks(final User user) {
         PageRequest pageRequest = PageRequest.of(0, LIMIT_PAST_AUDIO_NUMBER, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Feedback> feedbackPageList = feedbackRepository.findByUserId(user.getId(), pageRequest);
@@ -57,16 +60,18 @@ public class FeedbackCheckService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<String> findBeforeScriptByUser(final User user, int number) {
         Pageable pageable = PageRequest.of(0, number, Sort.by("createdAt").descending());
         return feedbackRepository.findBeforeScriptByUser(user, pageable);
     }
 
-
+    @Transactional(readOnly = true)
     public boolean isFeedbackExistsWithAnswer(final Answer answer) {
         return feedbackRepository.findByAnswerId(answer.getId()).isPresent();
     }
 
+    @Transactional(readOnly = true)
     public Feedback getFeedbackByAnswerId(final Long answerId) {
         Feedback feedback = feedbackRepository.findByAnswerId(answerId).orElse(null);
         validateFeedbackIsNotNull(feedback);

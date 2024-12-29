@@ -14,6 +14,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +25,7 @@ public class StatisticsCheckService {
     private final AnswerCheckService answerCheckService;
     private final StatisticsRepository statisticsRepository;
 
+    @Transactional(readOnly = true)
     public List<GetStatisticsDto> getUserStatistics(final String accessToken) {
         User user = userCheckService.getUserByToken(accessToken);
         log.info("사용자의 모든 스피치 통계 가져오기, email : {}", user.getEmail());
@@ -36,6 +38,7 @@ public class StatisticsCheckService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<GetStatisticsDto> getUserStatisticsByLevel(final String accessToken, final Long level) {
         User user = userCheckService.getUserByToken(accessToken);
         log.info("사용자의 난이도 별 스피치 통계 가져오기, level : {}, email : {}", level, user.getEmail());
@@ -49,10 +52,12 @@ public class StatisticsCheckService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public boolean isStatisticsExistsWithAnswer(final Answer answer) {
         return statisticsRepository.findByAnswerId(answer.getId()).isPresent();
     }
 
+    @Transactional(readOnly = true)
     public Statistics getStatisticsByAnswer(final Answer answer) {
         Statistics statistics = statisticsRepository.findByAnswerId(answer.getId()).orElse(null);
         validateStatistics(statistics);

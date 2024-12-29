@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -22,18 +23,21 @@ public class AnswerCheckService {
 
     private final AnswerRepository answerRepository;
 
+    @Transactional(readOnly = true)
     public List<Answer> getAnswersByUser(final User user) {
         List<Answer> answers = answerRepository.findByUserId(user.getId());
         validateAnswersEmpty(answers);
         return answers;
     }
 
+    @Transactional(readOnly = true)
     public Answer getAnswerByAnswerId(final Long answerId) {
         Answer answer = answerRepository.findById(answerId).orElse(null);
         validateAnswerIsNotNull(answer);
         return answer;
     }
 
+    @Transactional(readOnly = true)
     public List<Answer> findAnswersByUserAndYearAndMonth(final User user, final String year, final String month) {
         List<Answer> answers = answerRepository.findByUserAndYearAndMonth(user, Integer.parseInt(year),
                 Integer.parseInt(month));
@@ -41,25 +45,24 @@ public class AnswerCheckService {
         return answers;
     }
 
-    public int getAnswerEvaluation(final Long answerId) {
-        Answer answer = getAnswerByAnswerId(answerId);
-        return answer.getEvaluation();
-    }
-
+    @Transactional(readOnly = true)
     public Optional<Answer> getLatestAnswerByUser(final User user) {
         Pageable pageable = PageRequest.of(0, 1);
         return answerRepository.findLatestAnswerByUser(user, pageable).stream().findFirst();
     }
 
+    @Transactional(readOnly = true)
     public List<Answer> getAnswerByUserWithSize(final User user, final int size) {
         Pageable pageable = PageRequest.of(0, size);
         return answerRepository.findLatestAnswerByUser(user, pageable);
     }
 
+    @Transactional(readOnly = true)
     public Boolean checkSpeechLevel(final Answer answer, final Long level) {
         return Objects.equals(answer.getQuestion().getLevel(), level);
     }
 
+    @Transactional(readOnly = true)
     public List<String> findQuestionDescriptionsByUser(final User user, final int number) {
         Pageable pageable = PageRequest.of(0, number);
         List<Answer> answers = answerRepository.findLatestAnswerByUser(user, pageable);

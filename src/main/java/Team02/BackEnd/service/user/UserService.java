@@ -19,18 +19,15 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class UserService {
 
-    private final AnswerService answerService;
-    private final FeedbackService feedbackService;
-    private final SelfFeedbackService selfFeedbackService;
-    private final InsightService insightService;
-    private final StatisticsService statisticsService;
     private final UserCheckService userCheckService;
     private final UserRepository userRepository;
 
+    @org.springframework.transaction.annotation.Transactional
     public void signOut(final String accessToken) {
         log.info("회원 탈퇴");
     }
 
+    @org.springframework.transaction.annotation.Transactional
     public void updateRoleAndVoiceUrl(final String accessToken, final GetVoiceUrlDto getVoiceUrlDto) {
         User user = userCheckService.getUserByToken(accessToken);
         user.updateRole();

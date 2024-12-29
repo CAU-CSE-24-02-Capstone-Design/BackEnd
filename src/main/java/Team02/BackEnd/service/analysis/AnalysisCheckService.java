@@ -23,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -35,6 +36,7 @@ public class AnalysisCheckService {
     private final FeedbackCheckService feedbackCheckService;
     private final AnalysisRepository analysisRepository;
 
+    @Transactional(readOnly = true)
     public boolean canSaveAnalysis(final String accessToken) {
         User user = userCheckService.getUserByToken(accessToken);
         List<Answer> latestAnswers = answerCheckService.getAnswerByUserWithSize(user, NUMBER_OF_USER_SPEECH).stream()
@@ -48,6 +50,7 @@ public class AnalysisCheckService {
                 .noneMatch(id -> user.getAnalyzeCompleteAnswerIndex().equals(id));
     }
 
+    @Transactional(readOnly = true)
     public GetAnalysisDto getAnalysis(final String accessToken) {
         User user = userCheckService.getUserByToken(accessToken);
         List<String> answerDates = answerCheckService.getAnswerByUserWithSize(user, NUMBER_OF_USER_SPEECH).stream()

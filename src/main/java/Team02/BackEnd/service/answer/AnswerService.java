@@ -7,15 +7,14 @@ import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.repository.AnswerRepository;
 import Team02.BackEnd.service.feedback.FeedbackCheckService;
 import Team02.BackEnd.service.user.UserCheckService;
-import jakarta.transaction.Transactional;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 @Slf4j
 public class AnswerService {
 
@@ -24,6 +23,7 @@ public class AnswerService {
     private final FeedbackCheckService feedbackCheckService;
     private final AnswerRepository answerRepository;
 
+    @Transactional
     public Long createAnswer(final String accessToken, final Question question, final Long level) {
         User user = userCheckService.getUserByToken(accessToken);
         Optional<Answer> latestAnswer = answerCheckService.getLatestAnswerByUser(user);
@@ -37,6 +37,7 @@ public class AnswerService {
         return answer.getId();
     }
 
+    @Transactional
     public void saveAnswerEvaluation(final Long answerId, final int evaluation) {
         Answer answer = answerCheckService.getAnswerByAnswerId(answerId);
         answer.updateEvaluation(evaluation);

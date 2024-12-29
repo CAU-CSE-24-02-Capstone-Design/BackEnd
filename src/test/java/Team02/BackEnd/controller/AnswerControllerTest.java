@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.dto.answerDto.AnswerRequestDto;
 import Team02.BackEnd.jwt.service.JwtService;
 import Team02.BackEnd.service.answer.AnswerCheckService;
@@ -72,11 +73,15 @@ public class AnswerControllerTest {
         // given
         Long answerId = 1L;
         int evaluation = 3;
+        Answer answer = Answer.builder()
+                .id(answerId)
+                .evaluation(evaluation)
+                .build();
         String accessToken = "mockAccessToken";
         given(jwtService.createAccessToken("tlsgusdn4818@gmail.com")).willReturn(accessToken);
 
         // when
-        given(answerCheckService.getAnswerEvaluation(answerId)).willReturn(evaluation);
+        given(answerCheckService.getAnswerByAnswerId(answerId)).willReturn(answer);
 
         // then
         mockMvc.perform(get("/api/spring/answers/evaluations")
