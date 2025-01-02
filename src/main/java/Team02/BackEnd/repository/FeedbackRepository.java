@@ -11,6 +11,9 @@ import org.springframework.data.repository.query.Param;
 
 public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
+    @Query("SELECT COUNT(f) > 0 FROM Feedback f WHERE f.answer.id =:answerId")
+    boolean existsByAnswerId(final Long answerId);
+
     Optional<Feedback> findByAnswerId(final Long answerId);
 
     @Query("SELECT COUNT(f) > 0 FROM Feedback f WHERE f.answer.id = :answerId")
