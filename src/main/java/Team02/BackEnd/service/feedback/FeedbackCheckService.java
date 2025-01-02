@@ -68,7 +68,7 @@ public class FeedbackCheckService {
 
     @Transactional(readOnly = true)
     public boolean isFeedbackExistsWithAnswer(final Answer answer) {
-        return feedbackRepository.findByAnswerId(answer.getId()).isPresent();
+        return feedbackRepository.existsByAnswerId(answer.getId());
     }
 
     @Transactional(readOnly = true)

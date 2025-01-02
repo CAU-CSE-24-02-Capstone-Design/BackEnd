@@ -103,7 +103,7 @@ class FeedbackCheckServiceTest {
         // given
 
         // when
-        given(feedbackRepository.findByAnswerId(answer.getId())).willReturn(Optional.of(feedback));
+        given(feedbackRepository.existsByAnswerId(answer.getId())).willReturn(true);
         boolean isFeedbackExists = feedbackCheckService.isFeedbackExistsWithAnswer(answer);
 
         // then

@@ -6,7 +6,6 @@ import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.repository.AnswerRepository;
 import Team02.BackEnd.service.feedback.FeedbackCheckService;
-import Team02.BackEnd.service.user.UserCheckService;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,14 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class AnswerService {
 
     private final AnswerCheckService answerCheckService;
-    private final UserCheckService userCheckService;
     private final FeedbackCheckService feedbackCheckService;
     private final AnswerRepository answerRepository;
 
     @Transactional
-    public Long createAnswer(final String accessToken, final Question question, final Long level) {
-        User user = userCheckService.getUserByToken(accessToken);
-        Optional<Answer> latestAnswer = answerCheckService.getLatestAnswerByUser(user);
+    public Long createAnswer(final User user, final Question question, final Optional<Answer> latestAnswer,
+                             final Long level) {
         if (latestAnswer.isPresent() && !feedbackCheckService.isFeedbackExistsWithAnswer(latestAnswer.get())) {
             log.info("녹음이 진행 안 된 answer 엔티티 재사용, answerId : {}", latestAnswer.get().getId());
             return latestAnswer.get().getId();

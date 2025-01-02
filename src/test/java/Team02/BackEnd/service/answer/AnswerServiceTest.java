@@ -1,6 +1,5 @@
 package Team02.BackEnd.service.answer;
 
-import static Team02.BackEnd.util.TestUtil.createAnswer;
 import static Team02.BackEnd.util.TestUtil.createQuestion;
 import static Team02.BackEnd.util.TestUtil.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,20 +30,15 @@ import org.springframework.test.context.ActiveProfiles;
 class AnswerServiceTest {
 
     @Mock
-    private UserCheckService userCheckService;
-    @Mock
     private AnswerCheckService answerCheckService;
     @Mock
     private FeedbackCheckService feedbackCheckService;
-    @Mock
-    private AnswerRepository answerRepository;
 
     @InjectMocks
     private AnswerService answerService;
 
     private Long level;
     private Long expectedAnswerId;
-    private String accessToken;
     private User user;
     private Question question;
     private Answer answer;
@@ -53,7 +47,6 @@ class AnswerServiceTest {
     void setUp() {
         level = 1L;
         expectedAnswerId = 1L;
-        accessToken = "accessToken";
         user = createUser();
         question = createQuestion();
         answer = createAnswer(user, question);
@@ -66,12 +59,7 @@ class AnswerServiceTest {
         // given
 
         // when
-        given(userCheckService.getUserByToken(accessToken)).willReturn(user);
-        given(answerCheckService.getLatestAnswerByUser(user)).willReturn(Optional.empty());
-        given(answerRepository.saveAndFlush(any())).willReturn(answer);
-
-        Long answerId = answerService.createAnswer(accessToken, question, level);
-
+        Long answerId = answerService.createAnswer(user, question, Optional.of(answer), level);
         // then
         assertThat(answerId).isEqualTo(expectedAnswerId);
     }
@@ -83,11 +71,8 @@ class AnswerServiceTest {
         // given
 
         // when
-        given(userCheckService.getUserByToken(accessToken)).willReturn(user);
-        given(answerCheckService.getLatestAnswerByUser(user)).willReturn(Optional.of(answer));
         given(feedbackCheckService.isFeedbackExistsWithAnswer(answer)).willReturn(false);
-
-        Long answerId = answerService.createAnswer(accessToken, question, level);
+        Long answerId = answerService.createAnswer(user, question, Optional.of(answer), level);
 
         // then
         assertThat(answerId).isEqualTo(expectedAnswerId);
@@ -101,9 +86,7 @@ class AnswerServiceTest {
 
         // when
         given(answerCheckService.getAnswerByAnswerId(answer.getId())).willReturn(answer);
-
         answerService.saveAnswerEvaluation(answer.getId(), 2);
-
         // then
         assertThat(answer.getEvaluation()).isEqualTo(2);
 

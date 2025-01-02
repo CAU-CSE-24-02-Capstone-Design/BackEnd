@@ -39,6 +39,11 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testRuntimeOnly 'com.h2database:h2'
 
+    implementation 'org.hibernate.orm:hibernate-ehcache:6.0.0.Alpha7'
+    implementation 'org.hibernate.orm:hibernate-jcache:6.3.1.Final'
+    implementation 'javax.cache:cache-api:1.1.1'
+    runtimeOnly 'org.ehcache:ehcache:3.10.8'
+
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0' // 스웨거, 꼭 이 버전 사용해야함
 }
 

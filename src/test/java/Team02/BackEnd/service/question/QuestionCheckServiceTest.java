@@ -30,10 +30,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 class QuestionCheckServiceTest {
 
     @Mock
-    private UserCheckService userCheckService;
-    @Mock
-    private AnswerCheckService answerCheckService;
-    @Mock
     private FeedbackCheckService feedbackCheckService;
     @Mock
     private QuestionRepository questionRepository;
@@ -41,7 +37,6 @@ class QuestionCheckServiceTest {
     @InjectMocks
     private QuestionCheckService questionCheckService;
 
-    private String accessToken;
     private Long level;
     private User user;
     private Question question;
@@ -49,7 +44,6 @@ class QuestionCheckServiceTest {
 
     @BeforeEach
     void setUp() {
-        accessToken = "accessToken";
         level = 1L;
         user = createUser();
         question = createQuestion();
@@ -63,13 +57,11 @@ class QuestionCheckServiceTest {
         // given
 
         // when
-        given(userCheckService.getUserByToken(accessToken)).willReturn(user);
-        given(answerCheckService.getLatestAnswerByUser(user)).willReturn(Optional.of(answer));
         given(feedbackCheckService.isFeedbackExistsWithAnswer(answer)).willReturn(true);
         given(questionRepository.findByQuestionIndexAndLevel(user.getQuestionNumber(level), level)).willReturn(
                 question);
 
-        Question userQuestion = questionCheckService.getUserQuestion(accessToken, level);
+        Question userQuestion = questionCheckService.getUserQuestion(user, Optional.of(answer), level);
 
         // then
         assertThat(question).isEqualTo(userQuestion);
@@ -82,13 +74,11 @@ class QuestionCheckServiceTest {
         // given
 
         // when
-        given(userCheckService.getUserByToken(accessToken)).willReturn(user);
-        given(answerCheckService.getLatestAnswerByUser(user)).willReturn(Optional.of(answer));
         given(feedbackCheckService.isFeedbackExistsWithAnswer(answer)).willReturn(false);
         given(questionRepository.findByQuestionIndexAndLevel(user.getQuestionNumber(level), level)).willReturn(
                 question);
 
-        Question userQuestion = questionCheckService.getUserQuestion(accessToken, level);
+        Question userQuestion = questionCheckService.getUserQuestion(user, Optional.of(answer), level);
 
         // then
         assertThat(question).isEqualTo(userQuestion);

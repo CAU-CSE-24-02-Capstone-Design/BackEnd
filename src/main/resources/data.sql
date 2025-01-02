@@ -81,9 +81,9 @@
 -- #
 -- #
 -- #
--- # INSERT INTO user(created_at, email, name, oauth_server_id, voice_url, oauth_server, role, level1_question_number,
--- #                  level2_question_number, level3_question_number, analyze_complete_answer_index)
--- # VALUES ('2024-11-14-00:01:04', 'test@example.com', 'test', '1', 'test voice url', 'KAKAO', 'USER', 1, 7, 1, 0);
+-- INSERT INTO user(created_at, email, name, oauth_server_id, voice_url, oauth_server, role, level1_question_number,
+--                   level2_question_number, level3_question_number, analyze_complete_answer_index)
+-- VALUES ('2024-11-14-00:01:04', 'test@example.com', 'test', '1', 'test voice url', 'KAKAO', 'USER', 1, 7, 1, 0);
 -- #
 -- # # INSERT INTO user(created_at, email, name, oauth_server_id, voice_url, oauth_server, role)
 -- # # VALUES ('2024-11-13-00:01:04', 'test2@example.com', 'test2', '1', 'test voice url', 'KAKAO', 'USER');

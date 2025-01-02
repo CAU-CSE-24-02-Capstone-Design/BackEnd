@@ -20,20 +20,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class QuestionCheckService {
 
-    private final UserCheckService userCheckService;
-    private final AnswerCheckService answerCheckService;
     private final FeedbackCheckService feedbackCheckService;
     private final QuestionRepository questionRepository;
 
     @Transactional(readOnly = true)
-    public Question getUserQuestion(final String accessToken, final Long level) {
-        User user = userCheckService.getUserByToken(accessToken);
-        Optional<Answer> latestAnswer = answerCheckService.getLatestAnswerByUser(user);
+    public Question getUserQuestion(final User user, final Optional<Answer> latestAnswer, final Long level) {
         if (latestAnswer.isPresent() && !feedbackCheckService.isFeedbackExistsWithAnswer(latestAnswer.get())) {
             user.minusQuestionNumber(level);
             log.info("사용자가 스피치를 진행하지 않았던 질문 받아오기, questionId : {}", user.getQuestionNumber(level));
         }
-        Question question = getQuestionByUserQNumberAndLevel(user.getQuestionNumber(level), level);
+        Question question = this.getQuestionByUserQNumberAndLevel(user.getQuestionNumber(level), level);
         log.info("사용자가 오늘의 질문 받아오기, questionId : {}", question.getId());
         return question;
     }
