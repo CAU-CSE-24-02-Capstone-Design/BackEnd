@@ -24,7 +24,7 @@ public class AnswerService {
     @Transactional
     public Long createAnswer(final User user, final Question question, final Optional<Answer> latestAnswer,
                              final Long level) {
-        if (latestAnswer.isPresent() && !feedbackCheckService.isFeedbackExistsWithAnswer(latestAnswer.get())) {
+        if (latestAnswer.isPresent() && !feedbackCheckService.isFeedbackExistsWithAnswerId(latestAnswer.get().getId())) {
             log.info("녹음이 진행 안 된 answer 엔티티 재사용, answerId : {}", latestAnswer.get().getId());
             return latestAnswer.get().getId();
         }

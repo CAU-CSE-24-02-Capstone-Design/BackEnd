@@ -71,7 +71,7 @@ class FeedbackCheckServiceTest {
 
         // when
         given(userCheckService.getUserByToken(accessToken)).willReturn(user);
-        given(answerCheckService.getAnswersByUser(user)).willReturn(answers);
+        given(answerCheckService.getAnswersByUserId(user.getId())).willReturn(answers);
         given(feedbackRepository.findByAnswerId(answer.getId())).willReturn(Optional.of(feedback));
 
         boolean doSpeechToday = feedbackCheckService.doSpeechToday(accessToken);
@@ -85,12 +85,12 @@ class FeedbackCheckServiceTest {
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
     void getPastAudioLinks() {
         // given
-        PageRequest pageRequest = PageRequest.of(0, LIMIT_PAST_AUDIO_NUMBER, Sort.by(Sort.Direction.DESC, "createdAt"));
-        Page<Feedback> feedbackPage = new PageImpl<>(List.of(feedback));
+        Pageable pageable = PageRequest.of(0, LIMIT_PAST_AUDIO_NUMBER);
+        List<Feedback> feedbackList = List.of(feedback);
 
         // when
-        given(feedbackRepository.findByUserId(user.getId(), pageRequest)).willReturn(feedbackPage);
-        List<String> pastAudioLinks = feedbackCheckService.getPastAudioLinks(user);
+        given(feedbackRepository.findByUserId(user.getId(), pageable)).willReturn(feedbackList);
+        List<String> pastAudioLinks = feedbackCheckService.getPastAudioLinks(user.getId());
 
         // then
         assertThat(pastAudioLinks).contains("ba");
@@ -103,8 +103,9 @@ class FeedbackCheckServiceTest {
         // given
 
         // when
-        given(feedbackRepository.existsByAnswerId(answer.getId())).willReturn(true);
-        boolean isFeedbackExists = feedbackCheckService.isFeedbackExistsWithAnswer(answer);
+        given(feedbackRepository.findByAnswerId(answer.getId())).willReturn(Optional.of(feedback));
+//        given(feedbackRepository.existsByAnswerId(answer.getId())).willReturn(true);
+        boolean isFeedbackExists = feedbackCheckService.isFeedbackExistsWithAnswerId(answer.getId());
 
         // then
         assertThat(isFeedbackExists).isEqualTo(true);
@@ -149,7 +150,7 @@ class FeedbackCheckServiceTest {
         List<String> expectedBeforeScripts = List.of(feedback.getBeforeScript());
 
         // when
-        given(feedbackRepository.findBeforeScriptByUser(user, pageable)).willReturn(expectedBeforeScripts);
+        given(feedbackRepository.findBeforeScriptByUserId(user.getId(), pageable)).willReturn(expectedBeforeScripts);
         List<String> beforeScripts = feedbackCheckService.findBeforeScriptByUser(user, number);
 
         // then

@@ -17,6 +17,7 @@ import Team02.BackEnd.service.user.UserCheckService;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/spring")
+@Slf4j
 public class QuestionController {
 
     private final QuestionCheckService questionCheckService;
@@ -40,7 +42,7 @@ public class QuestionController {
             @RequestParam("level") final Long level) {
         User user = userCheckService.getUserByToken(
                 authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT));
-        Optional<Answer> latestAnswer = answerCheckService.getLatestAnswerByUser(user);
+        Optional<Answer> latestAnswer = answerCheckService.getLatestAnswerByUserId(user.getId());
         Question question = questionCheckService.getUserQuestion(user, latestAnswer, level);
         Long answerId = answerService.createAnswer(user, question, latestAnswer, level);
         return ApiResponse.of(SuccessStatus.GET_QUESTION, QuestionConverter.toQuestionResponseDto(question, answerId));

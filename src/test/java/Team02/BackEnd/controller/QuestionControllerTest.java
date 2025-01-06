@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -65,7 +64,7 @@ class QuestionControllerTest {
 
         // when
         given(userCheckService.getUserByToken(accessToken)).willReturn(user);
-        given(answerCheckService.getLatestAnswerByUser(user)).willReturn(Optional.of(answer));
+        given(answerCheckService.getLatestAnswerByUserId(user.getId())).willReturn(Optional.of(answer));
         given(questionCheckService.getUserQuestion(user, Optional.of(answer), level)).willReturn(question);
         given(answerService.createAnswer(user, question, Optional.of(answer), level)).willReturn(answerId);
 
