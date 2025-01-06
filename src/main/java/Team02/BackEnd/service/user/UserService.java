@@ -52,6 +52,7 @@ public class UserService {
         jwtService.updateRefreshToken(user.getEmail(), refreshToken);
 
         userRepository.save(user);
+        log.info("회원가입 성공!");
         return accessToken;
     }
 
@@ -65,7 +66,6 @@ public class UserService {
         User user = userCheckService.getUserByToken(accessToken);
         user.updateRole();
         user.updateVoiceUrl(getVoiceUrlDto.getVoiceUrl());
-        userRepository.save(user);
         log.info("사용자의 목소리 저장, userId : {}", user.getId());
     }
 }

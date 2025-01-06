@@ -71,7 +71,7 @@ class AnswerServiceTest {
         // given
 
         // when
-        given(feedbackCheckService.isFeedbackExistsWithAnswer(answer)).willReturn(false);
+        given(feedbackCheckService.isFeedbackExistsWithAnswerId(answer.getId())).willReturn(false);
         Long answerId = answerService.createAnswer(user, question, Optional.of(answer), level);
 
         // then

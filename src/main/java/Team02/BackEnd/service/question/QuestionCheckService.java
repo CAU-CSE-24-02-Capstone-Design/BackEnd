@@ -6,9 +6,7 @@ import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.repository.QuestionRepository;
-import Team02.BackEnd.service.answer.AnswerCheckService;
 import Team02.BackEnd.service.feedback.FeedbackCheckService;
-import Team02.BackEnd.service.user.UserCheckService;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +23,7 @@ public class QuestionCheckService {
 
     @Transactional(readOnly = true)
     public Question getUserQuestion(final User user, final Optional<Answer> latestAnswer, final Long level) {
-        if (latestAnswer.isPresent() && !feedbackCheckService.isFeedbackExistsWithAnswer(latestAnswer.get())) {
+        if (latestAnswer.isPresent() && !feedbackCheckService.isFeedbackExistsWithAnswerId(latestAnswer.get().getId())) {
             user.minusQuestionNumber(level);
             log.info("사용자가 스피치를 진행하지 않았던 질문 받아오기, questionId : {}", user.getQuestionNumber(level));
         }
