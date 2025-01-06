@@ -52,10 +52,11 @@ class InsightCheckServiceTest {
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
     void getAiInsight() {
         // given
-        List<Insight> insights = List.of(insight);
+        List<String> insights = List.of(insight.getInsight());
         // when
-        given(answerCheckService.getAnswerByAnswerId(answer.getId())).willReturn(answer);
-        given(insightRepository.findAllByAnswerId(answer.getId())).willReturn(insights);
+//        given(answerCheckService.getAnswerByAnswerId(answer.getId())).willReturn(answer);
+        given(insightRepository.findInsightsByAnswerId(answer.getId())).willReturn(insights);
+//        given(insightRepository.findAllByAnswerId(answer.getId())).willReturn(insights);
 
         List<String> aiInsights = insightCheckService.getAiInsight(answer.getId());
 

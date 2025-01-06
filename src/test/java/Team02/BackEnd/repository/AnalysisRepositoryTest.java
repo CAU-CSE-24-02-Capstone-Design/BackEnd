@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import Team02.BackEnd.domain.Analysis;
 import Team02.BackEnd.domain.oauth.User;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +39,7 @@ class AnalysisRepositoryTest {
         Pageable pageable = PageRequest.of(0, 1);
 
         // when
-        Page<Analysis> findAnalysis = analysisRepository.findMostRecentAnalysisByUserId(user.getId(), pageable);
+        List<Analysis> findAnalysis = analysisRepository.findMostRecentAnalysisByUserId(user.getId(), pageable);
         Optional<Analysis> findAnalysis1 = findAnalysis.stream().findFirst();
 
         // then

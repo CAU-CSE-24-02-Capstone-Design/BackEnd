@@ -5,21 +5,21 @@ import static Team02.BackEnd.constant.Constants.NEW_TIME_ZONE;
 
 import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
 import Team02.BackEnd.apiPayload.exception.handler.FeedbackHandler;
-import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Feedback;
 import Team02.BackEnd.domain.oauth.User;
+import Team02.BackEnd.dto.feedbackDto.FeedbackDto;
+import Team02.BackEnd.dto.feedbackDto.FeedbackDto.FeedbackAudioLinkDto;
 import Team02.BackEnd.repository.FeedbackRepository;
 import Team02.BackEnd.service.answer.AnswerCheckService;
 import Team02.BackEnd.service.user.UserCheckService;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,39 +36,38 @@ public class FeedbackCheckService {
 
     @Transactional(readOnly = true)
     public boolean doSpeechToday(final String accessToken) {
-        User user = userCheckService.getUserByToken(accessToken);
-        log.info("오늘 스피치를 진행했는지 확인하기, userId : {}", user.getId());
-        return answerCheckService.getAnswersByUser(user).stream()
-                .filter(this::isFeedbackExistsWithAnswer)
-                .map(answer -> this.getFeedbackByAnswerId(answer.getId()))
-                .anyMatch(feedback -> feedback.getCreatedAt().atZone(ZoneId.of(BASE_TIME_ZONE))
+        Long userId = userCheckService.getUserIdByToken(accessToken);
+        log.info("오늘 스피치를 진행했는지 확인하기, userId : {}", userId);
+        return answerCheckService.getAnswerIdsByUserId(userId).stream()
+                .filter(this::isFeedbackExistsWithAnswerId)
+                .map(this::getFeedbackCreatedAtByAnswerId)
+                .anyMatch(date -> date.atZone(ZoneId.of(BASE_TIME_ZONE))
                         .withZoneSameInstant(ZoneId.of(NEW_TIME_ZONE)).toLocalDate()
                         .equals(LocalDate.now(ZoneId.of(NEW_TIME_ZONE))));
     }
 
     @Transactional(readOnly = true)
-    public List<String> getPastAudioLinks(final User user) {
-        PageRequest pageRequest = PageRequest.of(0, LIMIT_PAST_AUDIO_NUMBER, Sort.by(Sort.Direction.DESC, "createdAt"));
-        Page<Feedback> feedbackPageList = feedbackRepository.findByUserId(user.getId(), pageRequest);
-
-        List<Feedback> feedbackList = feedbackPageList.getContent();
-        if (feedbackPageList.isEmpty()) {
-            feedbackList = feedbackRepository.findAllByUserId(user.getId());
+    public List<String> getPastAudioLinks(final Long userId) {
+        Pageable pageable = PageRequest.of(0, LIMIT_PAST_AUDIO_NUMBER);
+        List<FeedbackDto.FeedbackAudioLinkDto> feedbackList = feedbackRepository.findBeforeLinksByUserId(userId,
+                pageable);
+        if (feedbackList.isEmpty()) {
+            feedbackList = feedbackRepository.findAllBeforeLinksByUserId(userId);
         }
         return feedbackList.stream()
-                .map(Feedback::getBeforeAudioLink)
+                .map(FeedbackAudioLinkDto::getBeforeAudioLink)
                 .toList();
     }
 
     @Transactional(readOnly = true)
     public List<String> findBeforeScriptByUser(final User user, int number) {
-        Pageable pageable = PageRequest.of(0, number, Sort.by("createdAt").descending());
-        return feedbackRepository.findBeforeScriptByUser(user, pageable);
+        Pageable pageable = PageRequest.of(0, number);
+        return feedbackRepository.findBeforeScriptByUserId(user.getId(), pageable);
     }
 
     @Transactional(readOnly = true)
-    public boolean isFeedbackExistsWithAnswer(final Answer answer) {
-        return feedbackRepository.existsByAnswerId(answer.getId());
+    public boolean isFeedbackExistsWithAnswerId(final Long answerId) {
+        return feedbackRepository.existsByAnswerId(answerId);
     }
 
     @Transactional(readOnly = true)
@@ -78,7 +77,14 @@ public class FeedbackCheckService {
         return feedback;
     }
 
-    private void validateFeedbackIsNotNull(final Feedback feedback) {
+    @Transactional(readOnly = true)
+    public LocalDateTime getFeedbackCreatedAtByAnswerId(final Long answerId) {
+        LocalDateTime feedbackCreatedAt = feedbackRepository.findCreatedAtByAnswerId(answerId);
+        validateFeedbackIsNotNull(feedbackCreatedAt);
+        return feedbackCreatedAt;
+    }
+
+    private <T> void validateFeedbackIsNotNull(final T feedback) {
         if (feedback == null) {
             throw new FeedbackHandler(ErrorStatus._FEEDBACK_NOT_FOUND);
         }

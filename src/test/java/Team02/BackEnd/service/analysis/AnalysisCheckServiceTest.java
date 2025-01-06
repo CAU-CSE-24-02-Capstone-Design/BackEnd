@@ -70,8 +70,8 @@ class AnalysisCheckServiceTest {
 
         // when
         given(userCheckService.getUserByToken(accessToken)).willReturn(user);
-        given(answerCheckService.getAnswerByUserWithSize(user, NUMBER_OF_USER_SPEECH)).willReturn(answers);
-        given(feedbackCheckService.isFeedbackExistsWithAnswer(answer)).willReturn(true);
+        given(answerCheckService.getAnswerByUserIdWithSize(user.getId(), NUMBER_OF_USER_SPEECH)).willReturn(answers);
+        given(feedbackCheckService.isFeedbackExistsWithAnswerId(answer.getId())).willReturn(true);
 
         boolean canSaveAnalysis = analysisCheckService.canSaveAnalysis(accessToken);
 

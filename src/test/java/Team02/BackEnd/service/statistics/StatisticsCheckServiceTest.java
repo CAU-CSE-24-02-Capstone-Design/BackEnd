@@ -66,7 +66,7 @@ class StatisticsCheckServiceTest {
 
         // when
         given(userCheckService.getUserByToken(accessToken)).willReturn(user);
-        given(answerCheckService.getAnswersByUser(user)).willReturn(answers);
+        given(answerCheckService.getAnswersByUserId(user.getId())).willReturn(answers);
         given(statisticsRepository.findByAnswerId(answer.getId())).willReturn(Optional.of(statistics));
 
         List<StatisticsResponseDto.GetStatisticsDto> getStatistics = statisticsCheckService.getUserStatistics(
@@ -87,8 +87,8 @@ class StatisticsCheckServiceTest {
 
         // when
         given(userCheckService.getUserByToken(accessToken)).willReturn(user);
-        given(answerCheckService.getAnswersByUser(user)).willReturn(answers);
-        given(answerCheckService.checkSpeechLevel(answer, 1L)).willReturn(true);
+        given(answerCheckService.getAnswersByUserId(user.getId())).willReturn(answers);
+        given(answerCheckService.checkSpeechLevel(answer.getQuestion().getLevel(), 1L)).willReturn(true);
         given(statisticsRepository.findByAnswerId(answer.getId())).willReturn(Optional.of(statistics));
 
         List<StatisticsResponseDto.GetStatisticsDto> getStatistics = statisticsCheckService.getUserStatisticsByLevel(
@@ -108,7 +108,7 @@ class StatisticsCheckServiceTest {
 
         // when
         given(statisticsRepository.findByAnswerId(answer.getId())).willReturn(Optional.of(statistics));
-        Boolean isExistsStatistics = statisticsCheckService.isStatisticsExistsWithAnswer(answer);
+        Boolean isExistsStatistics = statisticsCheckService.isStatisticsExistsWithAnswerId(answer.getId());
 
         // then
         assertThat(isExistsStatistics).isTrue();
@@ -122,7 +122,7 @@ class StatisticsCheckServiceTest {
 
         // when
         given(statisticsRepository.findByAnswerId(answer.getId())).willReturn(Optional.of(statistics));
-        Statistics findStatistics = statisticsCheckService.getStatisticsByAnswer(answer);
+        Statistics findStatistics = statisticsCheckService.getStatisticsByAnsweId(answer.getId());
 
         // then
         assertThat(findStatistics).isEqualTo(statistics);
@@ -137,7 +137,7 @@ class StatisticsCheckServiceTest {
         // when
         given(statisticsRepository.findByAnswerId(answer.getId())).willReturn(Optional.empty());
         StatisticsHandler exception = assertThrows(StatisticsHandler.class, () -> {
-            statisticsCheckService.getStatisticsByAnswer(answer);
+            statisticsCheckService.getStatisticsByAnswerId(answer.getId());
         });
 
         // then

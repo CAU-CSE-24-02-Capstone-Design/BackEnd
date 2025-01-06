@@ -6,9 +6,9 @@ import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_PREFIX;
 import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
 import Team02.BackEnd.apiPayload.exception.handler.FeedbackHandler;
 import Team02.BackEnd.converter.FeedbackConverter;
-import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.feedbackDto.FeedbackRequestDto.GetComponentToMakeFeedbackDto;
 import Team02.BackEnd.dto.feedbackDto.FeedbackResponseDto.GetFeedbackToFastApiDto;
+import Team02.BackEnd.dto.userDto.UserDto.UserVoiceDto;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,15 +32,15 @@ public class FeedbackApiService {
     public GetFeedbackToFastApiDto getFeedbackFromFastApi(final String accessToken,
                                                           final String beforeAudioLink,
                                                           final List<String> pastAudioLinks,
-                                                          final User user,
+                                                          final UserVoiceDto userData,
                                                           final Long answerId) {
 
         GetComponentToMakeFeedbackDto getComponentToMakeFeedbackDto =
-                FeedbackConverter.toGetComponentToMakeFeedback(beforeAudioLink, user, pastAudioLinks,
+                FeedbackConverter.toGetComponentToMakeFeedback(beforeAudioLink, userData, pastAudioLinks,
                         answerId);
-        ResponseEntity<GetFeedbackToFastApiDto> response = makeApiCallToFastApi(accessToken,
+        ResponseEntity<GetFeedbackToFastApiDto> response = this.makeApiCallToFastApi(accessToken,
                 getComponentToMakeFeedbackDto);
-        validateFeedbackFromFastApi(response);
+        this.validateFeedbackFromFastApi(response);
         return response.getBody();
     }
 

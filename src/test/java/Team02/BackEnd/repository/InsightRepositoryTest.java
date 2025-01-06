@@ -10,10 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Insight;
 import Team02.BackEnd.domain.Question;
-import Team02.BackEnd.domain.Role;
-import Team02.BackEnd.domain.oauth.OauthId;
 import Team02.BackEnd.domain.oauth.User;
-import Team02.BackEnd.oauth.OauthServerType;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,10 +41,10 @@ class InsightRepositoryTest {
         insightRepository.save(insight2);
 
         // when
-        List<Insight> insights = insightRepository.findAllByAnswerId(answer.getId());
+        List<String> insights = insightRepository.findInsightsByAnswerId(answer.getId());
+//        List<Insight> insights = insightRepository.findAllByAnswerId(answer.getId());
 
         // then
         assertEquals(insights.size(), 2);
-        assertThat(insights).allMatch(insight -> insight.getAnswer().equals(answer));
     }
 }

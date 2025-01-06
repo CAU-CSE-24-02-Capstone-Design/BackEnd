@@ -12,6 +12,7 @@ import Team02.BackEnd.service.feedback.FeedbackCheckService;
 import Team02.BackEnd.service.feedback.FeedbackService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/spring")
+@Slf4j
 public class FeedbackController {
 
     private final FeedbackService feedbackService;

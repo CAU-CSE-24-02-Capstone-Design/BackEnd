@@ -1,11 +1,10 @@
 package Team02.BackEnd.repository;
 
 import Team02.BackEnd.domain.Feedback;
-import Team02.BackEnd.domain.oauth.User;
+import Team02.BackEnd.dto.feedbackDto.FeedbackDto;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,15 +12,26 @@ import org.springframework.data.repository.query.Param;
 
 public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
-    @Query("SELECT COUNT(f) > 0 FROM Feedback f WHERE f.answer.id =:answerId")
-    boolean existsByAnswerId(final Long answerId);
+    @Query("SELECT COUNT(f) > 0 FROM Feedback f WHERE f.answer.id = :answerId")
+    boolean existsByAnswerId(@Param("answerId") final Long answerId);
 
     Optional<Feedback> findByAnswerId(final Long answerId);
 
-    Page<Feedback> findByUserId(final Long userId, final PageRequest pageRequest);
+    @Query("SELECT f.createdAt FROM Feedback f WHERE f.answer.id = :answerId")
+    LocalDateTime findCreatedAtByAnswerId(@Param("answerId") final Long answerId);
+
+    @Query("SELECT f FROM Feedback f WHERE f.user.id = :userId ORDER BY f.createdAt DESC")
+    List<Feedback> findByUserId(@Param("userId") final Long userId, final Pageable pageable);
+
+    @Query("SELECT new Team02.BackEnd.dto.feedbackDto.FeedbackDto$FeedbackAudioLinkDto(f.beforeAudioLink) FROM Feedback f WHERE f.user.id = :userId ORDER BY f.createdAt DESC")
+    List<FeedbackDto.FeedbackAudioLinkDto> findBeforeLinksByUserId(@Param("userId") final Long userId,
+                                                                   final Pageable pageable);
+
+    @Query("SELECT new Team02.BackEnd.dto.feedbackDto.FeedbackDto$FeedbackAudioLinkDto(f.beforeAudioLink) FROM Feedback f WHERE f.user.id = :userId")
+    List<FeedbackDto.FeedbackAudioLinkDto> findAllBeforeLinksByUserId(@Param("userId") final Long userId);
 
     List<Feedback> findAllByUserId(final Long userId);
 
-    @Query("SELECT f.beforeScript FROM Feedback f WHERE f.user = :user")
-    List<String> findBeforeScriptByUser(@Param("user") User user, Pageable pageable);
+    @Query("SELECT f.beforeScript FROM Feedback f WHERE f.user.id = :userId ORDER BY f.createdAt DESC")
+    List<String> findBeforeScriptByUserId(@Param("userId") final Long userId, final Pageable pageable);
 }

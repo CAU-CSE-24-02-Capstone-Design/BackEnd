@@ -3,9 +3,7 @@ package Team02.BackEnd.service.statistics;
 import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
 import Team02.BackEnd.apiPayload.exception.handler.StatisticsHandler;
 import Team02.BackEnd.converter.StatisticsConverter;
-import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Statistics;
-import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.statisticsDto.StatisticsResponseDto.GetStatisticsDto;
 import Team02.BackEnd.repository.StatisticsRepository;
 import Team02.BackEnd.service.answer.AnswerCheckService;
@@ -27,44 +25,44 @@ public class StatisticsCheckService {
 
     @Transactional(readOnly = true)
     public List<GetStatisticsDto> getUserStatistics(final String accessToken) {
-        User user = userCheckService.getUserByToken(accessToken);
-        log.info("사용자의 모든 스피치 통계 가져오기, email : {}", user.getEmail());
-        return answerCheckService.getAnswersByUser(user).stream()
-                .filter(this::isStatisticsExistsWithAnswer)
-                .map(answer -> {
-                    Statistics statistics = getStatisticsByAnswer(answer);
-                    return StatisticsConverter.toGetStatisticsDto(statistics, answer);
+        Long userId = userCheckService.getUserIdByToken(accessToken);
+        log.info("사용자의 모든 스피치 통계 가져오기, userId : {}", userId);
+        return answerCheckService.getAnswerIdDtosByUserId(userId).stream()
+                .filter(data -> this.isStatisticsExistsWithAnswerId(data.getId()))
+                .map(data -> {
+                    Statistics statistics = this.getStatisticsByAnswerId(data.getId());
+                    return StatisticsConverter.toGetStatisticsDto(statistics, data.getCreatedAt());
                 })
                 .toList();
     }
 
     @Transactional(readOnly = true)
     public List<GetStatisticsDto> getUserStatisticsByLevel(final String accessToken, final Long level) {
-        User user = userCheckService.getUserByToken(accessToken);
-        log.info("사용자의 난이도 별 스피치 통계 가져오기, level : {}, email : {}", level, user.getEmail());
-        return answerCheckService.getAnswersByUser(user).stream()
-                .filter(this::isStatisticsExistsWithAnswer)
-                .filter(answer -> answerCheckService.checkSpeechLevel(answer, level))
-                .map(answer -> {
-                    Statistics statistics = getStatisticsByAnswer(answer);
-                    return StatisticsConverter.toGetStatisticsDto(statistics, answer);
+        Long userId = userCheckService.getUserIdByToken(accessToken);
+        log.info("사용자의 난이도 별 스피치 통계 가져오기, level : {}, userId : {}", level, userId);
+        return answerCheckService.getAnswerLevelDtosWithLevelByUserId(userId).stream()
+                .filter(data -> this.isStatisticsExistsWithAnswerId(data.getId()))
+                .filter(data -> answerCheckService.checkSpeechLevel(data.getLevel(), level))
+                .map(data -> {
+                    Statistics statistics = this.getStatisticsByAnswerId(data.getId());
+                    return StatisticsConverter.toGetStatisticsDto(statistics, data.getCreatedAt());
                 })
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public boolean isStatisticsExistsWithAnswer(final Answer answer) {
-        return statisticsRepository.findByAnswerId(answer.getId()).isPresent();
+    public boolean isStatisticsExistsWithAnswerId(final Long answerId) {
+        return statisticsRepository.existsByAnswerId(answerId);
     }
 
     @Transactional(readOnly = true)
-    public Statistics getStatisticsByAnswer(final Answer answer) {
-        Statistics statistics = statisticsRepository.findByAnswerId(answer.getId()).orElse(null);
+    public Statistics getStatisticsByAnswerId(final Long answerId) {
+        Statistics statistics = statisticsRepository.findByAnswerId(answerId).orElse(null);
         validateStatistics(statistics);
         return statistics;
     }
 
-    private void validateStatistics(final Statistics statistics) {
+    private <T> void validateStatistics(final T statistics) {
         if (statistics == null) {
             throw new StatisticsHandler(ErrorStatus._STATISTICS_NOT_FOUND);
         }

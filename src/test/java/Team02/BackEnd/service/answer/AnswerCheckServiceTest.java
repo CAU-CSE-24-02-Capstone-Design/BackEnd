@@ -5,7 +5,6 @@ import static Team02.BackEnd.util.TestUtil.createQuestion;
 import static Team02.BackEnd.util.TestUtil.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 
 import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
@@ -13,6 +12,8 @@ import Team02.BackEnd.apiPayload.exception.handler.AnswerHandler;
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.oauth.User;
+import Team02.BackEnd.dto.answerDto.AnswerDto;
+import Team02.BackEnd.dto.answerDto.AnswerDto.AnswerIdDto;
 import Team02.BackEnd.repository.AnswerRepository;
 import java.util.Collections;
 import java.util.List;
@@ -64,7 +65,7 @@ class AnswerCheckServiceTest {
 
         // when
         given(answerRepository.findByUserId(user.getId())).willReturn(List.of(answer1, answer2));
-        List<Answer> answers = answerCheckService.getAnswersByUser(user);
+        List<Answer> answers = answerCheckService.getAnswersByUserId(user.getId());
 
         // then
         assertThat(answers.size()).isEqualTo(2);
@@ -78,7 +79,7 @@ class AnswerCheckServiceTest {
 
         // when
         AnswerHandler exception = assertThrows(AnswerHandler.class, () -> {
-            answerCheckService.getAnswersByUser(user);
+            answerCheckService.getAnswersByUserId(user.getId());
         });
 
         // then
@@ -122,11 +123,13 @@ class AnswerCheckServiceTest {
         // given
         String year = "2024";
         String month = "11";
+        AnswerDto.AnswerIdDto answerIdDto1 = new AnswerIdDto(answer1.getId(), answer1.getCreatedAt());
+        AnswerDto.AnswerIdDto answerIdDto2 = new AnswerIdDto(answer2.getId(), answer2.getCreatedAt());
 
         // when
-        given(answerRepository.findByUserAndYearAndMonth(user, Integer.parseInt(year),
-                Integer.parseInt(month))).willReturn(List.of(answer1, answer2));
-        List<Answer> answers = answerCheckService.findAnswersByUserAndYearAndMonth(user, year, month);
+        given(answerRepository.findByUserAndYearAndMonth(user.getId(), Integer.parseInt(year),
+                Integer.parseInt(month))).willReturn(List.of(answerIdDto1, answerIdDto2));
+        List<AnswerDto.AnswerIdDto> answers = answerCheckService.findAnswersByUserAndYearAndMonth(user.getId(), year, month);
 
         // then
         assertThat(answers.size()).isEqualTo(2);
@@ -143,10 +146,10 @@ class AnswerCheckServiceTest {
         String month = "10";
 
         // when
-        given(answerRepository.findByUserAndYearAndMonth(user, Integer.parseInt(year),
+        given(answerRepository.findByUserAndYearAndMonth(user.getId(), Integer.parseInt(year),
                 Integer.parseInt(month))).willReturn(Collections.emptyList());
         AnswerHandler exception = assertThrows(AnswerHandler.class, () -> {
-            answerCheckService.findAnswersByUserAndYearAndMonth(user, year, month);
+            answerCheckService.findAnswersByUserAndYearAndMonth(user.getId(), year, month);
         });
 
         // then
@@ -160,12 +163,12 @@ class AnswerCheckServiceTest {
         // given
 
         // when
-        given(answerRepository.findLatestAnswerByUser(user, PageRequest.of(0, 1))).willReturn(
+        given(answerRepository.findLatestAnswerByUserId(user.getId(), PageRequest.of(0, 1))).willReturn(
                 List.of(answer1, answer2));
-        Optional<Answer> findAnswer = answerCheckService.getLatestAnswerByUser(user);
+        Optional<Answer> findAnswer = answerCheckService.getLatestAnswerByUserId(user.getId());
 
         // then
-        assertTrue(findAnswer.isPresent());
+        assertThat(findAnswer.isPresent()).isTrue();
         assertThat(findAnswer.get().getId()).isEqualTo(answer2.getId());
     }
 
@@ -177,9 +180,9 @@ class AnswerCheckServiceTest {
         int size = 2;
 
         // when
-        given(answerRepository.findLatestAnswerByUser(user, PageRequest.of(0, size))).willReturn(
+        given(answerRepository.findLatestAnswerByUserId(user.getId(), PageRequest.of(0, size))).willReturn(
                 List.of(answer1, answer2));
-        List<Answer> answers = answerCheckService.getAnswerByUserWithSize(user, size);
+        List<Answer> answers = answerCheckService.getAnswerByUserIdWithSize(user.getId(), size);
 
         // then
         assertThat(answers.size()).isEqualTo(2);
@@ -192,7 +195,7 @@ class AnswerCheckServiceTest {
         // given
 
         // when
-        Boolean checkSpeechLevel = answerCheckService.checkSpeechLevel(answer, 1L);
+        Boolean checkSpeechLevel = answerCheckService.checkSpeechLevel(answer.getQuestion().getLevel(), 1L);
 
         // then
         assertThat(checkSpeechLevel).isTrue();
@@ -210,7 +213,7 @@ class AnswerCheckServiceTest {
                 question2.getDescription());
 
         // when
-        given(answerRepository.findLatestAnswerByUser(user, pageable)).willReturn(answers);
+        given(answerRepository.findLatestAnswerByUserId(user.getId(), pageable)).willReturn(answers);
         List<String> findDescriptions = answerCheckService.findQuestionDescriptionsByUser(user, size);
 
         // then

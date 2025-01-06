@@ -64,7 +64,7 @@ class SelfFeedbackCheckServiceTest {
 
         // when
         given(userCheckService.getUserByToken(accessToken)).willReturn(user);
-        given(answerCheckService.getAnswersByUser(user)).willReturn(answers);
+        given(answerCheckService.getAnswersByUserId(user.getId())).willReturn(answers);
         given(selfFeedbackRepository.findByAnswerId(answer.getId())).willReturn(selfFeedback);
 
         SelfFeedback findSelfFeedback = selfFeedbackCheckService.getLatestSelfFeedback(accessToken);
@@ -82,7 +82,7 @@ class SelfFeedbackCheckServiceTest {
 
         // when
         given(userCheckService.getUserByToken(accessToken)).willReturn(user);
-        given(answerCheckService.getAnswersByUser(user)).willReturn(answers);
+        given(answerCheckService.getAnswersByUserId(user.getId())).willReturn(answers);
         given(selfFeedbackRepository.findByAnswerId(answer.getId())).willReturn(null);
 
         SelfFeedbackHandler exception = assertThrows(SelfFeedbackHandler.class, () -> {

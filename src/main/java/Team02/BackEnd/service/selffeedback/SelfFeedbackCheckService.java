@@ -2,15 +2,10 @@ package Team02.BackEnd.service.selffeedback;
 
 import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
 import Team02.BackEnd.apiPayload.exception.handler.SelfFeedbackHandler;
-import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.SelfFeedback;
-import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.repository.SelfFeedbackRepository;
 import Team02.BackEnd.service.answer.AnswerCheckService;
 import Team02.BackEnd.service.user.UserCheckService;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,13 +22,9 @@ public class SelfFeedbackCheckService {
 
     @Transactional(readOnly = true)
     public SelfFeedback getLatestSelfFeedback(final String accessToken) {
-        User user = userCheckService.getUserByToken(accessToken);
-        List<Answer> answers = answerCheckService.getAnswersByUser(user);
-        SelfFeedback selfFeedback = answers.stream()
-                .map(answer -> selfFeedbackRepository.findByAnswerId(answer.getId()))
-                .filter(Objects::nonNull)
-                .max(Comparator.comparing(SelfFeedback::getCreatedAt))
-                .orElse(null);
+        Long userId = userCheckService.getUserIdByToken(accessToken);
+        Long answerId = answerCheckService.getAnswerIdsByUserWithSize(userId, 1).get(0);
+        SelfFeedback selfFeedback = selfFeedbackRepository.findByAnswerId(answerId);
         validateSelfFeedbackIsNotNull(selfFeedback);
         log.info("가장 최근 셀프 피드백 가져오기, selfFeedbackId : {}", selfFeedback.getId());
         return selfFeedback;
@@ -46,7 +37,7 @@ public class SelfFeedbackCheckService {
 
     @Transactional(readOnly = true)
     public boolean isExistsSelfFeedbackWithAnswerId(final Long answerId) {
-        return selfFeedbackRepository.findByAnswerId(answerId) != null;
+        return selfFeedbackRepository.existsByAnswerId(answerId);
     }
 
     private void validateSelfFeedbackIsNotNull(final SelfFeedback selfFeedback) {

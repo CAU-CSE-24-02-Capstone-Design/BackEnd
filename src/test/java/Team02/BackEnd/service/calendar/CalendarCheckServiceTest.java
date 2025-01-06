@@ -11,6 +11,8 @@ import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.Role;
 import Team02.BackEnd.domain.oauth.OauthId;
 import Team02.BackEnd.domain.oauth.User;
+import Team02.BackEnd.dto.answerDto.AnswerDto;
+import Team02.BackEnd.dto.answerDto.AnswerDto.AnswerIdDto;
 import Team02.BackEnd.oauth.OauthServerType;
 import Team02.BackEnd.service.answer.AnswerCheckService;
 import Team02.BackEnd.service.feedback.FeedbackCheckService;
@@ -62,12 +64,12 @@ class CalendarCheckServiceTest {
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
     void getDatesWhenUserDid() {
         // given
-        List<Answer> answersInPeriod = List.of(answer);
-
+        AnswerDto.AnswerIdDto answerIdDto = new AnswerIdDto(answer.getId(), answer.getCreatedAt());
+        List<AnswerDto.AnswerIdDto> answersInPeriod = List.of(answerIdDto);
         // when
         given(userCheckService.getUserByToken(accessToken)).willReturn(user);
-        given(answerCheckService.findAnswersByUserAndYearAndMonth(user, year, month)).willReturn(answersInPeriod);
-        given(feedbackCheckService.isFeedbackExistsWithAnswer(answer)).willReturn(true);
+        given(answerCheckService.findAnswersByUserAndYearAndMonth(user.getId(), year, month)).willReturn(answersInPeriod);
+        given(feedbackCheckService.isFeedbackExistsWithAnswerId(answer.getId())).willReturn(true);
 
         Long[] answerIdDidThisPeriod = calendarCheckService.getDatesWhenUserDid(accessToken, year, month);
 

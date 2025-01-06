@@ -57,7 +57,7 @@ class QuestionCheckServiceTest {
         // given
 
         // when
-        given(feedbackCheckService.isFeedbackExistsWithAnswer(answer)).willReturn(true);
+        given(feedbackCheckService.isFeedbackExistsWithAnswerId(answer.getId())).willReturn(true);
         given(questionRepository.findByQuestionIndexAndLevel(user.getQuestionNumber(level), level)).willReturn(
                 question);
 
@@ -74,7 +74,7 @@ class QuestionCheckServiceTest {
         // given
 
         // when
-        given(feedbackCheckService.isFeedbackExistsWithAnswer(answer)).willReturn(false);
+        given(feedbackCheckService.isFeedbackExistsWithAnswerId(answer.getId())).willReturn(false);
         given(questionRepository.findByQuestionIndexAndLevel(user.getQuestionNumber(level), level)).willReturn(
                 question);
 

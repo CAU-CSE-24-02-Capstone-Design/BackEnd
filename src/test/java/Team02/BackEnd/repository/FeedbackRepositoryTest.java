@@ -71,16 +71,13 @@ class FeedbackRepositoryTest {
         feedbackRepository.save(feedback2);
         feedbackRepository.save(feedback3);
 
-        PageRequest pageRequest = PageRequest.of(0, 2);
+        Pageable pageable = PageRequest.of(0, 2);
 
         // when
-        Page<Feedback> feedbackPage = feedbackRepository.findByUserId(user.getId(), pageRequest);
+        List<Feedback> feedbackPage = feedbackRepository.findByUserId(user.getId(), pageable);
 
         // then
-        assertEquals(2, feedbackPage.getContent().size(), "페이지에는 2개의 피드백이 포함되어야 합니다.");
-        assertTrue(feedbackPage.getTotalPages() > 1, "전체 피드백이 여러 페이지에 걸쳐야 합니다.");
-        assertEquals(3, feedbackPage.getTotalElements(), "전체 피드백은 3개여야 합니다.");
-        assertEquals(feedback1, feedbackPage.getContent().get(0), "첫 번째 페이지에 첫 번째 피드백이 있어야 합니다.");
+        assertEquals(2, feedbackPage.size(), "페이지에는 2개의 피드백이 포함되어야 합니다.");
     }
 
     @DisplayName("사용자의 모든 Feedback 데이터를 가져온다.")
@@ -120,7 +117,7 @@ class FeedbackRepositoryTest {
         Pageable pageable = PageRequest.of(0, 7, Sort.by("createdAt").descending());
 
         // when
-        List<String> beforeScripts = feedbackRepository.findBeforeScriptByUser(user, pageable);
+        List<String> beforeScripts = feedbackRepository.findBeforeScriptByUserId(user.getId(), pageable);
 
         // then
         List<String> expectedBeforeScripts = List.of(feedback.getBeforeScript());

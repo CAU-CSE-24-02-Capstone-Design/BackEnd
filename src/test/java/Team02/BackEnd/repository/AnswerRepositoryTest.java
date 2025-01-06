@@ -77,7 +77,7 @@ class AnswerRepositoryTest {
         answerRepository.save(answer3);
 
         // when
-        List<Answer> answers = answerRepository.findByUserAndYearAndMonth(user, 2024, 12);
+        List<Answer> answers = answerRepository.findByUserAndYearAndMonth(user.getId(), 2024, 12);
 
         // then
         assertThat(answers).hasSize(3);

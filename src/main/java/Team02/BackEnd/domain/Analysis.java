@@ -10,9 +10,11 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.io.IOException;
 import java.util.List;
 import lombok.AccessLevel;
@@ -26,6 +28,9 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Table(name = "analysis", indexes = {
+        @Index(name = "idx_user_createdAt", columnList = "user_id, created_at DESC")
+})
 public class Analysis extends BaseEntity {
 
     @Id

@@ -16,6 +16,7 @@ import Team02.BackEnd.domain.Feedback;
 import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.feedbackDto.FeedbackResponseDto.GetFeedbackToFastApiDto;
+import Team02.BackEnd.dto.userDto.UserDto.UserVoiceDto;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,6 +71,7 @@ public class FeedbackApiServiceTest {
     void getFeedbackFromFastApi() {
         // given
         List<String> pastAudioLinks = List.of("1", "2");
+        UserVoiceDto userData = new UserVoiceDto(user.getId(), user.getName(), user.getVoiceUrl());
 
         // when
         mockServer.expect(requestTo(FASTAPI_API_URL))
@@ -80,7 +82,7 @@ public class FeedbackApiServiceTest {
                         MediaType.APPLICATION_JSON));
 
         GetFeedbackToFastApiDto response = feedbackApiService.getFeedbackFromFastApi(accessToken,
-                feedback.getBeforeAudioLink(), pastAudioLinks, user, answer.getId());
+                feedback.getBeforeAudioLink(), pastAudioLinks, userData, answer.getId());
 
         // then
         mockServer.verify();

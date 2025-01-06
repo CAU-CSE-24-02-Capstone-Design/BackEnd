@@ -33,6 +33,13 @@ public class AnalysisService {
         List<String> beforeScripts = feedbackCheckService.findBeforeScriptByUser(user, NUMBER_OF_USER_SPEECH);
         GetAnalysisFromFastApiDto response = analysisApiService.getAnalysisFromFastApi(accessToken, questions,
                 beforeScripts);
+//        List<List<String>> dummyAnalysisText = List.of(
+//                List.of("Dummy analysis line 1 for user", "Dummy analysis line 2 for user"),
+//                List.of("Dummy analysis line 3 for user", "Dummy analysis line 4 for user")
+//        );
+//        GetAnalysisFromFastApiDto response = GetAnalysisFromFastApiDto.builder()
+//                .analysisText(dummyAnalysisText)
+//                .build();
         Analysis analysis = AnalysisConverter.toAnalysis(response.getAnalysisText(), user);
         analysisRepository.save(analysis);
         log.info("사용자의 일주일 분석 리포트 저장, analysisId : {}", analysis.getId());
