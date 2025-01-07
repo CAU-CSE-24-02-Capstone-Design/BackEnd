@@ -4,6 +4,7 @@ import Team02.BackEnd.jwt.filter.JwtAuthenticationProcessingFilter;
 import Team02.BackEnd.jwt.service.JwtService;
 import Team02.BackEnd.logout.CustomLogoutFilter;
 import Team02.BackEnd.repository.UserRepository;
+import Team02.BackEnd.service.user.UserCheckService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     private final JwtService jwtService;
+    private final UserCheckService userCheckService;
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
 
@@ -96,7 +98,7 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
         JwtAuthenticationProcessingFilter jwtAuthenticationFilter = new JwtAuthenticationProcessingFilter(jwtService,
-                userRepository);
+                userRepository, userCheckService);
         return jwtAuthenticationFilter;
     }
 
