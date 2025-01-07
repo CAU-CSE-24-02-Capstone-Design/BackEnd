@@ -2,14 +2,18 @@ package Team02.BackEnd.service.user;
 
 import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
 import Team02.BackEnd.apiPayload.exception.handler.UserHandler;
+import Team02.BackEnd.domain.Role;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.userDto.UserDto;
 import Team02.BackEnd.dto.userDto.UserDto.UserAnswerIndexDto;
 import Team02.BackEnd.dto.userDto.UserDto.UserVoiceDto;
+import Team02.BackEnd.dto.userDto.UserPrincipal;
 import Team02.BackEnd.jwt.service.JwtService;
 import Team02.BackEnd.repository.UserRepository;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +24,17 @@ public class UserCheckService {
 
     private final JwtService jwtService;
     private final UserRepository userRepository;
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = "user", key = "#p0", cacheManager = "cacheManager")
+    public Optional<UserPrincipal> getUserPrincipalByEmail(final String email) {
+        Role role = userRepository.findRoleByEmail(email).orElse(null);
+        validateUserIsNotNull(role);
+        return Optional.of(UserPrincipal.builder()
+                .email(email)
+                .role(role)
+                .build());
+    }
 
     @Transactional(readOnly = true)
     public User getUserByToken(final String accessToken) {

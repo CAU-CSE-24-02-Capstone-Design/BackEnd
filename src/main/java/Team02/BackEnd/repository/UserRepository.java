@@ -1,5 +1,6 @@
 package Team02.BackEnd.repository;
 
+import Team02.BackEnd.domain.Role;
 import Team02.BackEnd.domain.oauth.OauthId;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.userDto.UserDto.UserAnswerIndexDto;
@@ -12,6 +13,9 @@ import org.springframework.data.repository.query.Param;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(final String email);
+
+    @Query("SELECT u.role FROM User u WHERE u.email = :email")
+    Optional<Role> findRoleByEmail(@Param("email") String email);
 
     @Query("SELECT u.id FROM User u WHERE u.email = :email")
     Optional<Long> findUserIdByEmail(@Param("email") final String email);

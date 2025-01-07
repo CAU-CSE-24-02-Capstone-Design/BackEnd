@@ -32,6 +32,8 @@ public class SecurityConfig {
 
     private final JwtService jwtService;
     private final UserCheckService userCheckService;
+    private final UserRepository userRepository;
+    private final ObjectMapper objectMapper;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -96,7 +98,7 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
         JwtAuthenticationProcessingFilter jwtAuthenticationFilter = new JwtAuthenticationProcessingFilter(jwtService,
-                userCheckService);
+                userRepository, userCheckService);
         return jwtAuthenticationFilter;
     }
 
