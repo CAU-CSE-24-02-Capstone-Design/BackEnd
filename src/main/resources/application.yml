@@ -37,8 +37,8 @@ spring:
 logging:
   level:
     org.hibernate.SQL: info
-    org.springframework.transaction: DEBUG
-    org.springframework.orm.jpa: DEBUG
+#    org.springframework.transaction: DEBUG
+#    org.springframework.orm.jpa: DEBUG
 
 
 server:

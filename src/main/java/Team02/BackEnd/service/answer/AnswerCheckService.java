@@ -46,31 +46,33 @@ public class AnswerCheckService {
 
     public List<Long> getAnswerIdsByUserIdWithSize(final Long userId, final int size) {
         Pageable pageable = PageRequest.of(0, size);
-        return answerRepository.findLatestAnswerIdByUserId(userId, pageable);
+        return answerRepository.findAnswerIdByUserIdWithSize(userId, pageable);
     }
 
     public List<AnswerDto.AnswerIdDto> getAnswerIdDtosByUserId(final Long userId) {
-        List<AnswerDto.AnswerIdDto> answerDatas = answerRepository.findAnswerIdByUserId(userId);
+        List<AnswerDto.AnswerIdDto> answerDatas = answerRepository.findAnswerIdDtosByUserId(userId);
         answerValidator.validateAnswersEmpty(answerDatas);
         return answerDatas;
     }
 
     public List<AnswerDto.AnswerIdDto> getLatestAnswerIdDtosByUserIdWithSize(final Long userId, final int size) {
         Pageable pageable = PageRequest.of(0, size);
-        List<AnswerDto.AnswerIdDto> answerDatas = answerRepository.findLatestAnswerIdByUserIdWithSize(userId, pageable);
+        List<AnswerDto.AnswerIdDto> answerDatas = answerRepository.findLatestAnswerIdDtosByUserIdWithSize(userId,
+                pageable);
         answerValidator.validateAnswersEmpty(answerDatas);
         return answerDatas;
     }
 
     public List<AnswerDto.AnswerLevelDto> getAnswerLevelDtosWithLevelByUserId(final Long userId) {
-        List<AnswerDto.AnswerLevelDto> answerDatas = answerRepository.findAnswersWithLevelByUserId(userId);
+        List<AnswerDto.AnswerLevelDto> answerDatas = answerRepository.findAnswerLevelDtosWithLevelByUserId(userId);
         answerValidator.validateAnswersEmpty(answerDatas);
         return answerDatas;
     }
 
     public List<AnswerDto.AnswerIdDto> findAnswerIdDtosByUserAndYearAndMonth(final Long userId, final String year,
                                                                              final String month) {
-        List<AnswerDto.AnswerIdDto> answers = answerRepository.findByUserAndYearAndMonth(userId, Integer.parseInt(year),
+        List<AnswerDto.AnswerIdDto> answers = answerRepository.findAnswerIdDtosByUserAndYearAndMonth(userId,
+                Integer.parseInt(year),
                 Integer.parseInt(month));
         answerValidator.validateAnswersEmpty(answers);
         return answers;
@@ -78,7 +80,7 @@ public class AnswerCheckService {
 
     public Optional<Answer> getLatestAnswerByUserId(final Long userId) {
         Pageable pageable = PageRequest.of(0, 1);
-        return answerRepository.findLatestAnswerByUserId(userId, pageable).stream().findFirst();
+        return answerRepository.findAnswerByUserIdWithSize(userId, pageable).stream().findFirst();
     }
 
     public Boolean checkSpeechLevel(final Long questionLevel, final Long level) {
@@ -87,7 +89,7 @@ public class AnswerCheckService {
 
     public List<String> findQuestionDescriptionsByUser(final User user, final int number) {
         Pageable pageable = PageRequest.of(0, number);
-        List<AnswerDto.AnswerQuestionDto> answerQuestionDtos = answerRepository.findLatestAnswersWithQuestionByUserId(
+        List<AnswerDto.AnswerQuestionDto> answerQuestionDtos = answerRepository.findAnswerQuestionDtosByUserIdWithSize(
                 user.getId(), pageable);
         user.updateAnalyzeCompleteAnswerIndex(answerQuestionDtos.get(0).getId());
         return answerQuestionDtos.stream()

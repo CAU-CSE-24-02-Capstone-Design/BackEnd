@@ -46,7 +46,7 @@ public class UserCheckService {
 
     public UserDto.UserAnswerIndexDto getUserAnswerIndexByToken(final String accessToken) {
         String email = jwtService.extractEmail(accessToken).orElse(null);
-        UserAnswerIndexDto userAnswerIndexDto = userRepository.findUserAnswerIndexByEmail(email).orElse(null);
+        UserAnswerIndexDto userAnswerIndexDto = userRepository.findUserAnswerIndexDtoByEmail(email).orElse(null);
         userValidator.validateUser(userAnswerIndexDto);
         return userAnswerIndexDto;
     }
@@ -60,7 +60,7 @@ public class UserCheckService {
 
     public UserVoiceDto getUserDataByToken(final String accessToken) {
         String email = jwtService.extractEmail(accessToken).orElse(null);
-        UserVoiceDto userData = userRepository.findUserDataByEmail(email).orElse(null);
+        UserVoiceDto userData = userRepository.findUserVoiceDtoByEmail(email).orElse(null);
         userValidator.validateUser(userData);
         return userData;
     }

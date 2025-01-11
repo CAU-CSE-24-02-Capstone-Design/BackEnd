@@ -51,10 +51,11 @@ public class FeedbackCheckService {
 
     public List<String> getPastAudioLinks(final Long userId) {
         Pageable pageable = PageRequest.of(0, LIMIT_PAST_AUDIO_NUMBER);
-        List<FeedbackDto.FeedbackAudioLinkDto> feedbackList = feedbackRepository.findBeforeLinksByUserId(userId,
+        List<FeedbackDto.FeedbackAudioLinkDto> feedbackList = feedbackRepository.findAudioLinkDtosByUserIdWithSize(
+                userId,
                 pageable);
         if (feedbackList.isEmpty()) {
-            feedbackList = feedbackRepository.findAllBeforeLinksByUserId(userId);
+            feedbackList = feedbackRepository.findAllAudioLinkDtosByUserId(userId);
         }
         return feedbackList.stream()
                 .map(FeedbackAudioLinkDto::getBeforeAudioLink)
@@ -72,7 +73,7 @@ public class FeedbackCheckService {
 
     public List<String> findBeforeScriptByUser(final User user, int number) {
         Pageable pageable = PageRequest.of(0, number);
-        return feedbackRepository.findBeforeScriptByUserId(user.getId(), pageable);
+        return feedbackRepository.findBeforeScriptByUserIdWithSize(user.getId(), pageable);
     }
 
     public boolean isFeedbackExistsWithAnswerId(final Long answerId) {

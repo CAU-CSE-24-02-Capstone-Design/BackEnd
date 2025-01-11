@@ -17,21 +17,18 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
     Optional<Feedback> findByAnswerId(final Long answerId);
 
+    List<Feedback> findAllByUserId(final Long userId);
+
     @Query("SELECT f.createdAt FROM Feedback f WHERE f.answer.id = :answerId")
     LocalDateTime findCreatedAtByAnswerId(@Param("answerId") final Long answerId);
 
-    @Query("SELECT f FROM Feedback f WHERE f.user.id = :userId ORDER BY f.createdAt DESC")
-    List<Feedback> findByUserId(@Param("userId") final Long userId, final Pageable pageable);
-
     @Query("SELECT new Team02.BackEnd.dto.feedbackDto.FeedbackDto$FeedbackAudioLinkDto(f.beforeAudioLink) FROM Feedback f WHERE f.user.id = :userId ORDER BY f.createdAt DESC")
-    List<FeedbackDto.FeedbackAudioLinkDto> findBeforeLinksByUserId(@Param("userId") final Long userId,
-                                                                   final Pageable pageable);
+    List<FeedbackDto.FeedbackAudioLinkDto> findAudioLinkDtosByUserIdWithSize(@Param("userId") final Long userId,
+                                                                             final Pageable pageable);
 
     @Query("SELECT new Team02.BackEnd.dto.feedbackDto.FeedbackDto$FeedbackAudioLinkDto(f.beforeAudioLink) FROM Feedback f WHERE f.user.id = :userId")
-    List<FeedbackDto.FeedbackAudioLinkDto> findAllBeforeLinksByUserId(@Param("userId") final Long userId);
-
-    List<Feedback> findAllByUserId(final Long userId);
+    List<FeedbackDto.FeedbackAudioLinkDto> findAllAudioLinkDtosByUserId(@Param("userId") final Long userId);
 
     @Query("SELECT f.beforeScript FROM Feedback f WHERE f.user.id = :userId ORDER BY f.createdAt DESC")
-    List<String> findBeforeScriptByUserId(@Param("userId") final Long userId, final Pageable pageable);
+    List<String> findBeforeScriptByUserIdWithSize(@Param("userId") final Long userId, final Pageable pageable);
 }
