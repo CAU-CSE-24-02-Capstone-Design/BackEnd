@@ -32,7 +32,8 @@ public class OauthService {
         return authCodeRequestUrlProviderComposite.provide(oauthServerType);
     }
 
-    public User login(final HttpServletResponse response, final OauthServerType oauthServerType, final String authCode) {
+    public User login(final HttpServletResponse response, final OauthServerType oauthServerType,
+                      final String authCode) {
         User user = oauthUserClientComposite.fetch(oauthServerType, authCode);
         User saved = userRepository.findByOauthId(user.getOauthId()).orElseGet(() -> userRepository.save(user));
 

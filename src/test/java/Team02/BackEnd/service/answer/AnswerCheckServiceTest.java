@@ -129,7 +129,7 @@ class AnswerCheckServiceTest {
         // when
         given(answerRepository.findByUserAndYearAndMonth(user.getId(), Integer.parseInt(year),
                 Integer.parseInt(month))).willReturn(List.of(answerIdDto1, answerIdDto2));
-        List<AnswerDto.AnswerIdDto> answers = answerCheckService.findAnswersByUserAndYearAndMonth(user.getId(), year, month);
+        List<AnswerDto.AnswerIdDto> answers = answerCheckService.findAnswerIdDtosByUserAndYearAndMonth(user.getId(), year, month);
 
         // then
         assertThat(answers.size()).isEqualTo(2);
@@ -149,7 +149,7 @@ class AnswerCheckServiceTest {
         given(answerRepository.findByUserAndYearAndMonth(user.getId(), Integer.parseInt(year),
                 Integer.parseInt(month))).willReturn(Collections.emptyList());
         AnswerHandler exception = assertThrows(AnswerHandler.class, () -> {
-            answerCheckService.findAnswersByUserAndYearAndMonth(user.getId(), year, month);
+            answerCheckService.findAnswerIdDtosByUserAndYearAndMonth(user.getId(), year, month);
         });
 
         // then

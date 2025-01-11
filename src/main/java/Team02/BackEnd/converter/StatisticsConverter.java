@@ -13,7 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StatisticsConverter {
 
-    public static StatisticsResponseDto.GetStatisticsDto toGetStatisticsDto(final Statistics statistics, final LocalDateTime createdAt) {
+    public static StatisticsResponseDto.GetStatisticsDto toGetStatisticsDto(final Statistics statistics,
+                                                                            final LocalDateTime createdAt) {
         return StatisticsResponseDto.GetStatisticsDto.builder()
                 .day(createdAt.atZone(ZoneId.of(BASE_TIME_ZONE))
                         .withZoneSameInstant(ZoneId.of(NEW_TIME_ZONE)).toLocalDate())

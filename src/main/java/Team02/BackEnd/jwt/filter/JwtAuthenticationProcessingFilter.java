@@ -1,6 +1,5 @@
 package Team02.BackEnd.jwt.filter;
 
-import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.userDto.UserPrincipal;
 import Team02.BackEnd.exception.TokenInvalidException;
 import Team02.BackEnd.jwt.service.JwtService;

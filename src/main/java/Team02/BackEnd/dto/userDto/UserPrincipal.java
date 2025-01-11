@@ -14,6 +14,4 @@ public class UserPrincipal {
 
     private String email;
     private Role role;
-
-
 }
