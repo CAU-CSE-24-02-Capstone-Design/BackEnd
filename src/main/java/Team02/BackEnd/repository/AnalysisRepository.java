@@ -9,5 +9,5 @@ import org.springframework.data.repository.query.Param;
 
 public interface AnalysisRepository extends JpaRepository<Analysis, Long> {
     @Query("SELECT a FROM Analysis a WHERE a.user.id = :userId ORDER BY a.createdAt DESC")
-    List<Analysis> findMostRecentAnalysisByUserId(@Param("userId") final Long userId, final Pageable pageable);
+    List<Analysis> findAnalysisByUserIdWithSize(@Param("userId") final Long userId, final Pageable pageable);
 }

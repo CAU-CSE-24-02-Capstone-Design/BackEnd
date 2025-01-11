@@ -12,7 +12,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.io.IOException;
@@ -38,8 +37,7 @@ public class Analysis extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "analysis_text", columnDefinition = "TEXT")
-    @Lob
+    @Column(name = "analysis_text", length = 1000)
     private String analysisText;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

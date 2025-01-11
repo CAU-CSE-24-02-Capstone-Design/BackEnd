@@ -37,15 +37,15 @@ public class Feedback extends BaseEntity {
 
     private String beforeAudioLink;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 1000)
     private String beforeScript;
 
     private String afterAudioLink;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 1000)
     private String afterScript;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 1000)
     private String feedbackText;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

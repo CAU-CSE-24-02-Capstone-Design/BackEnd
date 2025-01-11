@@ -61,7 +61,7 @@ public class AnalysisCheckService {
                         .withZoneSameInstant(ZoneId.of(NEW_TIME_ZONE)).toLocalDate().toString())
                 .toList();
         Pageable pageable = PageRequest.of(0, 1);
-        Analysis analysis = analysisRepository.findMostRecentAnalysisByUserId(userId, pageable).get(0);
+        Analysis analysis = analysisRepository.findAnalysisByUserIdWithSize(userId, pageable).get(0);
         analysisValidator.validateAnalysis(analysis);
         return AnalysisConverter.toGetAnalysisDto(analysis.getAnalysisTextAsList(), answerDates);
     }

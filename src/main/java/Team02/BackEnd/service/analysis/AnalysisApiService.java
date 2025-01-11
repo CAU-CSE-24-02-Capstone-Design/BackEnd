@@ -32,6 +32,15 @@ public class AnalysisApiService {
     public GetAnalysisFromFastApiDto getAnalysisFromFastApi(final String accessToken,
                                                             final List<String> questions,
                                                             final List<String> beforeScripts) {
+//        List<List<String>> dummyAnalysisText = List.of(
+//                List.of("Dummy analysis line 1 for user", "Dummy analysis line 2 for user"),
+//                List.of("Dummy analysis line 3 for user", "Dummy analysis line 4 for user")
+//        );
+//        GetAnalysisFromFastApiDto response = GetAnalysisFromFastApiDto.builder()
+//                .analysisText(dummyAnalysisText)
+//                .build();
+//        return response;
+
         GetComponentToMakeAnalysisDto getComponentToMakeAnalysisDto =
                 AnalysisConverter.toGetComponentToMakeAnalysisDto(questions, beforeScripts);
         ResponseEntity<GetAnalysisFromFastApiDto> response = makeApiCallToFastApi(accessToken,

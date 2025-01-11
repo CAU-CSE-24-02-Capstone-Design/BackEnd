@@ -31,6 +31,6 @@ public class Insight extends BaseEntity {
     @JoinColumn(name = "answer_id")
     private Answer answer;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 1000)
     private String insight;
 }

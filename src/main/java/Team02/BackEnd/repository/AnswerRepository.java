@@ -15,32 +15,28 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     @Query("SELECT a.id FROM Answer a WHERE a.user.id = :userId")
     List<Long> findAnswerIdsByUserId(@Param("userId") final Long userId);
 
-    @Query("SELECT new Team02.BackEnd.dto.answerDto.AnswerDto$AnswerIdDto(a.id, a.createdAt) FROM Answer a WHERE a.user.id = :userId")
-    List<AnswerDto.AnswerIdDto> findAnswerIdByUserId(@Param("userId") final Long userId);
-
-    @Query("SELECT new Team02.BackEnd.dto.answerDto.AnswerDto$AnswerIdDto(a.id, a.createdAt) FROM Answer a WHERE a.user.id = :userId ORDER BY a.createdAt DESC")
-    List<AnswerDto.AnswerIdDto> findLatestAnswerIdByUserIdWithSize(@Param("userId") final Long userId,
-                                                                   final Pageable pageable);
-
-    @Query("SELECT new Team02.BackEnd.dto.answerDto.AnswerDto$AnswerIdDto(a.id, a.createdAt) FROM Answer a WHERE a.user.id = :userId AND YEAR(a.createdAt) = :year AND MONTH(a.createdAt) = :month ORDER BY a.createdAt ASC")
-    List<AnswerDto.AnswerIdDto> findByUserAndYearAndMonth(@Param("userId") final Long userId,
-                                                          @Param("year") final int year,
-                                                          @Param("month") final int month);
-
-    @Query("SELECT new Team02.BackEnd.dto.answerDto.AnswerDto$AnswerLevelDto(a.id, a.createdAt, a.question.level) FROM Answer a JOIN a.question WHERE a.user.id = :userId")
-    List<AnswerDto.AnswerLevelDto> findAnswersWithLevelByUserId(@Param("userId") final Long userId);
-
-    @Query("SELECT new Team02.BackEnd.dto.answerDto.AnswerDto$AnswerQuestionDto(a.id, a.question.description) FROM Answer a JOIN a.question where a.user.id = :userId ORDER BY a.createdAt DESC")
-    List<AnswerDto.AnswerQuestionDto> findLatestAnswersWithQuestionByUserId(@Param("userId") final Long userId,
-                                                                            final Pageable pageable);
-
     @Query("SELECT a.id FROM Answer a WHERE a.user.id = :userId ORDER BY a.createdAt DESC")
-    List<Long> findLatestAnswerIdByUserId(@Param("userId") final Long userId, final Pageable pageable);
+    List<Long> findAnswerIdByUserIdWithSize(@Param("userId") final Long userId, final Pageable pageable);
 
     @Query("SELECT a FROM Answer a WHERE a.user.id = :userId ORDER BY a.createdAt DESC")
-    List<Answer> findLatestAnswerByUserId(@Param("userId") final Long userId, final Pageable pageable);
+    List<Answer> findAnswerByUserIdWithSize(@Param("userId") final Long userId, final Pageable pageable);
 
+    @Query("SELECT new Team02.BackEnd.dto.answerDto.AnswerDto$AnswerIdDto(a.id, a.createdAt) FROM Answer a WHERE a.user.id = :userId")
+    List<AnswerDto.AnswerIdDto> findAnswerIdDtosByUserId(@Param("userId") final Long userId);
 
-    @Query("SELECT q.description FROM Answer a JOIN a.question q WHERE a.user = :user ORDER BY a.createdAt ASC")
-    List<String> findQuestionDescriptionsByUser(@Param("user") final User user, final Pageable pageable);
+    @Query("SELECT new Team02.BackEnd.dto.answerDto.AnswerDto$AnswerIdDto(a.id, a.createdAt) FROM Answer a WHERE a.user.id = :userId ORDER BY a.createdAt DESC")
+    List<AnswerDto.AnswerIdDto> findLatestAnswerIdDtosByUserIdWithSize(@Param("userId") final Long userId,
+                                                                       final Pageable pageable);
+
+    @Query("SELECT new Team02.BackEnd.dto.answerDto.AnswerDto$AnswerIdDto(a.id, a.createdAt) FROM Answer a WHERE a.user.id = :userId AND YEAR(a.createdAt) = :year AND MONTH(a.createdAt) = :month ORDER BY a.createdAt ASC")
+    List<AnswerDto.AnswerIdDto> findAnswerIdDtosByUserAndYearAndMonth(@Param("userId") final Long userId,
+                                                                      @Param("year") final int year,
+                                                                      @Param("month") final int month);
+
+    @Query("SELECT new Team02.BackEnd.dto.answerDto.AnswerDto$AnswerLevelDto(a.id, a.createdAt, a.question.level) FROM Answer a JOIN a.question WHERE a.user.id = :userId")
+    List<AnswerDto.AnswerLevelDto> findAnswerLevelDtosWithLevelByUserId(@Param("userId") final Long userId);
+
+    @Query("SELECT new Team02.BackEnd.dto.answerDto.AnswerDto$AnswerQuestionDto(a.id, a.question.description) FROM Answer a JOIN a.question where a.user.id = :userId ORDER BY a.createdAt DESC")
+    List<AnswerDto.AnswerQuestionDto> findAnswerQuestionDtosByUserIdWithSize(@Param("userId") final Long userId,
+                                                                             final Pageable pageable);
 }
