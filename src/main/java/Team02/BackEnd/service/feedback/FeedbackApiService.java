@@ -3,12 +3,11 @@ package Team02.BackEnd.service.feedback;
 import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_HEADER_NAME;
 import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_PREFIX;
 
-import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
-import Team02.BackEnd.apiPayload.exception.handler.FeedbackHandler;
 import Team02.BackEnd.converter.FeedbackConverter;
 import Team02.BackEnd.dto.feedbackDto.FeedbackRequestDto.GetComponentToMakeFeedbackDto;
 import Team02.BackEnd.dto.feedbackDto.FeedbackResponseDto.GetFeedbackToFastApiDto;
 import Team02.BackEnd.dto.userDto.UserDto.UserVoiceDto;
+import Team02.BackEnd.validator.FeedbackValidator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,16 +16,19 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(propagation = Propagation.NEVER)
 public class FeedbackApiService {
 
     private static final String FASTAPI_API_URL = "https://peachmentor.com/api/fastapi/records/feedbacks";
-    private static final String FASTAPI_API_URL_LOCAL = "http://localhost:8000/api/fastapi/records/feedbacks";
 
+    private final FeedbackValidator feedbackValidator;
     private final RestTemplate restTemplate;
 
     public GetFeedbackToFastApiDto getFeedbackFromFastApi(final String accessToken,
@@ -34,13 +36,11 @@ public class FeedbackApiService {
                                                           final List<String> pastAudioLinks,
                                                           final UserVoiceDto userData,
                                                           final Long answerId) {
-
         GetComponentToMakeFeedbackDto getComponentToMakeFeedbackDto =
-                FeedbackConverter.toGetComponentToMakeFeedback(beforeAudioLink, userData, pastAudioLinks,
-                        answerId);
+                FeedbackConverter.toGetComponentToMakeFeedback(beforeAudioLink, userData, pastAudioLinks, answerId);
         ResponseEntity<GetFeedbackToFastApiDto> response = this.makeApiCallToFastApi(accessToken,
                 getComponentToMakeFeedbackDto);
-        this.validateFeedbackFromFastApi(response);
+        feedbackValidator.validateResponseFromFastApi(response.getBody());
         return response.getBody();
     }
 
@@ -52,11 +52,5 @@ public class FeedbackApiService {
         HttpEntity<GetComponentToMakeFeedbackDto> request = new HttpEntity<>(getComponentToMakeFeedbackDto,
                 headers);
         return restTemplate.postForEntity(FASTAPI_API_URL, request, GetFeedbackToFastApiDto.class);
-    }
-
-    private void validateFeedbackFromFastApi(final ResponseEntity<GetFeedbackToFastApiDto> response) {
-        if (response.getBody() == null) {
-            throw new FeedbackHandler(ErrorStatus._FAST_API_FEEDBACK_NULL);
-        }
     }
 }

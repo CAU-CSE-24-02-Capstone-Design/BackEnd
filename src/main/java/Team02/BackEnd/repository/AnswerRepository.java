@@ -32,7 +32,7 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
     @Query("SELECT new Team02.BackEnd.dto.answerDto.AnswerDto$AnswerQuestionDto(a.id, a.question.description) FROM Answer a JOIN a.question where a.user.id = :userId ORDER BY a.createdAt DESC")
     List<AnswerDto.AnswerQuestionDto> findLatestAnswersWithQuestionByUserId(@Param("userId") final Long userId,
-                                                                      final Pageable pageable);
+                                                                            final Pageable pageable);
 
     @Query("SELECT a.id FROM Answer a WHERE a.user.id = :userId ORDER BY a.createdAt DESC")
     List<Long> findLatestAnswerIdByUserId(@Param("userId") final Long userId, final Pageable pageable);

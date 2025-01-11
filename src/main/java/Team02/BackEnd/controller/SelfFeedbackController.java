@@ -41,8 +41,8 @@ public class SelfFeedbackController {
             @RequestHeader("Authorization") final String authorizationHeader
     ) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
-        String selfFeedbackText = selfFeedbackManager.getLatestSelfFeedbackText(accessToken);
+        SelfFeedback selfFeedback = selfFeedbackManager.getLatestSelfFeedback(accessToken);
         return ApiResponse.of(SuccessStatus.GET_SELF_FEEDBACK,
-                SelfFeedbackConverter.toGetBeforeSelfFeedbackDto(selfFeedbackText));
+                SelfFeedbackConverter.toGetBeforeSelfFeedbackDto(selfFeedback));
     }
 }
