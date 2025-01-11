@@ -1,5 +1,6 @@
 package Team02.BackEnd.service.selffeedback;
 
+import Team02.BackEnd.domain.SelfFeedback;
 import Team02.BackEnd.dto.selfFeedbackDto.SelfFeedbackRequestDto.SaveSelfFeedbackDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -15,7 +16,7 @@ public class SelfFeedbackManager {
         selfFeedbackService.saveSelfFeedback(answerId, saveSelfFeedbackDto);
     }
 
-    public String getLatestSelfFeedbackText(final String accessToken) {
-        return selfFeedbackCheckService.getLatestSelfFeedbackText(accessToken);
+    public SelfFeedback getLatestSelfFeedback(final String accessToken) {
+        return selfFeedbackCheckService.getLatestSelfFeedback(accessToken);
     }
 }

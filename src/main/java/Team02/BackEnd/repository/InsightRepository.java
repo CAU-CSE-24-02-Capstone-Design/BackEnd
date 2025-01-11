@@ -1,4 +1,3 @@
-
 package Team02.BackEnd.repository;
 
 import Team02.BackEnd.domain.Insight;

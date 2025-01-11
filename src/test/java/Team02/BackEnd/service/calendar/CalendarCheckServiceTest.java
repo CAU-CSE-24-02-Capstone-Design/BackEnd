@@ -68,7 +68,7 @@ class CalendarCheckServiceTest {
         List<AnswerDto.AnswerIdDto> answersInPeriod = List.of(answerIdDto);
         // when
         given(userCheckService.getUserByToken(accessToken)).willReturn(user);
-        given(answerCheckService.findAnswersByUserAndYearAndMonth(user.getId(), year, month)).willReturn(answersInPeriod);
+        given(answerCheckService.findAnswerIdDtosByUserAndYearAndMonth(user.getId(), year, month)).willReturn(answersInPeriod);
         given(feedbackCheckService.isFeedbackExistsWithAnswerId(answer.getId())).willReturn(true);
 
         Long[] answerIdDidThisPeriod = calendarCheckService.getDatesWhenUserDid(accessToken, year, month);

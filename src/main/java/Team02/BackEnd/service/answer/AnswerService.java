@@ -10,21 +10,23 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(isolation = Isolation.READ_COMMITTED)
 public class AnswerService {
 
     private final AnswerCheckService answerCheckService;
     private final FeedbackCheckService feedbackCheckService;
     private final AnswerRepository answerRepository;
 
-    @Transactional
     public Long createAnswer(final User user, final Question question, final Optional<Answer> latestAnswer,
                              final Long level) {
-        if (latestAnswer.isPresent() && !feedbackCheckService.isFeedbackExistsWithAnswerId(latestAnswer.get().getId())) {
+        if (latestAnswer.isPresent() && !feedbackCheckService.isFeedbackExistsWithAnswerId(
+                latestAnswer.get().getId())) {
             log.info("녹음이 진행 안 된 answer 엔티티 재사용, answerId : {}", latestAnswer.get().getId());
             return latestAnswer.get().getId();
         }
@@ -34,7 +36,6 @@ public class AnswerService {
         return answer.getId();
     }
 
-    @Transactional
     public void saveAnswerEvaluation(final Long answerId, final int evaluation) {
         Answer answer = answerCheckService.getAnswerByAnswerId(answerId);
         answer.updateEvaluation(evaluation);

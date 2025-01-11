@@ -7,7 +7,7 @@ import Team02.BackEnd.apiPayload.ApiResponse;
 import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
 import Team02.BackEnd.converter.UserConverter;
 import Team02.BackEnd.dto.userDto.UserResponseDto;
-import Team02.BackEnd.service.user.UserService;
+import Team02.BackEnd.service.user.UserManager;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,18 +21,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/spring")
 public class UserController {
 
-    private final UserService userService;
+    private final UserManager userManager;
 
     @PostMapping("/sign-up")
     public ApiResponse<UserResponseDto.UserDto> signUp(final HttpServletResponse response) {
-        String accessToken = userService.signUp(response);
+        String accessToken = userManager.signUp(response);
         return ApiResponse.of(SuccessStatus._OK, UserConverter.toUserDto(accessToken));
     }
 
     @DeleteMapping("/sign-out")
     public ApiResponse<Void> signOut(@RequestHeader("Authorization") final String authorizationHeader) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
-        userService.signOut(accessToken);
+        userManager.signOut(accessToken);
         return ApiResponse.ofNoting(SuccessStatus.SIGN_OUT_USER);
     }
 }
