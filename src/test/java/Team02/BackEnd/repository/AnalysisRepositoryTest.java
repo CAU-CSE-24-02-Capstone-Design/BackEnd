@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
@@ -28,7 +27,7 @@ class AnalysisRepositoryTest {
     @Autowired
     private AnalysisRepository analysisRepository;
 
-    @DisplayName("사용자의 가장 최근 분석 리포트 가져오기")
+    @DisplayName("사용자의 분석 리포트 가져오기")
     @Transactional
     @Test
     void findMostRecentAnalysisByUserId() {
@@ -39,7 +38,7 @@ class AnalysisRepositoryTest {
         Pageable pageable = PageRequest.of(0, 1);
 
         // when
-        List<Analysis> findAnalysis = analysisRepository.findMostRecentAnalysisByUserId(user.getId(), pageable);
+        List<Analysis> findAnalysis = analysisRepository.findLatestAnalysisByUserIdWithSize(user.getId(), pageable);
         Optional<Analysis> findAnalysis1 = findAnalysis.stream().findFirst();
 
         // then

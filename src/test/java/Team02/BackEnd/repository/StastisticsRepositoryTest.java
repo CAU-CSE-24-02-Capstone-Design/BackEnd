@@ -8,12 +8,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Question;
-import Team02.BackEnd.domain.Role;
 import Team02.BackEnd.domain.Statistics;
-import Team02.BackEnd.domain.oauth.OauthId;
 import Team02.BackEnd.domain.oauth.User;
-import Team02.BackEnd.oauth.OauthServerType;
-import jakarta.transaction.Transactional;
+import Team02.BackEnd.dto.statisticsDto.StatisticsDto.StatisticsDataDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -44,17 +42,32 @@ public class StastisticsRepositoryTest {
         statistics = createStatistics(answer);
     }
 
-    @DisplayName("answer에 대한 통계 데이터를 가져온다")
+    @DisplayName("AnswerId로 통계 데이터를 가져온다")
     @Transactional
     @Test
-    void findByAnswerId() {
+    void findStatisticsDataDtoByAnswerId() {
         // given
         statisticsRepository.save(statistics);
 
         // when
-        Statistics findStatistics = statisticsRepository.findByAnswerId(answer.getId()).orElse(null);
+        StatisticsDataDto statisticsDataDto = statisticsRepository.findStatisticsDataDtoByAnswerId(answer.getId())
+                .orElse(null);
 
         // then
-        assertThat(findStatistics.getAnswer()).isEqualTo(answer);
+        assertThat(statisticsDataDto).isNotNull();
+    }
+
+    @DisplayName("Answer와 연결된 Statistics를 확인한다.")
+    @Transactional
+    @Test
+    void existsByAnswerId() {
+        // given
+        statisticsRepository.save(statistics);
+
+        // when
+        Boolean exists = statisticsRepository.existsByAnswerId(answer.getId());
+
+        // then
+        assertThat(exists).isTrue();
     }
 }

@@ -4,19 +4,15 @@ import static Team02.BackEnd.util.TestUtil.createAnswer;
 import static Team02.BackEnd.util.TestUtil.createInsight;
 import static Team02.BackEnd.util.TestUtil.createQuestion;
 import static Team02.BackEnd.util.TestUtil.createUser;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Insight;
 import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.oauth.User;
-import Team02.BackEnd.repository.InsightRepository;
-import Team02.BackEnd.service.answer.AnswerCheckService;
-import Team02.BackEnd.validator.InsightValidator;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,15 +21,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.test.context.support.WithMockUser;
 
 @ExtendWith(MockitoExtension.class)
-class InsightCheckServiceTest {
+class InsightManagerTest {
 
     @Mock
-    private InsightRepository insightRepository;
+    private InsightCheckService insightCheckService;
+
     @Mock
-    private InsightValidator insightValidator;
+    private InsightService insightService;
 
     @InjectMocks
-    private InsightCheckService insightCheckService;
+    private InsightManager insightManager;
 
     private User user;
     private Question question;
@@ -50,17 +47,26 @@ class InsightCheckServiceTest {
 
     @Test
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
-    void getAiInsight() {
+    void saveAiInsight() {
         // given
         List<String> insights = List.of(insight.getInsight());
 
         // when
-        given(insightRepository.findInsightsByAnswerId(answer.getId())).willReturn(insights);
-
-        List<String> aiInsights = insightCheckService.getAiInsight(answer.getId());
+        insightManager.saveAiInsight(insights, answer.getId());
 
         // then
-        assertThat(aiInsights.size()).isEqualTo(1);
-        assertThat(aiInsights.get(0)).isEqualTo(insight.getInsight());
+        verify(insightService, times(1)).saveAiInsight(insights, answer.getId());
+    }
+
+    @Test
+    @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
+    void getAiInsight() {
+        // given
+
+        // when
+        insightManager.getAiInsight(answer.getId());
+
+        // then
+        verify(insightCheckService, times(1)).getAiInsight(answer.getId());
     }
 }

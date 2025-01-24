@@ -46,7 +46,7 @@ public class AnswerCheckService {
 
     public List<Long> getAnswerIdsByUserIdWithSize(final Long userId, final int size) {
         Pageable pageable = PageRequest.of(0, size);
-        return answerRepository.findAnswerIdByUserIdWithSize(userId, pageable);
+        return answerRepository.findLatestAnswerIdByUserIdWithSize(userId, pageable);
     }
 
     public List<AnswerDto.AnswerIdDto> getAnswerIdDtosByUserId(final Long userId) {
@@ -57,14 +57,13 @@ public class AnswerCheckService {
 
     public List<AnswerDto.AnswerIdDto> getLatestAnswerIdDtosByUserIdWithSize(final Long userId, final int size) {
         Pageable pageable = PageRequest.of(0, size);
-        List<AnswerDto.AnswerIdDto> answerDatas = answerRepository.findLatestAnswerIdDtosByUserIdWithSize(userId,
-                pageable);
+        List<AnswerDto.AnswerIdDto> answerDatas = answerRepository.findLatestAnswerIdDtosByUserIdWithSize(userId, pageable);
         answerValidator.validateAnswersEmpty(answerDatas);
         return answerDatas;
     }
 
-    public List<AnswerDto.AnswerLevelDto> getAnswerLevelDtosWithLevelByUserId(final Long userId) {
-        List<AnswerDto.AnswerLevelDto> answerDatas = answerRepository.findAnswerLevelDtosWithLevelByUserId(userId);
+    public List<AnswerDto.AnswerIdDto> getAnswerIdDtosWithLevelByUserId(final Long userId, final Long level) {
+        List<AnswerDto.AnswerIdDto> answerDatas = answerRepository.findAnswerIdDtosWithLevelByUserId(userId, level);
         answerValidator.validateAnswersEmpty(answerDatas);
         return answerDatas;
     }
@@ -78,18 +77,14 @@ public class AnswerCheckService {
         return answers;
     }
 
-    public Optional<Answer> getLatestAnswerByUserId(final Long userId) {
+    public Optional<Long> getLatestAnswerIdByUserId(final Long userId) {
         Pageable pageable = PageRequest.of(0, 1);
-        return answerRepository.findAnswerByUserIdWithSize(userId, pageable).stream().findFirst();
-    }
-
-    public Boolean checkSpeechLevel(final Long questionLevel, final Long level) {
-        return Objects.equals(questionLevel, level);
+        return answerRepository.findLatestAnswerIdByUserIdWithSize(userId, pageable).stream().findFirst();
     }
 
     public List<String> findQuestionDescriptionsByUser(final User user, final int number) {
         Pageable pageable = PageRequest.of(0, number);
-        List<AnswerDto.AnswerQuestionDto> answerQuestionDtos = answerRepository.findAnswerQuestionDtosByUserIdWithSize(
+        List<AnswerDto.AnswerQuestionDto> answerQuestionDtos = answerRepository.findLatestAnswerQuestionDtosByUserIdWithSize(
                 user.getId(), pageable);
         user.updateAnalyzeCompleteAnswerIndex(answerQuestionDtos.get(0).getId());
         return answerQuestionDtos.stream()

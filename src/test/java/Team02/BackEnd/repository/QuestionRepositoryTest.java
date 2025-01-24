@@ -5,10 +5,8 @@ import static Team02.BackEnd.util.TestUtil.createUser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import Team02.BackEnd.domain.Question;
-import Team02.BackEnd.domain.Role;
-import Team02.BackEnd.domain.oauth.OauthId;
 import Team02.BackEnd.domain.oauth.User;
-import Team02.BackEnd.oauth.OauthServerType;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +23,20 @@ class QuestionRepositoryTest {
     @Autowired
     private QuestionRepository questionRepository;
 
+    private User user;
+    private Question question;
+
+    @BeforeEach
+    void setUp() {
+        user = createUser();
+        question = createQuestion();
+    }
+
     @DisplayName("질문 번호에 맞는 질문 찾기.")
     @Test
     void findByQuestionIndex() {
         // given
         Long level = 1L;
-        User user = createUser();
-        Question question = createQuestion();
         questionRepository.save(question);
 
         // when

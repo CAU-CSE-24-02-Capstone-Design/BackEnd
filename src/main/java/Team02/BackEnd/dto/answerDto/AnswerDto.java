@@ -1,11 +1,13 @@
 package Team02.BackEnd.dto.answerDto;
 
 import java.time.LocalDateTime;
+import lombok.Builder;
 import lombok.Getter;
 
 public class AnswerDto {
 
     @Getter
+    @Builder
     public static class AnswerIdDto {
         private Long id;
         private LocalDateTime createdAt;
@@ -21,23 +23,7 @@ public class AnswerDto {
     }
 
     @Getter
-    public static class AnswerLevelDto {
-        private Long id;
-        private LocalDateTime createdAt;
-        private Long level;
-
-        public AnswerLevelDto() {
-
-        }
-
-        public AnswerLevelDto(Long id, LocalDateTime createdAt, Long level) {
-            this.id = id;
-            this.createdAt = createdAt;
-            this.level = level;
-        }
-    }
-
-    @Getter
+    @Builder
     public static class AnswerQuestionDto {
         private Long id;
         private String description;

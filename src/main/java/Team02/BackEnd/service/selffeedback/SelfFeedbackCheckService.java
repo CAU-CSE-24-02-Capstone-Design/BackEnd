@@ -22,13 +22,13 @@ public class SelfFeedbackCheckService {
     private final SelfFeedbackRepository selfFeedbackRepository;
     private final SelfFeedbackValidator selfFeedbackValidator;
 
-    public SelfFeedback getLatestSelfFeedback(final String accessToken) {
+    public String getLatestSelfFeedbackText(final String accessToken) {
         Long userId = userCheckService.getUserIdByToken(accessToken);
         Long answerId = answerCheckService.getAnswerIdsByUserIdWithSize(userId, 1).get(0);
-        SelfFeedback selfFeedback = selfFeedbackRepository.findByAnswerId(answerId);
-        selfFeedbackValidator.validateSelfFeedback(selfFeedback);
-        log.info("가장 최근 셀프 피드백 가져오기, selfFeedbackId : {}", selfFeedback.getId());
-        return selfFeedback;
+        String selfFeedbackText = selfFeedbackRepository.findSelfFeedbackText(answerId).orElse(null);
+        selfFeedbackValidator.validateSelfFeedback(selfFeedbackText);
+        log.info("가장 최근 셀프 피드백 가져오기, userId : {}", userId);
+        return selfFeedbackText;
     }
 
     public SelfFeedback getSelfFeedbackByAnswerId(final Long answerId) {

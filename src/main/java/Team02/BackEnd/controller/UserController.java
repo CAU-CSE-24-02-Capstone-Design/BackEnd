@@ -8,17 +8,22 @@ import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
 import Team02.BackEnd.converter.UserConverter;
 import Team02.BackEnd.dto.userDto.UserResponseDto;
 import Team02.BackEnd.service.user.UserManager;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/spring")
+@Slf4j
 public class UserController {
 
     private final UserManager userManager;

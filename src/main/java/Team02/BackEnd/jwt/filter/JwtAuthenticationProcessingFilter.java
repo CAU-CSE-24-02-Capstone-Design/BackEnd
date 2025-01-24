@@ -4,7 +4,6 @@ import Team02.BackEnd.dto.userDto.UserPrincipal;
 import Team02.BackEnd.exception.TokenInvalidException;
 import Team02.BackEnd.jwt.service.JwtService;
 import Team02.BackEnd.jwt.util.PasswordUtil;
-import Team02.BackEnd.repository.UserRepository;
 import Team02.BackEnd.service.user.UserCheckService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -48,7 +47,6 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     );
 
     private final JwtService jwtService;
-    private final UserRepository userRepository;
     private final UserCheckService userCheckService;
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
@@ -119,14 +117,6 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         log.info("JWT 토큰 검증 완료");
     }
 
-//    public void saveAuthentication(final User user) {
-//        UserDetails userDetailsUser = this.getUserDetails(user);
-//        Authentication authentication =
-//                new UsernamePasswordAuthenticationToken(userDetailsUser, null,
-//                        authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//    }
-
     private boolean isNotApplyJwtPath(final HttpServletRequest request) {
         String uri = request.getRequestURI();
         return NOT_APPLY_JWT_FILTER_PREFIXES.stream().anyMatch(uri::startsWith);
@@ -145,15 +135,6 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                 .roles(userPrincipal.getRole().name())
                 .build();
     }
-
-//    private UserDetails getUserDetails(final User user) {
-//        String password = PasswordUtil.generateRandomPassword();
-//        return org.springframework.security.core.userdetails.User.builder()
-//                .username(user.getEmail())
-//                .password(password)
-//                .roles(user.getRole().name())
-//                .build();
-//    }
 
     // 오류 정보 {status, message}를 JSON 형태로 바꿔서 응답
     private void sendErrorResponse(final HttpServletResponse response, final int statusCode, final String message)

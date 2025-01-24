@@ -28,6 +28,7 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String description;
     private Long questionIndex;
     private Long level;

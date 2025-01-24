@@ -18,6 +18,12 @@ public class FeedbackValidator {
         }
     }
 
+    public <T> void validateFeedback(final List<T> feedbackList) {
+        if (feedbackList.isEmpty()) {
+            throw new FeedbackHandler(ErrorStatus._FEEDBACK_NOT_FOUND);
+        }
+    }
+
     public <T> void validateResponseFromFastApi(final T response) {
         if (response == null) {
             throw new AnalysisHandler(ErrorStatus._FAST_API_FEEDBACK_NULL);

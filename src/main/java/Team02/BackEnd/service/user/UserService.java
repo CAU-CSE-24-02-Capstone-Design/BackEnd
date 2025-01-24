@@ -22,8 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(isolation = Isolation.READ_COMMITTED)
 public class UserService {
 
-    private final UserCheckService userCheckService;
     private final JwtService jwtService;
+    private final UserCheckService userCheckService;
     private final UserRepository userRepository;
 
     // 부하테스트용 회원가입 로직
@@ -39,6 +39,8 @@ public class UserService {
                 .level2QuestionNumber(1L)
                 .level3QuestionNumber(1L)
                 .analyzeCompleteAnswerIndex(0L)
+                .sequenceCount(0)
+                .score(0)
                 .role(Role.USER)
                 .build();
         String accessToken = jwtService.createAccessToken(user.getEmail());

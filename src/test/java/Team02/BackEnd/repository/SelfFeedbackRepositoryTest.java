@@ -4,16 +4,14 @@ import static Team02.BackEnd.util.TestUtil.createAnswer;
 import static Team02.BackEnd.util.TestUtil.createQuestion;
 import static Team02.BackEnd.util.TestUtil.createSelfFeedback;
 import static Team02.BackEnd.util.TestUtil.createUser;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Question;
-import Team02.BackEnd.domain.Role;
 import Team02.BackEnd.domain.SelfFeedback;
-import Team02.BackEnd.domain.oauth.OauthId;
 import Team02.BackEnd.domain.oauth.User;
-import Team02.BackEnd.oauth.OauthServerType;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +20,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -37,14 +36,14 @@ class SelfFeedbackRepositoryTest {
     private SelfFeedback selfFeedback;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         user = createUser();
         question = createQuestion();
         answer = createAnswer(user, question);
         selfFeedback = createSelfFeedback(answer);
     }
 
-    @DisplayName("답변 기록에 대한 셀프 피드백 찾아오기")
+    @DisplayName("AnswerId로 SelfFeedback 가져오기.")
     @Transactional
     @Test
     void findByAnswerId() {
@@ -56,5 +55,33 @@ class SelfFeedbackRepositoryTest {
 
         // then
         assertEquals(selfFeedback, selfFeedbackResult);
+    }
+
+    @DisplayName("Answer와 연결된 SelfFeedback 있는지 확인하기.")
+    @Transactional
+    @Test
+    void existsByAnswerId() {
+        // given
+        selfFeedbackRepository.save(selfFeedback);
+
+        // when
+        boolean isExists = selfFeedbackRepository.existsByAnswerId(answer.getId());
+
+        // then
+        assertTrue(isExists);
+    }
+
+    @DisplayName("AnswerId로 SelfFeedback 내용만 가져오기.")
+    @Transactional
+    @Test
+    void findSelfFeedbackText() {
+        // given
+        selfFeedbackRepository.save(selfFeedback);
+
+        // when
+        String text = selfFeedbackRepository.findSelfFeedbackText(answer.getId()).orElse(null);
+
+        // then
+        assertThat(text).isEqualTo(selfFeedback.getFeedback());
     }
 }

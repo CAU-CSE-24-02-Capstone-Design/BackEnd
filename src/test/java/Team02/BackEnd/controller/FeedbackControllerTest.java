@@ -1,6 +1,8 @@
 package Team02.BackEnd.controller;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -11,8 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import Team02.BackEnd.domain.Feedback;
 import Team02.BackEnd.jwt.service.JwtService;
-import Team02.BackEnd.service.feedback.FeedbackCheckService;
-import Team02.BackEnd.service.feedback.FeedbackService;
+import Team02.BackEnd.service.feedback.FeedbackManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,10 +34,7 @@ class FeedbackControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private FeedbackService feedbackService;
-
-    @MockBean
-    private FeedbackCheckService feedbackCheckService;
+    private FeedbackManager feedbackManager;
 
     @MockBean
     private JwtService jwtService;
@@ -62,6 +60,7 @@ class FeedbackControllerTest {
                 .andExpect(jsonPath("$.isSuccess").value(true))
                 .andExpect(jsonPath("$.code").value("FEEDBACK2000"))
                 .andExpect(jsonPath("$.message").value("피드백 저장 성공"));
+        verify(feedbackManager, times(1)).createFeedbackData(accessToken, answerId);
     }
 
     @DisplayName("피드백 데이터 요청 api")
@@ -76,8 +75,7 @@ class FeedbackControllerTest {
         Feedback mockFeedback = createMockFeedback();
 
         // when
-        given(feedbackCheckService.getFeedbackByAnswerId(answerId))
-                .willReturn(mockFeedback);
+        given(feedbackManager.getFeedbackByAnswerId(answerId)).willReturn(mockFeedback);
 
         // then
         String expectedJson = """
@@ -113,7 +111,7 @@ class FeedbackControllerTest {
         given(jwtService.createAccessToken("tlsgusdn4818@gmail.com")).willReturn(accessToken);
 
         // when
-        given(feedbackCheckService.doSpeechToday(accessToken)).willReturn(true);
+        given(feedbackManager.doSpeechToday(accessToken)).willReturn(true);
 
         // then
         mockMvc.perform(get("/api/spring/feedbacks/completions")

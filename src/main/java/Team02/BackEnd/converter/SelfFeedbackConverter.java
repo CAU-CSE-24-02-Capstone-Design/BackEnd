@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SelfFeedbackConverter {
     public static SelfFeedbackResponseDto.getBeforeSelfFeedbackDto toGetBeforeSelfFeedbackDto(
-            final SelfFeedback selfFeedback) {
+            final String selfFeedbackText) {
         return SelfFeedbackResponseDto.getBeforeSelfFeedbackDto.builder()
-                .feedback(selfFeedback.getFeedback())
+                .feedback(selfFeedbackText)
                 .build();
 
     }
