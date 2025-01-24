@@ -1,6 +1,5 @@
 package Team02.BackEnd.service.question;
 
-import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.repository.QuestionRepository;
@@ -23,9 +22,8 @@ public class QuestionCheckService {
     private final QuestionRepository questionRepository;
     private final QuestionValidator questionValidator;
 
-    public Question getUserQuestion(final User user, final Optional<Answer> latestAnswer, final Long level) {
-        if (latestAnswer.isPresent() && !feedbackCheckService.isFeedbackExistsWithAnswerId(
-                latestAnswer.get().getId())) {
+    public Question getUserQuestion(final User user, final Optional<Long> latestAnswerId, final Long level) {
+        if (latestAnswerId.isPresent() && !feedbackCheckService.isFeedbackExistsWithAnswerId(latestAnswerId.get())) {
             user.minusQuestionNumber(level);
             log.info("사용자가 스피치를 진행하지 않았던 질문 받아오기, questionId : {}", user.getQuestionNumber(level));
         }

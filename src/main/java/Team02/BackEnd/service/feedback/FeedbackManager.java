@@ -20,7 +20,7 @@ public class FeedbackManager {
     }
 
     public void createFeedbackData(final String accessToken, final Long answerId) {
-        FeedbackApiDataDto feedbackApiDataDto = feedbackCheckService.getFeedbackApiData(accessToken, answerId);
+        FeedbackApiDataDto feedbackApiDataDto = feedbackCheckService.getDataForFeedbackApi(accessToken, answerId);
         GetFeedbackToFastApiDto getFeedbackToFastApiDto = feedbackApiService.getFeedbackFromFastApi(accessToken,
                 feedbackApiDataDto.beforeAudioLink(),
                 feedbackApiDataDto.pastAudioLinks(), feedbackApiDataDto.userData(), answerId);

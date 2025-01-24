@@ -1,7 +1,7 @@
 package Team02.BackEnd.service.statistics;
 
 import Team02.BackEnd.converter.StatisticsConverter;
-import Team02.BackEnd.domain.Statistics;
+import Team02.BackEnd.dto.statisticsDto.StatisticsDto.StatisticsDataDto;
 import Team02.BackEnd.dto.statisticsDto.StatisticsResponseDto.GetStatisticsDto;
 import Team02.BackEnd.repository.StatisticsRepository;
 import Team02.BackEnd.service.answer.AnswerCheckService;
@@ -31,8 +31,8 @@ public class StatisticsCheckService {
         return answerCheckService.getAnswerIdDtosByUserId(userId).stream()
                 .filter(data -> this.isStatisticsExistsWithAnswerId(data.getId()))
                 .map(data -> {
-                    Statistics statistics = this.getStatisticsByAnswerId(data.getId());
-                    return StatisticsConverter.toGetStatisticsDto(statistics, data.getCreatedAt());
+                    StatisticsDataDto statisticsDataDto = this.getStatisticsDataDtoByAnswerId(data.getId());
+                    return StatisticsConverter.toGetStatisticsDto(statisticsDataDto, data.getCreatedAt());
                 })
                 .toList();
     }
@@ -40,12 +40,11 @@ public class StatisticsCheckService {
     public List<GetStatisticsDto> getUserStatisticsByLevel(final String accessToken, final Long level) {
         Long userId = userCheckService.getUserIdByToken(accessToken);
         log.info("사용자의 난이도 별 스피치 통계 가져오기, level : {}, userId : {}", level, userId);
-        return answerCheckService.getAnswerLevelDtosWithLevelByUserId(userId).stream()
+        return answerCheckService.getAnswerIdDtosWithLevelByUserId(userId, level).stream()
                 .filter(data -> this.isStatisticsExistsWithAnswerId(data.getId()))
-                .filter(data -> answerCheckService.checkSpeechLevel(data.getLevel(), level))
                 .map(data -> {
-                    Statistics statistics = this.getStatisticsByAnswerId(data.getId());
-                    return StatisticsConverter.toGetStatisticsDto(statistics, data.getCreatedAt());
+                    StatisticsDataDto statisticsDataDto = this.getStatisticsDataDtoByAnswerId(data.getId());
+                    return StatisticsConverter.toGetStatisticsDto(statisticsDataDto, data.getCreatedAt());
                 })
                 .toList();
     }
@@ -54,9 +53,10 @@ public class StatisticsCheckService {
         return statisticsRepository.existsByAnswerId(answerId);
     }
 
-    public Statistics getStatisticsByAnswerId(final Long answerId) {
-        Statistics statistics = statisticsRepository.findByAnswerId(answerId).orElse(null);
-        statisticsValidator.validateStatistics(statistics);
-        return statistics;
+    public StatisticsDataDto getStatisticsDataDtoByAnswerId(final Long answerId) {
+        StatisticsDataDto statisticsDataDto = statisticsRepository.findStatisticsDataDtoByAnswerId(answerId)
+                .orElse(null);
+        statisticsValidator.validateStatistics(statisticsDataDto);
+        return statisticsDataDto;
     }
 }

@@ -25,7 +25,7 @@ public class QuestionManager {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public QuestionAnswerIdDto getUserQuestion(final String accessToken, final Long level) {
         User user = userCheckService.getUserByToken(accessToken);
-        Optional<Answer> latestAnswer = answerCheckService.getLatestAnswerByUserId(user.getId());
+        Optional<Long> latestAnswer = answerCheckService.getLatestAnswerIdByUserId(user.getId());
         Question question = questionCheckService.getUserQuestion(user, latestAnswer, level);
         Long answerId = answerService.createAnswer(user, question, latestAnswer, level);
         return new QuestionAnswerIdDto(question, answerId);

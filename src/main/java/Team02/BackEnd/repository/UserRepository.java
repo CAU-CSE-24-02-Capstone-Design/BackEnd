@@ -12,15 +12,17 @@ import org.springframework.data.repository.query.Param;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
+    Optional<User> findById(final Long id);
+
     Optional<User> findByEmail(final String email);
+
+    Optional<User> findByOauthId(final OauthId oauthId);
 
     @Query("SELECT u.role FROM User u WHERE u.email = :email")
     Optional<Role> findRoleByEmail(@Param("email") final String email);
 
     @Query("SELECT u.id FROM User u WHERE u.email = :email")
     Optional<Long> findUserIdByEmail(@Param("email") final String email);
-
-    Optional<User> findByOauthId(final OauthId oauthId);
 
     @Query("SELECT new Team02.BackEnd.dto.userDto.UserDto$UserAnswerIndexDto(u.id, u.analyzeCompleteAnswerIndex) FROM User u WHERE u.email = :email")
     Optional<UserAnswerIndexDto> findUserAnswerIndexDtoByEmail(@Param("email") final String email);

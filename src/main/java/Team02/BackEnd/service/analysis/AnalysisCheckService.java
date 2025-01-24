@@ -61,12 +61,12 @@ public class AnalysisCheckService {
                         .withZoneSameInstant(ZoneId.of(NEW_TIME_ZONE)).toLocalDate().toString())
                 .toList();
         Pageable pageable = PageRequest.of(0, 1);
-        Analysis analysis = analysisRepository.findAnalysisByUserIdWithSize(userId, pageable).get(0);
+        Analysis analysis = analysisRepository.findLatestAnalysisByUserIdWithSize(userId, pageable).get(0);
         analysisValidator.validateAnalysis(analysis);
         return AnalysisConverter.toGetAnalysisDto(analysis.getAnalysisTextAsList(), answerDates);
     }
 
-    public AnalysisApiDataDto getAnalysisRelatedData(final String accessToken) {
+    public AnalysisApiDataDto getDataForAnalysisApi(final String accessToken) {
         User user = userCheckService.getUserByToken(accessToken);
         List<String> questions = answerCheckService.findQuestionDescriptionsByUser(user, NUMBER_OF_USER_SPEECH);
         List<String> beforeScripts = feedbackCheckService.findBeforeScriptByUser(user, NUMBER_OF_USER_SPEECH);

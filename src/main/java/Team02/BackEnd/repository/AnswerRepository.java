@@ -1,7 +1,6 @@
 package Team02.BackEnd.repository;
 
 import Team02.BackEnd.domain.Answer;
-import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.answerDto.AnswerDto;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
@@ -16,10 +15,7 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     List<Long> findAnswerIdsByUserId(@Param("userId") final Long userId);
 
     @Query("SELECT a.id FROM Answer a WHERE a.user.id = :userId ORDER BY a.createdAt DESC")
-    List<Long> findAnswerIdByUserIdWithSize(@Param("userId") final Long userId, final Pageable pageable);
-
-    @Query("SELECT a FROM Answer a WHERE a.user.id = :userId ORDER BY a.createdAt DESC")
-    List<Answer> findAnswerByUserIdWithSize(@Param("userId") final Long userId, final Pageable pageable);
+    List<Long> findLatestAnswerIdByUserIdWithSize(@Param("userId") final Long userId, final Pageable pageable);
 
     @Query("SELECT new Team02.BackEnd.dto.answerDto.AnswerDto$AnswerIdDto(a.id, a.createdAt) FROM Answer a WHERE a.user.id = :userId")
     List<AnswerDto.AnswerIdDto> findAnswerIdDtosByUserId(@Param("userId") final Long userId);
@@ -33,10 +29,11 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
                                                                       @Param("year") final int year,
                                                                       @Param("month") final int month);
 
-    @Query("SELECT new Team02.BackEnd.dto.answerDto.AnswerDto$AnswerLevelDto(a.id, a.createdAt, a.question.level) FROM Answer a JOIN a.question WHERE a.user.id = :userId")
-    List<AnswerDto.AnswerLevelDto> findAnswerLevelDtosWithLevelByUserId(@Param("userId") final Long userId);
+    @Query("SELECT new Team02.BackEnd.dto.answerDto.AnswerDto$AnswerIdDto(a.id, a.createdAt) FROM Answer a JOIN a.question WHERE a.user.id = :userId AND a.question.level = :level")
+    List<AnswerDto.AnswerIdDto> findAnswerIdDtosWithLevelByUserId(@Param("userId") final Long userId,
+                                                                  @Param("level") final Long level);
 
     @Query("SELECT new Team02.BackEnd.dto.answerDto.AnswerDto$AnswerQuestionDto(a.id, a.question.description) FROM Answer a JOIN a.question where a.user.id = :userId ORDER BY a.createdAt DESC")
-    List<AnswerDto.AnswerQuestionDto> findAnswerQuestionDtosByUserIdWithSize(@Param("userId") final Long userId,
-                                                                             final Pageable pageable);
+    List<AnswerDto.AnswerQuestionDto> findLatestAnswerQuestionDtosByUserIdWithSize(@Param("userId") final Long userId,
+                                                                                   final Pageable pageable);
 }
