@@ -19,16 +19,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(isolation = Isolation.READ_COMMITTED)
 public class AnswerService {
 
-    private final AnswerCheckService answerCheckService;
     private final FeedbackCheckService feedbackCheckService;
+    private final AnswerCheckService answerCheckService;
     private final AnswerRepository answerRepository;
 
-    public Long createAnswer(final User user, final Question question, final Optional<Answer> latestAnswer,
+    public Long createAnswer(final User user, final Question question, final Optional<Long> latestAnswer,
                              final Long level) {
-        if (latestAnswer.isPresent() && !feedbackCheckService.isFeedbackExistsWithAnswerId(
-                latestAnswer.get().getId())) {
-            log.info("녹음이 진행 안 된 answer 엔티티 재사용, answerId : {}", latestAnswer.get().getId());
-            return latestAnswer.get().getId();
+        if (latestAnswer.isPresent() && !feedbackCheckService.isFeedbackExistsWithAnswerId(latestAnswer.get())) {
+            log.info("녹음이 진행 안 된 answer 엔티티 재사용, answerId : {}", latestAnswer.get());
+            return latestAnswer.get();
         }
         Answer answer = answerRepository.saveAndFlush(AnswerConverter.toAnswer(user, question));
         user.addQuestionNumber(level);

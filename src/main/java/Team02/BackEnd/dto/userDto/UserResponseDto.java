@@ -14,4 +14,14 @@ public class UserResponseDto {
     public static class UserDto {
         String accessToken;
     }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class UserScoreRankingDto {
+        String email;
+        String name;
+        int score;
+    }
 }

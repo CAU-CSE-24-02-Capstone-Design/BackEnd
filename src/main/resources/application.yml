@@ -34,9 +34,9 @@ spring:
     path match:
       matching-strategy: ant_path_matcher
 
-logging:
-  level:
-    org.hibernate.SQL: info
+#logging:
+#  level:
+#    org.hibernate.SQL: info
 #    org.springframework.transaction: DEBUG
 #    org.springframework.orm.jpa: DEBUG
 

@@ -6,8 +6,6 @@ import static Team02.BackEnd.constant.Constants.NEW_TIME_ZONE;
 import Team02.BackEnd.domain.Feedback;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.feedbackDto.FeedbackApiDataDto;
-import Team02.BackEnd.dto.feedbackDto.FeedbackDto;
-import Team02.BackEnd.dto.feedbackDto.FeedbackDto.FeedbackAudioLinkDto;
 import Team02.BackEnd.dto.userDto.UserDto.UserVoiceDto;
 import Team02.BackEnd.repository.FeedbackRepository;
 import Team02.BackEnd.service.answer.AnswerCheckService;
@@ -51,18 +49,16 @@ public class FeedbackCheckService {
 
     public List<String> getPastAudioLinks(final Long userId) {
         Pageable pageable = PageRequest.of(0, LIMIT_PAST_AUDIO_NUMBER);
-        List<FeedbackDto.FeedbackAudioLinkDto> feedbackList = feedbackRepository.findAudioLinkDtosByUserIdWithSize(
+        List<String> beforeAudioLinks = feedbackRepository.findLatestBeforeAudioLinksByUserIdWithSize(
                 userId,
                 pageable);
-        if (feedbackList.isEmpty()) {
-            feedbackList = feedbackRepository.findAllAudioLinkDtosByUserId(userId);
+        if (beforeAudioLinks.isEmpty()) {
+            beforeAudioLinks = feedbackRepository.findAllBeforeAudioLinksByUserId(userId);
         }
-        return feedbackList.stream()
-                .map(FeedbackAudioLinkDto::getBeforeAudioLink)
-                .toList();
+        return beforeAudioLinks;
     }
 
-    public FeedbackApiDataDto getFeedbackApiData(final String accessToken, final Long answerId) {
+    public FeedbackApiDataDto getDataForFeedbackApi(final String accessToken, final Long answerId) {
         Feedback feedback = this.getFeedbackByAnswerId(answerId);
         UserVoiceDto userData = userCheckService.getUserDataByToken(accessToken);
         String beforeAudioLink = feedback.getBeforeAudioLink();
@@ -73,7 +69,7 @@ public class FeedbackCheckService {
 
     public List<String> findBeforeScriptByUser(final User user, int number) {
         Pageable pageable = PageRequest.of(0, number);
-        return feedbackRepository.findBeforeScriptByUserIdWithSize(user.getId(), pageable);
+        return feedbackRepository.findLatestBeforeScriptsByUserIdWithSize(user.getId(), pageable);
     }
 
     public boolean isFeedbackExistsWithAnswerId(final Long answerId) {

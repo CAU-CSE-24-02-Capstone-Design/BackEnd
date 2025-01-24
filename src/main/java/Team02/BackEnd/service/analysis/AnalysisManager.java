@@ -15,7 +15,7 @@ public class AnalysisManager {
     private final AnalysisApiService analysisApiService;
 
     public void saveAnalysis(final String accessToken) {
-        AnalysisApiDataDto relatedData = analysisCheckService.getAnalysisRelatedData(accessToken);
+        AnalysisApiDataDto relatedData = analysisCheckService.getDataForAnalysisApi(accessToken);
         GetAnalysisFromFastApiDto response = analysisApiService.getAnalysisFromFastApi(accessToken,
                 relatedData.questions(),
                 relatedData.beforeScripts());
