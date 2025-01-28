@@ -1,10 +1,10 @@
 package Team02.BackEnd.jwt.filter;
 
-import Team02.BackEnd.domain.oauth.User;
+import Team02.BackEnd.dto.userDto.UserPrincipal;
 import Team02.BackEnd.exception.TokenInvalidException;
 import Team02.BackEnd.jwt.service.JwtService;
 import Team02.BackEnd.jwt.util.PasswordUtil;
-import Team02.BackEnd.repository.UserRepository;
+import Team02.BackEnd.service.user.UserCheckService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -43,11 +43,11 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     );
 
     private static final Set<String> NOT_APPLY_JWT_FILTER_PREFIXES = Set.of(
-            "/api/spring/reissue", "/api/spring/oauth", "/api/spring/google-login", "/health"
+            "/api/spring/reissue", "/api/spring/oauth", "/api/spring/google-login", "/health", "/api/spring/sign-up"
     );
 
     private final JwtService jwtService;
-    private final UserRepository userRepository;
+    private final UserCheckService userCheckService;
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
     @Override
@@ -84,12 +84,13 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         try {
             jwtService.isTokenValid(accessToken);
             jwtService.extractEmail(accessToken)
-                    .flatMap(userRepository::findByEmail)
+                    .flatMap(userCheckService::getUserPrincipalByEmail)
                     .ifPresent(this::saveAuthentication);
         } catch (TokenInvalidException e) {
             sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
             return;
         } catch (RuntimeException e) {
+            log.info(e.getMessage());
             sendErrorResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "토큰 오류 : " + e.getMessage());
             return;
         }
@@ -107,13 +108,13 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
      * SecurityContextHolder.getContext()로 SecurityContext를 꺼낸 후, setAuthentication()을 이용하여 위에서 만든 Authentication 객체에 대한
      * 인증 허가 처리
      */
-    public void saveAuthentication(final User user) {
-
-        UserDetails userDetailsUser = getUserDetails(user);
+    public void saveAuthentication(final UserPrincipal userPrincipal) {
+        UserDetails userDetailsUser = this.getUserDetails(userPrincipal);
         Authentication authentication =
                 new UsernamePasswordAuthenticationToken(userDetailsUser, null,
                         authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        log.info("JWT 토큰 검증 완료");
     }
 
     private boolean isNotApplyJwtPath(final HttpServletRequest request) {
@@ -126,12 +127,12 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         return SWAGGER_PATH_PREFIXES.stream().anyMatch(uri::startsWith);
     }
 
-    private UserDetails getUserDetails(final User user) {
+    private UserDetails getUserDetails(final UserPrincipal userPrincipal) {
         String password = PasswordUtil.generateRandomPassword();
         return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getEmail())
+                .username(userPrincipal.getEmail())
                 .password(password)
-                .roles(user.getRole().name())
+                .roles(userPrincipal.getRole().name())
                 .build();
     }
 

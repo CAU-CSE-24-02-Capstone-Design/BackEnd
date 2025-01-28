@@ -6,11 +6,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import Team02.BackEnd.domain.Question;
+import Team02.BackEnd.dto.questionDto.QuestionAnswerIdDto;
 import Team02.BackEnd.jwt.service.JwtService;
-import Team02.BackEnd.service.answer.AnswerCheckService;
-import Team02.BackEnd.service.answer.AnswerService;
-import Team02.BackEnd.service.question.QuestionCheckService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import Team02.BackEnd.service.question.QuestionManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,19 +23,8 @@ class QuestionControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @MockBean
-    private QuestionCheckService questionCheckService;
-
-    @MockBean
-    private AnswerService answerService;
-
-    @MockBean
-    private AnswerCheckService answerCheckService;
-
+    private QuestionManager questionManager;
     @MockBean
     private JwtService jwtService;
 
@@ -48,14 +35,14 @@ class QuestionControllerTest {
         // given
         String accessToken = "mockAccessToken";
         given(jwtService.createAccessToken("tlsgusdn4818@gmail.com")).willReturn(accessToken);
-
         Question question = createQuestion();
         Long answerId = 1L;
         Long level = 1L;
 
+        QuestionAnswerIdDto questionAnswerIdDto = new QuestionAnswerIdDto(question, answerId);
+
         // when
-        given(questionCheckService.getUserQuestion(accessToken, level)).willReturn(question);
-        given(answerService.createAnswer(accessToken, question, level)).willReturn(answerId);
+        given(questionManager.getUserQuestion(accessToken, level)).willReturn(questionAnswerIdDto);
 
         // then
         mockMvc.perform(get("/api/spring/questions")

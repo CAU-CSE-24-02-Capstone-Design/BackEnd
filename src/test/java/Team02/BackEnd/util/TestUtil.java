@@ -29,12 +29,37 @@ public class TestUtil {
                 .build();
     }
 
+    public static User createUser(final Long userId) {
+        return User.builder()
+                .id(userId)
+                .email("tlsgusdn4818@gmail.com")
+                .name("Hyun")
+                .role(Role.USER)
+                .oauthId(new OauthId("1", OauthServerType.GOOGLE))
+                .voiceUrl("voiceUrl")
+                .level1QuestionNumber(1L)
+                .level2QuestionNumber(1L)
+                .level3QuestionNumber(1L)
+                .build();
+    }
+
     public static Answer createAnswer(final User user, final Question question) {
         return Answer.builder()
                 .user(user)
                 .question(question)
                 .evaluation(1)
-                .createdAt(LocalDateTime.of(2024, 11, 20, 15, 30)
+                .createdAt(LocalDateTime.of(2025, 1, 20, 15, 30)
+                        .atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime())
+                .build();
+    }
+
+    public static Answer createAnswer(final Long answerId, final User user, final Question question) {
+        return Answer.builder()
+                .id(answerId)
+                .user(user)
+                .question(question)
+                .evaluation(1)
+                .createdAt(LocalDateTime.of(2025, 1, 20, 15, 30)
                         .atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime())
                 .build();
     }
@@ -47,8 +72,39 @@ public class TestUtil {
                 .build();
     }
 
+    public static Question createQuestion(final String description) {
+        return Question.builder()
+                .description(description)
+                .questionIndex(1L)
+                .level(1L)
+                .build();
+    }
+
+    public static Question createQuestion(final Long questionId, final String description) {
+        return Question.builder()
+                .id(questionId)
+                .description(description)
+                .questionIndex(1L)
+                .level(1L)
+                .build();
+    }
+
     public static Feedback createFeedback(final User user, final Answer answer) {
         return Feedback.builder()
+                .beforeAudioLink("ba")
+                .beforeScript("bs")
+                .afterAudioLink("aa")
+                .afterScript("as")
+                .feedbackText("ft")
+                .user(user)
+                .answer(answer)
+                .createdAt(LocalDateTime.parse("2024-11-28T11:11:11"))
+                .build();
+    }
+
+    public static Feedback createFeedback(final Long feedbackId, final User user, final Answer answer) {
+        return Feedback.builder()
+                .id(feedbackId)
                 .beforeAudioLink("ba")
                 .beforeScript("bs")
                 .afterAudioLink("aa")
@@ -74,6 +130,14 @@ public class TestUtil {
                 .build();
     }
 
+    public static SelfFeedback createSelfFeedback(final Long selfFeedbackId, final Answer answer) {
+        return SelfFeedback.builder()
+                .id(selfFeedbackId)
+                .feedback("feedback")
+                .answer(answer)
+                .build();
+    }
+
     public static Statistics createStatistics(final Answer answer) {
         return Statistics.builder()
                 .gantourCount(1L)
@@ -85,7 +149,7 @@ public class TestUtil {
 
     public static Analysis createAnalysis(final User user) {
         return Analysis.builder()
-                .analysisText("text")
+                .analysisText("[[\"This is a Text\"]]")
                 .user(user)
                 .build();
     }

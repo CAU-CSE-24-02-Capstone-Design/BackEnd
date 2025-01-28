@@ -1,6 +1,8 @@
 package Team02.BackEnd.controller;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -10,8 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.dto.answerDto.AnswerRequestDto;
 import Team02.BackEnd.jwt.service.JwtService;
-import Team02.BackEnd.service.answer.AnswerCheckService;
-import Team02.BackEnd.service.answer.AnswerService;
+import Team02.BackEnd.service.answer.AnswerManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,10 +33,7 @@ public class AnswerControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private AnswerService answerService;
-
-    @MockBean
-    private AnswerCheckService answerCheckService;
+    private AnswerManager answerManager;
 
     @MockBean
     private JwtService jwtService;
@@ -64,6 +62,7 @@ public class AnswerControllerTest {
                 .andExpect(jsonPath("$.isSuccess").value(true))
                 .andExpect(jsonPath("$.code").value("ANSWER2001"))
                 .andExpect(jsonPath("$.message").value("스스로 평가 저장 성공"));
+        verify(answerManager, times(1)).saveAnswerEvaluation(answerId, 1);
     }
 
     @DisplayName("스피치에 대한 평가 점수 가져오기")
@@ -81,7 +80,7 @@ public class AnswerControllerTest {
         given(jwtService.createAccessToken("tlsgusdn4818@gmail.com")).willReturn(accessToken);
 
         // when
-        given(answerCheckService.getAnswerByAnswerId(answerId)).willReturn(answer);
+        given(answerManager.getAnswerByAnswerId(answerId)).willReturn(answer);
 
         // then
         mockMvc.perform(get("/api/spring/answers/evaluations")

@@ -5,19 +5,19 @@ import static Team02.BackEnd.util.TestUtil.createQuestion;
 import static Team02.BackEnd.util.TestUtil.createStatistics;
 import static Team02.BackEnd.util.TestUtil.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 
-import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
-import Team02.BackEnd.apiPayload.exception.handler.StatisticsHandler;
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.Statistics;
 import Team02.BackEnd.domain.oauth.User;
+import Team02.BackEnd.dto.answerDto.AnswerDto.AnswerIdDto;
+import Team02.BackEnd.dto.statisticsDto.StatisticsDto.StatisticsDataDto;
 import Team02.BackEnd.dto.statisticsDto.StatisticsResponseDto;
 import Team02.BackEnd.repository.StatisticsRepository;
 import Team02.BackEnd.service.answer.AnswerCheckService;
 import Team02.BackEnd.service.user.UserCheckService;
+import Team02.BackEnd.validator.StatisticsValidator;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,6 +38,8 @@ class StatisticsCheckServiceTest {
     private AnswerCheckService answerCheckService;
     @Mock
     private StatisticsRepository statisticsRepository;
+    @Mock
+    private StatisticsValidator statisticsValidator;
 
     @InjectMocks
     private StatisticsCheckService statisticsCheckService;
@@ -62,12 +64,23 @@ class StatisticsCheckServiceTest {
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
     void getUserStatistics() {
         // given
-        List<Answer> answers = List.of(answer);
+        AnswerIdDto answerIdDto = AnswerIdDto.builder()
+                .id(answer.getId())
+                .createdAt(answer.getCreatedAt())
+                .build();
+        List<AnswerIdDto> answerIdDtos = List.of(answerIdDto);
+
+        StatisticsDataDto statisticsDataDto = StatisticsDataDto.builder()
+                .gantourCount(statistics.getGantourCount())
+                .silentTime(statistics.getSilentTime())
+                .build();
 
         // when
-        given(userCheckService.getUserByToken(accessToken)).willReturn(user);
-        given(answerCheckService.getAnswersByUser(user)).willReturn(answers);
-        given(statisticsRepository.findByAnswerId(answer.getId())).willReturn(Optional.of(statistics));
+        given(userCheckService.getUserIdByToken(accessToken)).willReturn(user.getId());
+        given(answerCheckService.getAnswerIdDtosByUserId(user.getId())).willReturn(answerIdDtos);
+        given(statisticsRepository.existsByAnswerId(answer.getId())).willReturn(true);
+        given(statisticsRepository.findStatisticsDataDtoByAnswerId(answer.getId())).willReturn(
+                Optional.of(statisticsDataDto));
 
         List<StatisticsResponseDto.GetStatisticsDto> getStatistics = statisticsCheckService.getUserStatistics(
                 accessToken);
@@ -83,13 +96,23 @@ class StatisticsCheckServiceTest {
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
     void getUserStatisticsByLevel() {
         // given
-        List<Answer> answers = List.of(answer);
+        AnswerIdDto answerIdDto = AnswerIdDto.builder()
+                .id(answer.getId())
+                .createdAt(answer.getCreatedAt())
+                .build();
+        List<AnswerIdDto> answerIdDtos = List.of(answerIdDto);
+
+        StatisticsDataDto statisticsDataDto = StatisticsDataDto.builder()
+                .gantourCount(statistics.getGantourCount())
+                .silentTime(statistics.getSilentTime())
+                .build();
 
         // when
-        given(userCheckService.getUserByToken(accessToken)).willReturn(user);
-        given(answerCheckService.getAnswersByUser(user)).willReturn(answers);
-        given(answerCheckService.checkSpeechLevel(answer, 1L)).willReturn(true);
-        given(statisticsRepository.findByAnswerId(answer.getId())).willReturn(Optional.of(statistics));
+        given(userCheckService.getUserIdByToken(accessToken)).willReturn(user.getId());
+        given(answerCheckService.getAnswerIdDtosWithLevelByUserId(user.getId(), 1L)).willReturn(answerIdDtos);
+        given(statisticsRepository.existsByAnswerId(answer.getId())).willReturn(true);
+        given(statisticsRepository.findStatisticsDataDtoByAnswerId(answer.getId())).willReturn(
+                Optional.of(statisticsDataDto));
 
         List<StatisticsResponseDto.GetStatisticsDto> getStatistics = statisticsCheckService.getUserStatisticsByLevel(
                 accessToken, 1L);
@@ -103,12 +126,12 @@ class StatisticsCheckServiceTest {
     @DisplayName("Answer에 대해 통계가 존재하는지 확인한다")
     @Test
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
-    void isStatisticsExistsWithAnswer() {
+    void isStatisticsExistsWithAnswerId() {
         // given
 
         // when
-        given(statisticsRepository.findByAnswerId(answer.getId())).willReturn(Optional.of(statistics));
-        Boolean isExistsStatistics = statisticsCheckService.isStatisticsExistsWithAnswer(answer);
+        given(statisticsRepository.existsByAnswerId(answer.getId())).willReturn(true);
+        Boolean isExistsStatistics = statisticsCheckService.isStatisticsExistsWithAnswerId(answer.getId());
 
         // then
         assertThat(isExistsStatistics).isTrue();
@@ -117,30 +140,19 @@ class StatisticsCheckServiceTest {
     @DisplayName("Answer에 대해 통계를 가져온다")
     @Test
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
-    void getStatisticsByAnswer() {
+    void getStatisticsDataDtoByAnswerId() {
         // given
+        StatisticsDataDto statisticsDataDto = StatisticsDataDto.builder()
+                .gantourCount(statistics.getGantourCount())
+                .silentTime(statistics.getSilentTime())
+                .build();
 
         // when
-        given(statisticsRepository.findByAnswerId(answer.getId())).willReturn(Optional.of(statistics));
-        Statistics findStatistics = statisticsCheckService.getStatisticsByAnswer(answer);
+        given(statisticsRepository.findStatisticsDataDtoByAnswerId(answer.getId())).willReturn(
+                Optional.of(statisticsDataDto));
+        StatisticsDataDto result = statisticsCheckService.getStatisticsDataDtoByAnswerId(answer.getId());
 
         // then
-        assertThat(findStatistics).isEqualTo(statistics);
-    }
-
-    @DisplayName("Answer에 대해 통계가 없으면 _STATISTICS_NOT_FOUND 에러르 반환한다")
-    @Test
-    @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
-    void getNoStatisticsByAnswer() {
-        // given
-
-        // when
-        given(statisticsRepository.findByAnswerId(answer.getId())).willReturn(Optional.empty());
-        StatisticsHandler exception = assertThrows(StatisticsHandler.class, () -> {
-            statisticsCheckService.getStatisticsByAnswer(answer);
-        });
-
-        // then
-        assertThat(ErrorStatus._STATISTICS_NOT_FOUND.getCode()).isEqualTo(exception.getCode().getReason().getCode());
+        assertThat(result).isEqualTo(statisticsDataDto);
     }
 }

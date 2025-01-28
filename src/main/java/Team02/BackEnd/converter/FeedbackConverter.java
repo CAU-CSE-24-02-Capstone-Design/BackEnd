@@ -6,6 +6,7 @@ import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.feedbackDto.FeedbackRequestDto.GetComponentToMakeFeedbackDto;
 import Team02.BackEnd.dto.feedbackDto.FeedbackResponseDto;
 import Team02.BackEnd.dto.feedbackDto.FeedbackResponseDto.GetFeedbackDto;
+import Team02.BackEnd.dto.userDto.UserDto.UserVoiceDto;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -31,14 +32,14 @@ public class FeedbackConverter {
     }
 
     public static GetComponentToMakeFeedbackDto toGetComponentToMakeFeedback(final String beforeAudioLink,
-                                                                             final User user,
+                                                                             final UserVoiceDto userData,
                                                                              final List<String> pastAudioLinks,
                                                                              final Long answerId) {
         return GetComponentToMakeFeedbackDto
                 .builder()
                 .beforeAudioLink(beforeAudioLink)
-                .name(user.getName())
-                .voiceUrl(user.getVoiceUrl())
+                .name(userData.getName())
+                .voiceUrl(userData.getVoiceUrl())
                 .pastAudioLinks(pastAudioLinks)
                 .answerId(answerId)
                 .build();

@@ -37,7 +37,8 @@ public enum ErrorStatus implements BaseErrorCode {
     _ANSWER_NOT_FOUND(HttpStatus.NOT_FOUND, "ANSWER4001", "해당 답변이 없습니다."),
 
     // Insight 관련 응답
-    _INSIGHT_INVALID_CONVERT(HttpStatus.INTERNAL_SERVER_ERROR, "INSIGHT5001", "Insight 변환ㅇ레 실패했습니다."),
+    _INSIGHT_INVALID_CONVERT(HttpStatus.INTERNAL_SERVER_ERROR, "INSIGHT5001", "Insight 변환에 실패했습니다."),
+    _INSIGHT_NOT_FOUND(HttpStatus.NOT_FOUND, "INSIGHT5002", "Insight가 없습니다."),
 
     // Question 관련 응답
     _QUESTION_NOT_FOUND(HttpStatus.NOT_FOUND, "QUESTION4001", "해당 질문이 없습니다."),

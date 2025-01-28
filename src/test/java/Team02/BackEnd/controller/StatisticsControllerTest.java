@@ -1,6 +1,8 @@
 package Team02.BackEnd.controller;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -10,8 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import Team02.BackEnd.dto.statisticsDto.StatisticsRequestDto;
 import Team02.BackEnd.dto.statisticsDto.StatisticsResponseDto.GetStatisticsDto;
 import Team02.BackEnd.jwt.service.JwtService;
-import Team02.BackEnd.service.statistics.StatisticsCheckService;
-import Team02.BackEnd.service.statistics.StatisticsService;
+import Team02.BackEnd.service.statistics.StatisticsManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.util.List;
@@ -34,10 +35,7 @@ class StatisticsControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private StatisticsService statisticsService;
-
-    @MockBean
-    private StatisticsCheckService statisticsCheckService;
+    private StatisticsManager statisticsManager;
 
     @MockBean
     private JwtService jwtService;
@@ -80,7 +78,7 @@ class StatisticsControllerTest {
         List<GetStatisticsDto> getStatisticsDtos = createGetStatisticsDtos();
 
         // when
-        given(statisticsCheckService.getUserStatistics(accessToken)).willReturn(getStatisticsDtos);
+        given(statisticsManager.getUserStatistics(accessToken)).willReturn(getStatisticsDtos);
 
         // then
         String expectedJson = """
@@ -114,7 +112,7 @@ class StatisticsControllerTest {
         List<GetStatisticsDto> getStatisticsDtos = createGetStatisticsDtos();
 
         // when
-        given(statisticsCheckService.getUserStatisticsByLevel(accessToken, level)).willReturn(getStatisticsDtos);
+        given(statisticsManager.getUserStatisticsByLevel(accessToken, level)).willReturn(getStatisticsDtos);
 
         // then
         String expectedJson = """

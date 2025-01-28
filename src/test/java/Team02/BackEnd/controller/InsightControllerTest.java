@@ -1,6 +1,8 @@
 package Team02.BackEnd.controller;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -10,8 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import Team02.BackEnd.dto.insightDto.InsightRequestDto;
 import Team02.BackEnd.jwt.service.JwtService;
-import Team02.BackEnd.service.insight.InsightCheckService;
-import Team02.BackEnd.service.insight.InsightService;
+import Team02.BackEnd.service.insight.InsightManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -33,10 +34,7 @@ class InsightControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private InsightService insightService;
-
-    @MockBean
-    private InsightCheckService insightCheckService;
+    private InsightManager insightManager;
 
     @MockBean
     private JwtService jwtService;
@@ -68,6 +66,7 @@ class InsightControllerTest {
                 .andExpect(jsonPath("$.isSuccess").value(true))
                 .andExpect(jsonPath("$.code").value("INSIGHT2000"))
                 .andExpect(jsonPath("$.message").value("인사이트 저장 성공"));
+        verify(insightManager, times(1)).saveAiInsight(getInsightDto.getInsight(), answerId);
     }
 
     @DisplayName("AI 인사이트 가져오기")
@@ -82,7 +81,7 @@ class InsightControllerTest {
 
         // when
         List<String> insights = createInsights();
-        given(insightCheckService.getAiInsight(answerId)).willReturn(insights);
+        given(insightManager.getAiInsight(answerId)).willReturn(insights);
 
         // then
         String expectedJson = """

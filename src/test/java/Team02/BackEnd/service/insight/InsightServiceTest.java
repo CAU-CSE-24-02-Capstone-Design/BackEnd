@@ -1,7 +1,6 @@
 package Team02.BackEnd.service.insight;
 
 import static Team02.BackEnd.util.TestUtil.createAnswer;
-import static Team02.BackEnd.util.TestUtil.createInsight;
 import static Team02.BackEnd.util.TestUtil.createQuestion;
 import static Team02.BackEnd.util.TestUtil.createUser;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -10,7 +9,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import Team02.BackEnd.domain.Answer;
-import Team02.BackEnd.domain.Insight;
 import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.repository.InsightRepository;
@@ -61,7 +59,6 @@ class InsightServiceTest {
         // then
         verify(answerCheckService, times(1)).getAnswerByAnswerId(answer.getId());
         verify(insightRepository, times(insights.size())).save(argThat(insight ->
-                insights.contains(insight.getInsight()) && insight.getAnswer().equals(answer)
-        ));
+                insights.contains(insight.getInsight()) && insight.getAnswer().equals(answer)));
     }
 }

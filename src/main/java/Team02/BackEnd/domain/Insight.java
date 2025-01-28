@@ -11,7 +11,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -32,6 +31,6 @@ public class Insight extends BaseEntity {
     @JoinColumn(name = "answer_id")
     private Answer answer;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 1000)
     private String insight;
 }
