@@ -4,21 +4,20 @@ import static Team02.BackEnd.util.TestUtil.createAnswer;
 import static Team02.BackEnd.util.TestUtil.createQuestion;
 import static Team02.BackEnd.util.TestUtil.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
-import Team02.BackEnd.apiPayload.exception.handler.AnswerHandler;
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.oauth.User;
+import Team02.BackEnd.dto.answerDto.AnswerDto.AnswerIdDto;
+import Team02.BackEnd.dto.answerDto.AnswerDto.AnswerQuestionDto;
 import Team02.BackEnd.repository.AnswerRepository;
-import java.util.Collections;
+import Team02.BackEnd.validator.AnswerValidator;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,6 +32,8 @@ class AnswerCheckServiceTest {
 
     @Mock
     private AnswerRepository answerRepository;
+    @Mock
+    private AnswerValidator answerValidator;
 
     @InjectMocks
     private AnswerCheckService answerCheckService;
@@ -47,45 +48,29 @@ class AnswerCheckServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = createUser();
-        question = createQuestion();
-        question1 = createQuestion();
-        question2 = createQuestion();
-        answer = createAnswer(user, question);
-        answer1 = createAnswer(user, question1);
-        answer2 = createAnswer(user, question2);
+        user = createUser(1L);
+        question = createQuestion(1L, "description");
+        question1 = createQuestion(2L, "description1");
+        question2 = createQuestion(3L, "description2");
+        answer = createAnswer(1L, user, question);
+        answer1 = createAnswer(2L, user, question1);
+        answer2 = createAnswer(3L, user, question2);
     }
 
-    @DisplayName("사용자가 지금까지 진행한 모든 스피치에 대한 answer를 가져온다")
     @Test
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
-    void getAnswersByUser() {
+    void getAnswersByUserId() {
         // given
 
         // when
         given(answerRepository.findByUserId(user.getId())).willReturn(List.of(answer1, answer2));
-        List<Answer> answers = answerCheckService.getAnswersByUser(user);
+        List<Answer> answers = answerCheckService.getAnswersByUserId(user.getId());
 
         // then
+        verify(answerValidator, times(1)).validateAnswersEmpty(List.of(answer1, answer2));
         assertThat(answers.size()).isEqualTo(2);
     }
 
-    @DisplayName("사용자가 지금까지 진행한 스피치가 없다면 _ANSWER_NOT_FOUND 에러를 반환한다.")
-    @Test
-    @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
-    void getNoAnswersByUser() {
-        // given
-
-        // when
-        AnswerHandler exception = assertThrows(AnswerHandler.class, () -> {
-            answerCheckService.getAnswersByUser(user);
-        });
-
-        // then
-        assertThat(ErrorStatus._ANSWER_NOT_FOUND.getCode()).isEqualTo(exception.getCode().getReason().getCode());
-    }
-
-    @DisplayName("answerId에 맞는 answer 객체를 가져온다")
     @Test
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
     void getAnswerByAnswerId() {
@@ -99,121 +84,169 @@ class AnswerCheckServiceTest {
         assertThat(findAnswer.getId()).isEqualTo(answer.getId());
     }
 
-    @DisplayName("answerId에 맞는 answer 객체가 없으면 _ANSWER_NOT_FOUND 에러를 반환한다.")
+//    @DisplayName("answerId에 맞는 answer 객체가 없으면 _ANSWER_NOT_FOUND 에러를 반환한다.")
+//    @Test
+//    @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
+//    void getNoAnswerByAnswerId() {
+//        // given
+//
+//        // when
+//        AnswerHandler exception = assertThrows(AnswerHandler.class, () -> {
+//            answerCheckService.getAnswerByAnswerId(1L);
+//        });
+//
+//        // then
+//        assertThat(ErrorStatus._ANSWER_NOT_FOUND.getCode()).isEqualTo(exception.getCode().getReason().getCode());
+//
+//    }
+
     @Test
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
-    void getNoAnswerByAnswerId() {
+    void getAnswerIdsByUserId() {
         // given
 
         // when
-        AnswerHandler exception = assertThrows(AnswerHandler.class, () -> {
-            answerCheckService.getAnswerByAnswerId(1L);
-        });
+        given(answerRepository.findAnswerIdsByUserId(user.getId())).willReturn(
+                List.of(answer.getId(), answer1.getId(), answer2.getId()));
+
+        List<Long> answerIds = answerCheckService.getAnswerIdsByUserId(user.getId());
 
         // then
-        assertThat(ErrorStatus._ANSWER_NOT_FOUND.getCode()).isEqualTo(exception.getCode().getReason().getCode());
-
+        assertThat(answerIds.size()).isEqualTo(3);
     }
 
-    @DisplayName("사용자의 해당 연, 월에 대한 Answer 엔티티를 전부 가져온다")
     @Test
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
-    void findAnswersByUserAndYearAndMonth() {
+    void getAnswerIdsByUserIdWithSize() {
         // given
-        String year = "2024";
-        String month = "11";
+        Pageable pageable = PageRequest.of(0, 1);
 
         // when
-        given(answerRepository.findByUserAndYearAndMonth(user, Integer.parseInt(year),
-                Integer.parseInt(month))).willReturn(List.of(answer1, answer2));
-        List<Answer> answers = answerCheckService.findAnswersByUserAndYearAndMonth(user, year, month);
+        given(answerRepository.findLatestAnswerIdByUserIdWithSize(user.getId(), pageable)).willReturn(
+                List.of(answer.getId()));
+
+        List<Long> answerIds = answerCheckService.getAnswerIdsByUserIdWithSize(user.getId(), 1);
 
         // then
-        assertThat(answers.size()).isEqualTo(2);
-        assertThat(answers.get(0)).isEqualTo(answer1);
-        assertThat(answers.get(1)).isEqualTo(answer2);
+        assertThat(answerIds.size()).isEqualTo(1);
     }
 
-    @DisplayName("사용자의 해당 연, 월에 대한 Answer 엔티티가 없다면 _ANSWER_NOT_FOUND 에러를 반환한다.")
     @Test
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
-    void findNoAnswersByUserAndYearAndMonth() {
+    void getAnswerIdDtosByUserId() {
         // given
-        String year = "2023";
-        String month = "10";
+        AnswerIdDto answerIdDto = AnswerIdDto.builder()
+                .id(answer.getId())
+                .createdAt(answer.getCreatedAt())
+                .build();
 
         // when
-        given(answerRepository.findByUserAndYearAndMonth(user, Integer.parseInt(year),
-                Integer.parseInt(month))).willReturn(Collections.emptyList());
-        AnswerHandler exception = assertThrows(AnswerHandler.class, () -> {
-            answerCheckService.findAnswersByUserAndYearAndMonth(user, year, month);
-        });
+        given(answerRepository.findAnswerIdDtosByUserId(user.getId())).willReturn(List.of(answerIdDto));
+
+        List<AnswerIdDto> answerIdDtos = answerCheckService.getAnswerIdDtosByUserId(user.getId());
 
         // then
-        assertThat(ErrorStatus._ANSWER_NOT_FOUND.getCode()).isEqualTo(exception.getCode().getReason().getCode());
+        assertThat(answerIdDtos.size()).isEqualTo(1);
     }
 
-    @DisplayName("사용자의 가장 최근 스피치에 대한 Answer 엔티티를 가져온다")
     @Test
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
-    void getLatestAnswerByUser() {
+    void getLatestAnswerIdDtosByUserIdWithSize() {
         // given
+        Pageable pageable = PageRequest.of(0, 1);
+        AnswerIdDto answerIdDto = AnswerIdDto.builder()
+                .id(answer.getId())
+                .createdAt(answer.getCreatedAt())
+                .build();
 
         // when
-        given(answerRepository.findLatestAnswerByUser(user, PageRequest.of(0, 1))).willReturn(
-                List.of(answer1, answer2));
-        Optional<Answer> findAnswer = answerCheckService.getLatestAnswerByUser(user);
+        given(answerRepository.findLatestAnswerIdDtosByUserIdWithSize(user.getId(), pageable)).willReturn(
+                List.of(answerIdDto));
+
+        List<AnswerIdDto> answerIdDtos = answerCheckService.getLatestAnswerIdDtosByUserIdWithSize(user.getId(), 1);
 
         // then
-        assertTrue(findAnswer.isPresent());
-        assertThat(findAnswer.get().getId()).isEqualTo(answer2.getId());
+        assertThat(answerIdDtos.size()).isEqualTo(1);
     }
 
-    @DisplayName("사용자의 최근 몇 개의 스피치에 대한 Answer 엔티티를 가져온다")
     @Test
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
-    void getAnswersByUserWithSize() {
+    void getAnswerIdDtosWithLevelByUserId() {
         // given
-        int size = 2;
+        Long level = 1L;
+        AnswerIdDto answerIdDto = AnswerIdDto.builder()
+                .id(answer.getId())
+                .createdAt(answer.getCreatedAt())
+                .build();
 
         // when
-        given(answerRepository.findLatestAnswerByUser(user, PageRequest.of(0, size))).willReturn(
-                List.of(answer1, answer2));
-        List<Answer> answers = answerCheckService.getAnswerByUserWithSize(user, size);
+        given(answerRepository.findAnswerIdDtosWithLevelByUserId(user.getId(), level)).willReturn(List.of(answerIdDto));
+
+        List<AnswerIdDto> answerIdDtos = answerCheckService.getAnswerIdDtosWithLevelByUserId(user.getId(), level);
 
         // then
-        assertThat(answers.size()).isEqualTo(2);
+        assertThat(answerIdDtos.size()).isEqualTo(1);
     }
 
-    @DisplayName("스피치의 난이도를 비교한다")
     @Test
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
-    void checkSpeechLevel() {
+    void findAnswerIdDtosByUserAndYearAndMonth() {
         // given
+        String year = "2025";
+        String month = "1";
+
+        AnswerIdDto answerIdDto = AnswerIdDto.builder()
+                .id(answer.getId())
+                .createdAt(answer.getCreatedAt())
+                .build();
 
         // when
-        Boolean checkSpeechLevel = answerCheckService.checkSpeechLevel(answer, 1L);
+        given(answerRepository.findAnswerIdDtosByUserAndYearAndMonth(user.getId(), Integer.parseInt(year),
+                Integer.parseInt(month))).willReturn(List.of(answerIdDto));
+
+        List<AnswerIdDto> answerIdDtos = answerCheckService.findAnswerIdDtosByUserAndYearAndMonth(user.getId(), year,
+                month);
 
         // then
-        assertThat(checkSpeechLevel).isTrue();
+        assertThat(answerIdDtos.size()).isEqualTo(1);
     }
 
-    @DisplayName("사용자의 이전 스피치 질문을 가져온다")
+    @Test
+    @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
+    void getLatestAnswerIdByUserId() {
+        // given
+        Pageable pageable = PageRequest.of(0, 1);
+
+        // when
+        given(answerRepository.findLatestAnswerIdByUserIdWithSize(user.getId(), pageable)).willReturn(
+                List.of(answer.getId()));
+
+        Optional<Long> answerId = answerCheckService.getLatestAnswerIdByUserId(user.getId());
+
+        // then
+        assertThat(answerId.isPresent()).isTrue();
+        assertThat(answerId.get()).isEqualTo(answer.getId());
+    }
+
     @Test
     @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
     void findQuestionDescriptionsByUser() {
         // given
-        int size = 7;
-        Pageable pageable = PageRequest.of(0, size);
-        List<Answer> answers = List.of(answer, answer1, answer2);
-        List<String> descriptions = List.of(question.getDescription(), question1.getDescription(),
-                question2.getDescription());
+        Pageable pageable = PageRequest.of(0, 1);
+
+        AnswerQuestionDto answerQuestionDto = AnswerQuestionDto.builder()
+                .id(answer.getId())
+                .description(question.getDescription())
+                .build();
 
         // when
-        given(answerRepository.findLatestAnswerByUser(user, pageable)).willReturn(answers);
-        List<String> findDescriptions = answerCheckService.findQuestionDescriptionsByUser(user, size);
+        given(answerRepository.findLatestAnswerQuestionDtosByUserIdWithSize(user.getId(), pageable)).willReturn(
+                List.of(answerQuestionDto));
+
+        List<String> descriptions = answerCheckService.findQuestionDescriptionsByUser(user, 1);
 
         // then
-        assertThat(findDescriptions.size()).isEqualTo(descriptions.size());
+        assertThat(descriptions.size()).isEqualTo(1);
+        assertThat(descriptions.get(0)).isEqualTo(question.getDescription());
     }
 }

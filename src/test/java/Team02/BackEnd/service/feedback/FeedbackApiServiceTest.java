@@ -5,6 +5,8 @@ import static Team02.BackEnd.util.TestUtil.createFeedback;
 import static Team02.BackEnd.util.TestUtil.createQuestion;
 import static Team02.BackEnd.util.TestUtil.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
@@ -16,6 +18,8 @@ import Team02.BackEnd.domain.Feedback;
 import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.feedbackDto.FeedbackResponseDto.GetFeedbackToFastApiDto;
+import Team02.BackEnd.dto.userDto.UserDto.UserVoiceDto;
+import Team02.BackEnd.validator.FeedbackValidator;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,6 +74,7 @@ public class FeedbackApiServiceTest {
     void getFeedbackFromFastApi() {
         // given
         List<String> pastAudioLinks = List.of("1", "2");
+        UserVoiceDto userData = new UserVoiceDto(user.getId(), user.getName(), user.getVoiceUrl());
 
         // when
         mockServer.expect(requestTo(FASTAPI_API_URL))
@@ -80,7 +85,7 @@ public class FeedbackApiServiceTest {
                         MediaType.APPLICATION_JSON));
 
         GetFeedbackToFastApiDto response = feedbackApiService.getFeedbackFromFastApi(accessToken,
-                feedback.getBeforeAudioLink(), pastAudioLinks, user, answer.getId());
+                feedback.getBeforeAudioLink(), pastAudioLinks, userData, answer.getId());
 
         // then
         mockServer.verify();

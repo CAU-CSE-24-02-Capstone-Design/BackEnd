@@ -1,16 +1,15 @@
 package Team02.BackEnd.controller;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import Team02.BackEnd.jwt.service.JwtService;
-import Team02.BackEnd.service.user.UserService;
+import Team02.BackEnd.service.user.UserManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,7 @@ class UserControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private UserService userService;
+    private UserManager userManager;
 
     @MockBean
     private JwtService jwtService;
@@ -52,5 +51,6 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.isSuccess").value(true))
                 .andExpect(jsonPath("$.code").value("USER2000"))
                 .andExpect(jsonPath("$.message").value("회원 탈퇴 성공"));
+        verify(userManager, times(1)).signOut(accessToken);
     }
 }

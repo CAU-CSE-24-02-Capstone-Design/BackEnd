@@ -30,6 +30,8 @@ public record GoogleMemberResponse(
                 .level2QuestionNumber(1L)
                 .level3QuestionNumber(1L)
                 .analyzeCompleteAnswerIndex(0L)
+                .sequenceCount(0)
+                .score(0)
                 .role(Role.GUEST)
                 .build();
     }

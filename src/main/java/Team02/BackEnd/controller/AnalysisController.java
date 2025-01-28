@@ -6,10 +6,8 @@ import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_REPLACEMENT;
 import Team02.BackEnd.apiPayload.ApiResponse;
 import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
 import Team02.BackEnd.converter.AnalysisConverter;
-import Team02.BackEnd.domain.Analysis;
 import Team02.BackEnd.dto.analysisDto.AnalysisResponseDto;
-import Team02.BackEnd.service.analysis.AnalysisCheckService;
-import Team02.BackEnd.service.analysis.AnalysisService;
+import Team02.BackEnd.service.analysis.AnalysisManager;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,15 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/spring")
 public class AnalysisController {
 
-    private final AnalysisService analysisService;
-    private final AnalysisCheckService analysisCheckService;
+    private final AnalysisManager analysisManager;
 
     @GetMapping("/analysis/available")
     @Operation(summary = "7일 리포트 생성 가능한 지 확인하기", description = "데이터 7개 쌓였는지 확인")
     public ApiResponse<AnalysisResponseDto.GetAvailabilityAnalysisDto> canSaveAnalysis(
             @RequestHeader("authorization") final String authorizationHeader) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
-        boolean canSaveAnalysis = analysisCheckService.canSaveAnalysis(accessToken);
+        boolean canSaveAnalysis = analysisManager.canSaveAnalysis(accessToken);
         return ApiResponse.of(SuccessStatus.CAN_SAVE_ANALYSIS,
                 AnalysisConverter.toGetAvailabilityAnalysisDto(canSaveAnalysis));
     }
@@ -41,7 +38,7 @@ public class AnalysisController {
     public ApiResponse<Void> saveAnalysis(
             @RequestHeader("authorization") final String authorizationHeader) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
-        analysisService.saveAnalysis(accessToken);
+        analysisManager.saveAnalysis(accessToken);
         return ApiResponse.ofNoting(SuccessStatus.SAVE_ANALYSIS);
     }
 
@@ -50,6 +47,6 @@ public class AnalysisController {
     public ApiResponse<AnalysisResponseDto.GetAnalysisDto> getAnalysis(
             @RequestHeader("authorization") final String authorizationHeader) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
-        return ApiResponse.of(SuccessStatus.GET_ANALYSIS, analysisCheckService.getAnalysis(accessToken));
+        return ApiResponse.of(SuccessStatus.GET_ANALYSIS, analysisManager.getAnalysis(accessToken));
     }
 }

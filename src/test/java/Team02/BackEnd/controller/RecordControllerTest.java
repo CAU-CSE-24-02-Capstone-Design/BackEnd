@@ -1,14 +1,16 @@
 package Team02.BackEnd.controller;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import Team02.BackEnd.dto.recordDto.RecordRequestDto;
 import Team02.BackEnd.jwt.service.JwtService;
-import Team02.BackEnd.service.feedback.FeedbackService;
-import Team02.BackEnd.service.user.UserService;
+import Team02.BackEnd.service.feedback.FeedbackManager;
+import Team02.BackEnd.service.user.UserManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,10 +31,10 @@ class RecordControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private UserService userService;
+    private UserManager userManager;
 
     @MockBean
-    private FeedbackService feedbackService;
+    private FeedbackManager feedbackManager;
 
     @MockBean
     private JwtService jwtService;

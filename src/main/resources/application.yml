@@ -7,6 +7,23 @@ spring:
   jackson:
     time-zone: Asia/Seoul
 
+  jpa:
+    properties:
+      hibernate:
+        generate_statistics: true
+
+        cache:
+          use_second_level_cache: true
+          region:
+            factory_class: jcache
+      javax:
+        cache:
+          provider: org.ehcache.jsr107.EhcacheCachingProvider
+          uri: ehcache.xml
+        persistence:
+          sharedCache:
+            mode: ENABLE_SELECTIVE
+
   servlet:
     multipart:
       enabled: true
@@ -17,9 +34,11 @@ spring:
     path match:
       matching-strategy: ant_path_matcher
 
-logging:
-  level:
-    org.hibernate.SQL: info
+#logging:
+#  level:
+#    org.hibernate.SQL: info
+#    org.springframework.transaction: DEBUG
+#    org.springframework.orm.jpa: DEBUG
 
 
 server:

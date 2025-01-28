@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import Team02.BackEnd.jwt.service.JwtService;
 import Team02.BackEnd.service.calendar.CalendarCheckService;
+import Team02.BackEnd.service.calendar.CalendarManager;
 import Team02.BackEnd.service.user.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.stream.Stream;
@@ -34,7 +35,7 @@ public class CalendarControllerTest {
     private JwtService jwtService;
 
     @MockBean
-    private CalendarCheckService calendarCheckService;
+    private CalendarManager calendarManager;
 
     @DisplayName("사용자의 특정 년, 월에 대한 스피치 기록 가져오기")
     @Test
@@ -51,7 +52,7 @@ public class CalendarControllerTest {
         Long[] answerIdDidThisPeriod = Stream.generate(() -> 0L).
                 limit(32).
                 toArray(Long[]::new);
-        given(calendarCheckService.getDatesWhenUserDid(accessToken, year, month)).willReturn(answerIdDidThisPeriod);
+        given(calendarManager.getDatesWhenUserDid(accessToken, year, month)).willReturn(answerIdDidThisPeriod);
 
         // then
         mockMvc.perform(get("/api/spring/calendars")

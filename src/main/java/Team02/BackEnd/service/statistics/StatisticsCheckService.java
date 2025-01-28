@@ -1,72 +1,62 @@
 package Team02.BackEnd.service.statistics;
 
-import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
-import Team02.BackEnd.apiPayload.exception.handler.StatisticsHandler;
 import Team02.BackEnd.converter.StatisticsConverter;
-import Team02.BackEnd.domain.Answer;
-import Team02.BackEnd.domain.Statistics;
-import Team02.BackEnd.domain.oauth.User;
+import Team02.BackEnd.dto.statisticsDto.StatisticsDto.StatisticsDataDto;
 import Team02.BackEnd.dto.statisticsDto.StatisticsResponseDto.GetStatisticsDto;
 import Team02.BackEnd.repository.StatisticsRepository;
 import Team02.BackEnd.service.answer.AnswerCheckService;
 import Team02.BackEnd.service.user.UserCheckService;
+import Team02.BackEnd.validator.StatisticsValidator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
 public class StatisticsCheckService {
 
     private final UserCheckService userCheckService;
     private final AnswerCheckService answerCheckService;
     private final StatisticsRepository statisticsRepository;
+    private final StatisticsValidator statisticsValidator;
 
-    @Transactional(readOnly = true)
     public List<GetStatisticsDto> getUserStatistics(final String accessToken) {
-        User user = userCheckService.getUserByToken(accessToken);
-        log.info("사용자의 모든 스피치 통계 가져오기, email : {}", user.getEmail());
-        return answerCheckService.getAnswersByUser(user).stream()
-                .filter(this::isStatisticsExistsWithAnswer)
-                .map(answer -> {
-                    Statistics statistics = getStatisticsByAnswer(answer);
-                    return StatisticsConverter.toGetStatisticsDto(statistics, answer);
+        Long userId = userCheckService.getUserIdByToken(accessToken);
+        log.info("사용자의 모든 스피치 통계 가져오기, userId : {}", userId);
+        return answerCheckService.getAnswerIdDtosByUserId(userId).stream()
+                .filter(data -> this.isStatisticsExistsWithAnswerId(data.getId()))
+                .map(data -> {
+                    StatisticsDataDto statisticsDataDto = this.getStatisticsDataDtoByAnswerId(data.getId());
+                    return StatisticsConverter.toGetStatisticsDto(statisticsDataDto, data.getCreatedAt());
                 })
                 .toList();
     }
 
-    @Transactional(readOnly = true)
     public List<GetStatisticsDto> getUserStatisticsByLevel(final String accessToken, final Long level) {
-        User user = userCheckService.getUserByToken(accessToken);
-        log.info("사용자의 난이도 별 스피치 통계 가져오기, level : {}, email : {}", level, user.getEmail());
-        return answerCheckService.getAnswersByUser(user).stream()
-                .filter(this::isStatisticsExistsWithAnswer)
-                .filter(answer -> answerCheckService.checkSpeechLevel(answer, level))
-                .map(answer -> {
-                    Statistics statistics = getStatisticsByAnswer(answer);
-                    return StatisticsConverter.toGetStatisticsDto(statistics, answer);
+        Long userId = userCheckService.getUserIdByToken(accessToken);
+        log.info("사용자의 난이도 별 스피치 통계 가져오기, level : {}, userId : {}", level, userId);
+        return answerCheckService.getAnswerIdDtosWithLevelByUserId(userId, level).stream()
+                .filter(data -> this.isStatisticsExistsWithAnswerId(data.getId()))
+                .map(data -> {
+                    StatisticsDataDto statisticsDataDto = this.getStatisticsDataDtoByAnswerId(data.getId());
+                    return StatisticsConverter.toGetStatisticsDto(statisticsDataDto, data.getCreatedAt());
                 })
                 .toList();
     }
 
-    @Transactional(readOnly = true)
-    public boolean isStatisticsExistsWithAnswer(final Answer answer) {
-        return statisticsRepository.findByAnswerId(answer.getId()).isPresent();
+    public boolean isStatisticsExistsWithAnswerId(final Long answerId) {
+        return statisticsRepository.existsByAnswerId(answerId);
     }
 
-    @Transactional(readOnly = true)
-    public Statistics getStatisticsByAnswer(final Answer answer) {
-        Statistics statistics = statisticsRepository.findByAnswerId(answer.getId()).orElse(null);
-        validateStatistics(statistics);
-        return statistics;
-    }
-
-    private void validateStatistics(final Statistics statistics) {
-        if (statistics == null) {
-            throw new StatisticsHandler(ErrorStatus._STATISTICS_NOT_FOUND);
-        }
+    public StatisticsDataDto getStatisticsDataDtoByAnswerId(final Long answerId) {
+        StatisticsDataDto statisticsDataDto = statisticsRepository.findStatisticsDataDtoByAnswerId(answerId)
+                .orElse(null);
+        statisticsValidator.validateStatistics(statisticsDataDto);
+        return statisticsDataDto;
     }
 }

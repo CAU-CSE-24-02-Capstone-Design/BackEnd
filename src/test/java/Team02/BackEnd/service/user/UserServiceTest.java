@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.test.context.support.WithMockUser;
 
@@ -30,10 +31,12 @@ class UserServiceTest {
     private UserService userService;
 
     private String accessToken;
+    private User user;
 
     @BeforeEach
     void setUp() {
         accessToken = "accessToken";
+        user = Mockito.mock(User.class);
     }
 
     @DisplayName("회원 탈퇴")
@@ -49,7 +52,6 @@ class UserServiceTest {
         GetVoiceUrlDto getVoiceUrlDto = GetVoiceUrlDto.builder()
                 .voiceUrl("voiceUrl")
                 .build();
-        User user = mock(User.class);
 
         // when
         given(userCheckService.getUserByToken(accessToken)).willReturn(user);
@@ -58,6 +60,5 @@ class UserServiceTest {
         // then
         verify(user, times(1)).updateRole();
         verify(user, times(1)).updateVoiceUrl(getVoiceUrlDto.getVoiceUrl());
-        verify(userRepository, times(1)).save(any());
     }
 }

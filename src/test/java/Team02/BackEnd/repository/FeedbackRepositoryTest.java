@@ -13,18 +13,18 @@ import Team02.BackEnd.domain.Feedback;
 import Team02.BackEnd.domain.Question;
 import Team02.BackEnd.domain.oauth.User;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
@@ -35,15 +35,36 @@ class FeedbackRepositoryTest {
     @Autowired
     private FeedbackRepository feedbackRepository;
 
-    @DisplayName("답변 기록에 대한 Feedback 데이터를 가져온다.")
+    private User user;
+    private Question question;
+    private Answer answer;
+    private Answer answer1;
+    private Answer answer2;
+    private Answer answer3;
+    private Feedback feedback;
+    private Feedback feedback1;
+    private Feedback feedback2;
+    private Feedback feedback3;
+
+    @BeforeEach
+    void setUp() {
+        user = createUser();
+        question = createQuestion();
+        answer = createAnswer(user, question);
+        answer1 = createAnswer(user, question);
+        answer2 = createAnswer(user, question);
+        answer3 = createAnswer(user, question);
+        feedback = createFeedback(user, answer);
+        feedback1 = createFeedback(user, answer1);
+        feedback2 = createFeedback(user, answer2);
+        feedback3 = createFeedback(user, answer3);
+    }
+
+    @DisplayName("AnswerId로 모든 Feedback을 가져온다.")
+    @Transactional
     @Test
     void findByAnswerId() {
         // given
-        User user = createUser();
-        Question question = createQuestion();
-        Answer answer = createAnswer(user, question);
-        Feedback feedback = createFeedback(user, answer);
-
         feedbackRepository.save(feedback);
 
         // when
@@ -54,76 +75,82 @@ class FeedbackRepositoryTest {
         assertEquals(feedback, feedbackResult.get());
     }
 
-    @DisplayName("사용자의 Feedback 데이터 일부를 페이징해서 가져온다.")
+    @DisplayName("Answer와 연결된 Feedback이 있는지 확인한다.")
+    @Transactional
     @Test
-    void findByUserId() {
+    void existsByAnswerId() {
         // given
-        User user = createUser();
-        Question question = createQuestion();
-        Answer answer1 = createAnswer(user, question);
-        Answer answer2 = createAnswer(user, question);
-        Answer answer3 = createAnswer(user, question);
-        Feedback feedback1 = createFeedback(user, answer1);
-        Feedback feedback2 = createFeedback(user, answer2);
-        Feedback feedback3 = createFeedback(user, answer3);
+        feedbackRepository.save(feedback);
 
+        // when
+        boolean isExists = feedbackRepository.existsByAnswerId(answer.getId());
+
+        // then
+        assertTrue(isExists);
+    }
+
+    @DisplayName("AnswerId로 Feedback의 CreatedAt 가져오기.")
+    @Transactional
+    @Test
+    void findCreatedAtByAnswerId() {
+        // given
+        feedbackRepository.save(feedback);
+
+        // when
+        LocalDateTime createdAt = feedbackRepository.findCreatedAtByAnswerId(answer.getId());
+
+        // then
+        assertThat(createdAt).isEqualTo(feedback.getCreatedAt());
+    }
+
+    @DisplayName("UserId로 최근 BeforeAudioLink 특정 개수만큼 가져오기.")
+    @Transactional
+    @Test
+    void findLatestBeforeAudioLinksByUserIdWithSize() {
+        // given
         feedbackRepository.save(feedback1);
         feedbackRepository.save(feedback2);
         feedbackRepository.save(feedback3);
 
-        PageRequest pageRequest = PageRequest.of(0, 2);
-
         // when
-        Page<Feedback> feedbackPage = feedbackRepository.findByUserId(user.getId(), pageRequest);
+        Pageable pageable = PageRequest.of(0, 3);
+        List<String> beforeAudioLinks = feedbackRepository.findLatestBeforeAudioLinksByUserIdWithSize(user.getId(),
+                pageable);
 
         // then
-        assertEquals(2, feedbackPage.getContent().size(), "페이지에는 2개의 피드백이 포함되어야 합니다.");
-        assertTrue(feedbackPage.getTotalPages() > 1, "전체 피드백이 여러 페이지에 걸쳐야 합니다.");
-        assertEquals(3, feedbackPage.getTotalElements(), "전체 피드백은 3개여야 합니다.");
-        assertEquals(feedback1, feedbackPage.getContent().get(0), "첫 번째 페이지에 첫 번째 피드백이 있어야 합니다.");
+        assertThat(beforeAudioLinks).hasSize(3);
     }
 
-    @DisplayName("사용자의 모든 Feedback 데이터를 가져온다.")
-    @Test
-    void findAllByUserId() {
-        // given
-        User user = createUser();
-        Question question = createQuestion();
-        Answer answer1 = createAnswer(user, question);
-        Answer answer2 = createAnswer(user, question);
-
-        Feedback feedback1 = createFeedback(user, answer1);
-        Feedback feedback2 = createFeedback(user, answer2);
-
-        feedbackRepository.save(feedback1);
-        feedbackRepository.save(feedback2);
-
-        // when
-        List<Feedback> feedbacks = feedbackRepository.findAllByUserId(user.getId());
-
-        // then
-        assertEquals(2, feedbacks.size());
-        assertThat(feedbacks).allMatch(feedback -> feedback.getAnswer().getUser().equals(user));
-    }
-
-    @DisplayName("사용자의 이전 beforeScript를 가져온다")
+    @DisplayName("UserId로 모든 BeforeAudioLink 가져오기")
     @Transactional
     @Test
-    void findBeforeScriptByUser() {
+    void findAllBeforeAudioLinksByUserId() {
         // given
-        User user = createUser();
-        Question question = createQuestion();
-        Answer answer = createAnswer(user, question);
-        Feedback feedback = createFeedback(user, answer);
-        feedbackRepository.save(feedback);
-
-        Pageable pageable = PageRequest.of(0, 7, Sort.by("createdAt").descending());
+        feedbackRepository.save(feedback1);
+        feedbackRepository.save(feedback2);
+        feedbackRepository.save(feedback3);
 
         // when
-        List<String> beforeScripts = feedbackRepository.findBeforeScriptByUser(user, pageable);
+        List<String> beforeAudioLinks = feedbackRepository.findAllBeforeAudioLinksByUserId(user.getId());
 
         // then
-        List<String> expectedBeforeScripts = List.of(feedback.getBeforeScript());
-        assertThat(beforeScripts).isEqualTo(expectedBeforeScripts);
+        assertThat(beforeAudioLinks).hasSize(3);
+    }
+
+    @DisplayName("UserId로 최근 BeforeScripts를 특정 개수만큼 가져온다.")
+    @Transactional
+    @Test
+    void findLatestBeforeScriptsByUserIdWithSize() {
+        // given
+        feedbackRepository.save(feedback1);
+        feedbackRepository.save(feedback2);
+        feedbackRepository.save(feedback3);
+
+        // when
+        Pageable pageable = PageRequest.of(0, 2);
+        List<String> beforeScripts = feedbackRepository.findLatestBeforeScriptsByUserIdWithSize(user.getId(), pageable);
+
+        // then
+        assertThat(beforeScripts).hasSize(2);
     }
 }

@@ -1,17 +1,16 @@
 package Team02.BackEnd.service.analysis;
 
-import static Team02.BackEnd.util.TestUtil.createAnalysis;
-import static Team02.BackEnd.util.TestUtil.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import Team02.BackEnd.config.TestConfig;
-import Team02.BackEnd.domain.Analysis;
-import Team02.BackEnd.domain.oauth.User;
 import Team02.BackEnd.dto.analysisDto.AnalysisResponseDto;
+import Team02.BackEnd.validator.AnalysisValidator;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +32,8 @@ class AnalysisApiServiceTest {
     @Autowired
     private RestTemplate restTemplate;
     @Autowired
+    private AnalysisValidator analysisValidator;
+    @Autowired
     private AnalysisApiService analysisApiService;
     @Autowired
     private MockRestServiceServer mockServer;
@@ -51,29 +52,29 @@ class AnalysisApiServiceTest {
         mockServer.reset();
     }
 
-//    @DisplayName("사용자의 일주일치 스피치에 대한 분석 데이터 받아오기")
-//    @Test
-//    @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
-//    void getAnalysisFromFastApi() {
-//        // given
-//        List<String> questions = List.of("question1", "question2");
-//        List<String> beforeScripts = List.of("beforeScript1", "beforeScript2");
-//
-//        // when
-//        mockServer.expect(requestTo(FASTAPI_API_URL))
-//                .andExpect(method(HttpMethod.POST))
-//                .andExpect(header("Authorization", "Bearer " + accessToken))
-//                .andRespond(withSuccess(
-//                        "{\"analysisText\": \"GOOD\"}",
-//                        MediaType.APPLICATION_JSON));
-//
-//        AnalysisResponseDto.GetAnalysisFromFastApiDto response = analysisApiService.getAnalysisFromFastApi(
-//                accessToken,
-//                questions,
-//                beforeScripts);
-//
-//        // then
-//        mockServer.verify();
-//        assertThat(response.getAnalysisText()).isEqualTo("GOOD");
-//    }
+    @DisplayName("사용자의 일주일치 스피치에 대한 분석 데이터 받아오기")
+    @Test
+    @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
+    void getAnalysisFromFastApi() {
+        // given
+        List<String> questions = List.of("question1", "question2");
+        List<String> beforeScripts = List.of("beforeScript1", "beforeScript2");
+
+        // when
+        mockServer.expect(requestTo(FASTAPI_API_URL))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(header("Authorization", "Bearer " + accessToken))
+                .andRespond(withSuccess(
+                        "{\"analysisText\": [[\"GOOD\"]]}",
+                        MediaType.APPLICATION_JSON));
+
+        AnalysisResponseDto.GetAnalysisFromFastApiDto response = analysisApiService.getAnalysisFromFastApi(
+                accessToken,
+                questions,
+                beforeScripts);
+
+        // then
+        mockServer.verify();
+        assertThat(response.getAnalysisText()).containsExactly(List.of("GOOD"));
+    }
 }

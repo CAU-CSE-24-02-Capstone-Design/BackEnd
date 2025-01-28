@@ -9,18 +9,19 @@ import Team02.BackEnd.service.answer.AnswerCheckService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(isolation = Isolation.READ_COMMITTED)
 public class SelfFeedbackService {
 
     private final SelfFeedbackCheckService selfFeedbackCheckService;
     private final AnswerCheckService answerCheckService;
     private final SelfFeedbackRepository selfFeedbackRepository;
 
-    @Transactional
     public void saveSelfFeedback(final Long answerId, final SaveSelfFeedbackDto saveSelfFeedbackDto) {
         Answer answer = answerCheckService.getAnswerByAnswerId(answerId);
         if (selfFeedbackCheckService.isExistsSelfFeedbackWithAnswerId(answerId)) {

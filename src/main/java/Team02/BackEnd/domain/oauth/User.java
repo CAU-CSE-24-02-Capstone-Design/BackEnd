@@ -52,8 +52,9 @@ public class User extends BaseEntity {
     @Embedded
     private OauthId oauthId;
 
-    @Column
     private String voiceUrl;
+    private int sequenceCount;
+    private int score;
 
     @Column(name = "level1_question_number")
     private Long level1QuestionNumber;
@@ -77,6 +78,23 @@ public class User extends BaseEntity {
 
     public void updateAnalyzeCompleteAnswerIndex(final Long analyzeCompleteAnswerIndex) {
         this.analyzeCompleteAnswerIndex = analyzeCompleteAnswerIndex;
+    }
+
+    public void updateSequenceCount(final boolean isContinue) {
+        if (isContinue) {
+            this.sequenceCount++;
+        } else {
+            this.sequenceCount = 1;
+        }
+    }
+
+    public void updateScore() {
+        if (this.sequenceCount > 1) {
+            int bonus = 100 * (this.sequenceCount - 1);
+            this.score += 100 + bonus;
+        } else {
+            this.score += 100;
+        }
     }
 
     public Long getQuestionNumber(final Long level) {

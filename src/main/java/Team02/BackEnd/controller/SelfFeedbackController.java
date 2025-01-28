@@ -9,8 +9,7 @@ import Team02.BackEnd.converter.SelfFeedbackConverter;
 import Team02.BackEnd.domain.SelfFeedback;
 import Team02.BackEnd.dto.selfFeedbackDto.SelfFeedbackRequestDto;
 import Team02.BackEnd.dto.selfFeedbackDto.SelfFeedbackResponseDto;
-import Team02.BackEnd.service.selffeedback.SelfFeedbackCheckService;
-import Team02.BackEnd.service.selffeedback.SelfFeedbackService;
+import Team02.BackEnd.service.selffeedback.SelfFeedbackManager;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,14 +25,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/spring")
 public class SelfFeedbackController {
 
-    private final SelfFeedbackService selfFeedbackService;
-    private final SelfFeedbackCheckService selfFeedbackCheckService;
+    private final SelfFeedbackManager selfFeedbackManager;
 
     @PostMapping("/self-feedbacks")
     @Operation(summary = "셀프 피드백 작성", description = "beforeAudio는 프론트에서 처리, post된 self feedback DB 저장")
     public ApiResponse<Void> saveSelfFeedback(@RequestParam("answerId") final Long answerId,
                                               @RequestBody final SelfFeedbackRequestDto.SaveSelfFeedbackDto saveSelfFeedbackDto) {
-        selfFeedbackService.saveSelfFeedback(answerId, saveSelfFeedbackDto);
+        selfFeedbackManager.saveSelfFeedback(answerId, saveSelfFeedbackDto);
         return ApiResponse.ofNoting(SuccessStatus.SAVE_SELF_FEEDBACK);
     }
 
@@ -43,8 +41,8 @@ public class SelfFeedbackController {
             @RequestHeader("Authorization") final String authorizationHeader
     ) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
-        SelfFeedback selfFeedback = selfFeedbackCheckService.getLatestSelfFeedback(accessToken);
+        String selfFeedbackText = selfFeedbackManager.getLatestSelfFeedbackText(accessToken);
         return ApiResponse.of(SuccessStatus.GET_SELF_FEEDBACK,
-                SelfFeedbackConverter.toGetBeforeSelfFeedbackDto(selfFeedback));
+                SelfFeedbackConverter.toGetBeforeSelfFeedbackDto(selfFeedbackText));
     }
 }

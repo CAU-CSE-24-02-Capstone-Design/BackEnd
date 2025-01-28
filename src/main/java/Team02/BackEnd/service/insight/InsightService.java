@@ -8,17 +8,18 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
 @Slf4j
+@Transactional(isolation = Isolation.READ_COMMITTED)
 public class InsightService {
 
     private final AnswerCheckService answerCheckService;
     private final InsightRepository insightRepository;
 
-    @Transactional
     public void saveAiInsight(final List<String> insights, final Long answerId) {
         Answer answer = answerCheckService.getAnswerByAnswerId(answerId);
         insights.stream()

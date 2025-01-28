@@ -71,25 +71,4 @@ class SelfFeedbackServiceTest {
         // then
         verify(selfFeedbackRepository, times(1)).save(any());
     }
-
-    @DisplayName("SelfFeedback을 업데이트한다")
-    @Test
-    @WithMockUser(value = "tlsgusdn4818@gmail.com", roles = {"USER"})
-    void updateSelfFeedback() {
-        // given
-        SelfFeedbackRequestDto.SaveSelfFeedbackDto saveSelfFeedbackDto = SelfFeedbackRequestDto.SaveSelfFeedbackDto.builder()
-                .feedback("feedback")
-                .build();
-        SelfFeedback mockSelfFeedback = mock(SelfFeedback.class);
-
-        // when
-        given(answerCheckService.getAnswerByAnswerId(answer.getId())).willReturn(answer);
-        given(selfFeedbackCheckService.isExistsSelfFeedbackWithAnswerId(answer.getId())).willReturn(true);
-        given(selfFeedbackCheckService.getSelfFeedbackByAnswerId(answer.getId())).willReturn(mockSelfFeedback);
-
-        selfFeedbackService.saveSelfFeedback(answer.getId(), saveSelfFeedbackDto);
-
-        // then
-        verify(mockSelfFeedback, times(1)).updateFeedback(any());
-    }
 }

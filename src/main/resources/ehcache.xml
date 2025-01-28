@@ -1,0 +1,23 @@
+<config
+        xmlns='http://www.ehcache.org/v3'
+        xmlns:jsr107='http://www.ehcache.org/v3/jsr107'>
+
+    <service>
+        <jsr107:defaults default-template="default">
+            <jsr107:cache name="category" template="categoryCache"/>
+        </jsr107:defaults>
+    </service>
+
+    <cache-template name="default">
+        <expiry>
+            <ttl unit="days">90</ttl>
+        </expiry>
+        <heap unit="entries">10</heap>
+    </cache-template>
+
+    <cache-template name="categoryCache">
+        <key-type>java.lang.Long</key-type>
+        <value-type>com.example.commerce.entity.ProductCategory</value-type>
+    </cache-template>
+
+</config>
