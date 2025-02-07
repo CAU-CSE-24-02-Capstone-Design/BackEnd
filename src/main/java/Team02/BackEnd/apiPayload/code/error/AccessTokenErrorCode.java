@@ -17,7 +17,7 @@ public enum AccessTokenErrorCode implements ErrorCode {
     private final String message;
 
     @Override
-    public String getName(){
+    public String getName() {
         return this.name();
     }
 }
