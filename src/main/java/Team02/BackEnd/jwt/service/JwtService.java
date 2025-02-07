@@ -3,9 +3,9 @@ package Team02.BackEnd.jwt.service;
 
 import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_REPLACEMENT;
 
-import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
-import Team02.BackEnd.apiPayload.exception.handler.AccessTokenHandler;
-import Team02.BackEnd.apiPayload.exception.handler.RefreshTokenHandler;
+import Team02.BackEnd.apiPayload.code.error.AccessTokenErrorCode;
+import Team02.BackEnd.apiPayload.code.error.RefreshTokenErrorCode;
+import Team02.BackEnd.apiPayload.exception.handler.ExceptionHandler;
 import Team02.BackEnd.domain.RefreshToken;
 import Team02.BackEnd.exception.TokenInvalidException;
 import Team02.BackEnd.repository.UserRepository;
@@ -145,7 +145,7 @@ public class JwtService {
                 .findFirst()
                 .filter(refresh -> !refresh.isEmpty())
                 .map(Optional::of)
-                .orElseThrow(() -> new RefreshTokenHandler(ErrorStatus._REFRESHTOKEN_NOT_FOUND));
+                .orElseThrow(() -> new ExceptionHandler(RefreshTokenErrorCode._REFRESHTOKEN_NOT_FOUND));
     }
 
     /**
@@ -169,7 +169,7 @@ public class JwtService {
                     .asString());
         } catch (Exception e) {
             log.error(INVALID_ACCESS_TOKEN);
-            throw new AccessTokenHandler(ErrorStatus._ACCESSTOKEN_NOT_VALID);
+            throw new ExceptionHandler(AccessTokenErrorCode._ACCESSTOKEN_NOT_VALID);
         }
     }
 

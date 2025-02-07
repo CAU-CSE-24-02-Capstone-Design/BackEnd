@@ -1,8 +1,7 @@
 package Team02.BackEnd.validator;
 
-import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
-import Team02.BackEnd.apiPayload.exception.handler.AnalysisHandler;
-import Team02.BackEnd.apiPayload.exception.handler.FeedbackHandler;
+import Team02.BackEnd.apiPayload.code.error.FeedbackErrorCode;
+import Team02.BackEnd.apiPayload.exception.handler.ExceptionHandler;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -14,19 +13,19 @@ public class FeedbackValidator {
 
     public <T> void validateFeedback(final T feedback) {
         if (feedback == null) {
-            throw new FeedbackHandler(ErrorStatus._FEEDBACK_NOT_FOUND);
+            throw new ExceptionHandler(FeedbackErrorCode._FEEDBACK_NOT_FOUND);
         }
     }
 
     public <T> void validateFeedback(final List<T> feedbackList) {
         if (feedbackList.isEmpty()) {
-            throw new FeedbackHandler(ErrorStatus._FEEDBACK_NOT_FOUND);
+            throw new ExceptionHandler(FeedbackErrorCode._FEEDBACK_NOT_FOUND);
         }
     }
 
     public <T> void validateResponseFromFastApi(final T response) {
         if (response == null) {
-            throw new AnalysisHandler(ErrorStatus._FAST_API_FEEDBACK_NULL);
+            throw new ExceptionHandler(FeedbackErrorCode._FAST_API_FEEDBACK_NULL);
         }
     }
 

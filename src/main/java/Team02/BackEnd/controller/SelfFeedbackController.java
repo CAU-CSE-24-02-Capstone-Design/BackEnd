@@ -4,9 +4,8 @@ import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_PREFIX;
 import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_REPLACEMENT;
 
 import Team02.BackEnd.apiPayload.ApiResponse;
-import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
+import Team02.BackEnd.apiPayload.code.success.SelfFeedbackSuccessCode;
 import Team02.BackEnd.converter.SelfFeedbackConverter;
-import Team02.BackEnd.domain.SelfFeedback;
 import Team02.BackEnd.dto.selfFeedbackDto.SelfFeedbackRequestDto;
 import Team02.BackEnd.dto.selfFeedbackDto.SelfFeedbackResponseDto;
 import Team02.BackEnd.service.selffeedback.SelfFeedbackManager;
@@ -32,7 +31,7 @@ public class SelfFeedbackController {
     public ApiResponse<Void> saveSelfFeedback(@RequestParam("answerId") final Long answerId,
                                               @RequestBody final SelfFeedbackRequestDto.SaveSelfFeedbackDto saveSelfFeedbackDto) {
         selfFeedbackManager.saveSelfFeedback(answerId, saveSelfFeedbackDto);
-        return ApiResponse.ofNoting(SuccessStatus.SAVE_SELF_FEEDBACK);
+        return ApiResponse.ofNoting(SelfFeedbackSuccessCode.SAVE_SELF_FEEDBACK);
     }
 
     @GetMapping("/self-feedbacks/latest-feedbacks")
@@ -42,7 +41,7 @@ public class SelfFeedbackController {
     ) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
         String selfFeedbackText = selfFeedbackManager.getLatestSelfFeedbackText(accessToken);
-        return ApiResponse.of(SuccessStatus.GET_SELF_FEEDBACK,
+        return ApiResponse.of(SelfFeedbackSuccessCode.GET_SELF_FEEDBACK,
                 SelfFeedbackConverter.toGetBeforeSelfFeedbackDto(selfFeedbackText));
     }
 }

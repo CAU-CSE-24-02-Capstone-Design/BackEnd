@@ -4,7 +4,7 @@ import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_PREFIX;
 import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_REPLACEMENT;
 
 import Team02.BackEnd.apiPayload.ApiResponse;
-import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
+import Team02.BackEnd.apiPayload.code.success.RecordSuccessCode;
 import Team02.BackEnd.dto.recordDto.RecordRequestDto;
 import Team02.BackEnd.service.feedback.FeedbackManager;
 import Team02.BackEnd.service.user.UserManager;
@@ -30,7 +30,7 @@ public class RecordController {
                                           @RequestBody final RecordRequestDto.GetVoiceUrlDto getVoiceUrlDto) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
         userManager.updateRoleAndVoiceUrl(accessToken, getVoiceUrlDto);
-        return ApiResponse.ofNoting(SuccessStatus.SAVE_VOICE_URL);
+        return ApiResponse.ofNoting(RecordSuccessCode.SAVE_VOICE_URL);
     }
 
     @PostMapping("/speeches")
@@ -39,6 +39,6 @@ public class RecordController {
                                                  @RequestBody final RecordRequestDto.GetRespondDto getRespondDto) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
         feedbackManager.saveBeforeAudioLink(accessToken, getRespondDto);
-        return ApiResponse.ofNoting(SuccessStatus.SAVE_BEFORE_AUDIO_LINK);
+        return ApiResponse.ofNoting(RecordSuccessCode.SAVE_BEFORE_AUDIO_LINK);
     }
 }

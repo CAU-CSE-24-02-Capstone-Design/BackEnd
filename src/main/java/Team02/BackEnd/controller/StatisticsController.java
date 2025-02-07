@@ -4,7 +4,7 @@ import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_PREFIX;
 import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_REPLACEMENT;
 
 import Team02.BackEnd.apiPayload.ApiResponse;
-import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
+import Team02.BackEnd.apiPayload.code.success.StatisticsSuccessCode;
 import Team02.BackEnd.dto.statisticsDto.StatisticsRequestDto;
 import Team02.BackEnd.dto.statisticsDto.StatisticsResponseDto;
 import Team02.BackEnd.service.statistics.StatisticsManager;
@@ -30,7 +30,7 @@ public class StatisticsController {
     @Operation(summary = "fast api -> spring", description = "통계(간투어 등 횟수) 디비 저장용 api, answerId 같이 넘겨주기")
     public ApiResponse<Void> saveStatistics(@RequestBody final StatisticsRequestDto.GetStatisticsDto getStatisticsDto) {
         statisticsManager.saveStatistics(getStatisticsDto);
-        return ApiResponse.ofNoting(SuccessStatus.SAVE_STATISTICS);
+        return ApiResponse.ofNoting(StatisticsSuccessCode.SAVE_STATISTICS);
     }
 
     @GetMapping("/statistics")
@@ -41,7 +41,7 @@ public class StatisticsController {
     public ApiResponse<List<StatisticsResponseDto.GetStatisticsDto>> getFilterStatistics(
             @RequestHeader("Authorization") final String authorizationHeader) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
-        return ApiResponse.of(SuccessStatus.GET_STATISTICS, statisticsManager.getUserStatistics(accessToken));
+        return ApiResponse.of(StatisticsSuccessCode.GET_STATISTICS, statisticsManager.getUserStatistics(accessToken));
     }
 
     @GetMapping("/statistics/levels")
@@ -51,7 +51,7 @@ public class StatisticsController {
             @RequestParam("level") final Long level
     ) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
-        return ApiResponse.of(SuccessStatus.GET_STATISTICS,
+        return ApiResponse.of(StatisticsSuccessCode.GET_STATISTICS,
                 statisticsManager.getUserStatisticsByLevel(accessToken, level));
     }
 }
