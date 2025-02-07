@@ -7,7 +7,6 @@ import Team02.BackEnd.dto.answerDto.AnswerDto.AnswerQuestionDto;
 import Team02.BackEnd.repository.AnswerRepository;
 import Team02.BackEnd.validator.AnswerValidator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,7 +56,8 @@ public class AnswerCheckService {
 
     public List<AnswerDto.AnswerIdDto> getLatestAnswerIdDtosByUserIdWithSize(final Long userId, final int size) {
         Pageable pageable = PageRequest.of(0, size);
-        List<AnswerDto.AnswerIdDto> answerDatas = answerRepository.findLatestAnswerIdDtosByUserIdWithSize(userId, pageable);
+        List<AnswerDto.AnswerIdDto> answerDatas = answerRepository.findLatestAnswerIdDtosByUserIdWithSize(userId,
+                pageable);
         answerValidator.validateAnswersEmpty(answerDatas);
         return answerDatas;
     }

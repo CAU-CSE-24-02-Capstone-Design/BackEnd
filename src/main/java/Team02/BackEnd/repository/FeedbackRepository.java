@@ -21,7 +21,7 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
     @Query("SELECT f.beforeAudioLink FROM Feedback f WHERE f.user.id = :userId ORDER BY f.createdAt DESC")
     List<String> findLatestBeforeAudioLinksByUserIdWithSize(@Param("userId") final Long userId,
-                                                         final Pageable pageable);
+                                                            final Pageable pageable);
 
     @Query("SELECT f.beforeAudioLink FROM Feedback f WHERE f.user.id = :userId")
     List<String> findAllBeforeAudioLinksByUserId(@Param("userId") final Long userId);
