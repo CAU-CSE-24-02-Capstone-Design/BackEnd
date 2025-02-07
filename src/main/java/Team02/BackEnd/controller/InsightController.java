@@ -1,7 +1,7 @@
 package Team02.BackEnd.controller;
 
 import Team02.BackEnd.apiPayload.ApiResponse;
-import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
+import Team02.BackEnd.apiPayload.code.success.InsightSuccessCode;
 import Team02.BackEnd.converter.InsightConverter;
 import Team02.BackEnd.dto.insightDto.InsightRequestDto;
 import Team02.BackEnd.dto.insightDto.InsightResponseDto;
@@ -30,13 +30,13 @@ public class InsightController {
     public ApiResponse<Void> saveAiInsight(@RequestParam("answerId") final Long answerId,
                                            @RequestBody final InsightRequestDto.GetInsightDto getInsightDto) {
         insightManager.saveAiInsight(getInsightDto.getInsight(), answerId);
-        return ApiResponse.ofNoting(SuccessStatus.SAVE_INSIGHT);
+        return ApiResponse.ofNoting(InsightSuccessCode.SAVE_INSIGHT);
     }
 
     @GetMapping("/insights")
     @Operation(summary = "인사이트 받아오기 react -> spring", description = "질문요청에서 받은 answerId로 쿼리 파라미터")
     public ApiResponse<InsightResponseDto.GetInsightDto> getAiInsight(@RequestParam("answerId") final Long answerId) {
         List<String> insight = insightManager.getAiInsight(answerId);
-        return ApiResponse.of(SuccessStatus.GET_INSIGHT, InsightConverter.toGetInsightDto(insight));
+        return ApiResponse.of(InsightSuccessCode.GET_INSIGHT, InsightConverter.toGetInsightDto(insight));
     }
 }

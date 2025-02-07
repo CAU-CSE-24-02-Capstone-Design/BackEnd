@@ -4,7 +4,7 @@ import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_PREFIX;
 import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_REPLACEMENT;
 
 import Team02.BackEnd.apiPayload.ApiResponse;
-import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
+import Team02.BackEnd.apiPayload.code.success.StatisticsSuccessCode;
 import Team02.BackEnd.service.calendar.CalendarManager;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class CalendarController {
                                                    @RequestParam("year") final String year,
                                                    @RequestParam("month") final String month) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
-        return ApiResponse.of(SuccessStatus.GET_DATES_WHEN_USER_DID,
+        return ApiResponse.of(StatisticsSuccessCode.GET_DATES_WHEN_USER_DID,
                 calendarManager.getDatesWhenUserDid(accessToken, year, month));
     }
 }

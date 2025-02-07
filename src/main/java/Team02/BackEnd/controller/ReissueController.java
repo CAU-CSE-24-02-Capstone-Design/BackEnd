@@ -1,7 +1,7 @@
 package Team02.BackEnd.controller;
 
 import Team02.BackEnd.apiPayload.ApiResponse;
-import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
+import Team02.BackEnd.apiPayload.code.success.ReissueSuccessCode;
 import Team02.BackEnd.service.reissue.ReissueService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,6 +21,6 @@ public class ReissueController {
     public ApiResponse<Void> reissue(final HttpServletRequest request, final HttpServletResponse response) {
         String refreshToken = reissueService.getRefreshTokenInCookie(request);
         reissueService.reissueToken(response, refreshToken);
-        return ApiResponse.ofNoting(SuccessStatus.REISSUE_TOKEN);
+        return ApiResponse.ofNoting(ReissueSuccessCode.REISSUE_TOKEN);
     }
 }

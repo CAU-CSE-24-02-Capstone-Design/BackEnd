@@ -4,7 +4,7 @@ import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_PREFIX;
 import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_REPLACEMENT;
 
 import Team02.BackEnd.apiPayload.ApiResponse;
-import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
+import Team02.BackEnd.apiPayload.code.success.QuestionSuccessCode;
 import Team02.BackEnd.converter.QuestionConverter;
 import Team02.BackEnd.dto.questionDto.QuestionAnswerIdDto;
 import Team02.BackEnd.dto.questionDto.QuestionResponseDto;
@@ -31,7 +31,7 @@ public class QuestionController {
             @RequestParam("level") final Long level) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
         QuestionAnswerIdDto questionAnswerIdDto = questionManager.getUserQuestion(accessToken, level);
-        return ApiResponse.of(SuccessStatus.GET_QUESTION,
+        return ApiResponse.of(QuestionSuccessCode.GET_QUESTION,
                 QuestionConverter.toQuestionResponseDto(questionAnswerIdDto.question(),
                         questionAnswerIdDto.answerId()));
     }

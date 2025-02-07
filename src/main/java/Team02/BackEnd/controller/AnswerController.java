@@ -1,7 +1,7 @@
 package Team02.BackEnd.controller;
 
 import Team02.BackEnd.apiPayload.ApiResponse;
-import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
+import Team02.BackEnd.apiPayload.code.success.AnswerSuccessCode;
 import Team02.BackEnd.converter.AnswerConverter;
 import Team02.BackEnd.domain.Answer;
 import Team02.BackEnd.dto.answerDto.AnswerRequestDto;
@@ -28,7 +28,7 @@ public class AnswerController {
     public ApiResponse<Void> saveAnswerEvaluation(@RequestParam("answerId") final Long answerId,
                                                   @RequestBody final AnswerRequestDto.AnswerEvaluationRequestDto answerEvaluationRequestDto) {
         answerManager.saveAnswerEvaluation(answerId, answerEvaluationRequestDto.getEvaluation());
-        return ApiResponse.ofNoting(SuccessStatus.SAVE_EVALUATION);
+        return ApiResponse.ofNoting(AnswerSuccessCode.SAVE_EVALUATION);
     }
 
     @GetMapping("/answers/evaluations")
@@ -36,7 +36,7 @@ public class AnswerController {
     public ApiResponse<AnswerResponseDto.AnswerEvaluationResponseDto> getAnswerEvaluation(
             @RequestParam("answerId") final Long answerId) {
         Answer answer = answerManager.getAnswerByAnswerId(answerId);
-        return ApiResponse.of(SuccessStatus.GET_EVALUATION,
+        return ApiResponse.of(AnswerSuccessCode.GET_EVALUATION,
                 AnswerConverter.toAnswerEvaluationResponseDto(answer.getEvaluation()));
     }
 }

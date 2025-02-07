@@ -4,7 +4,7 @@ import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_PREFIX;
 import static Team02.BackEnd.constant.Constants.ACCESS_TOKEN_REPLACEMENT;
 
 import Team02.BackEnd.apiPayload.ApiResponse;
-import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
+import Team02.BackEnd.apiPayload.code.success.AnalysisSuccessCode;
 import Team02.BackEnd.converter.AnalysisConverter;
 import Team02.BackEnd.dto.analysisDto.AnalysisResponseDto;
 import Team02.BackEnd.service.analysis.AnalysisManager;
@@ -29,7 +29,7 @@ public class AnalysisController {
             @RequestHeader("authorization") final String authorizationHeader) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
         boolean canSaveAnalysis = analysisManager.canSaveAnalysis(accessToken);
-        return ApiResponse.of(SuccessStatus.CAN_SAVE_ANALYSIS,
+        return ApiResponse.of(AnalysisSuccessCode.CAN_SAVE_ANALYSIS,
                 AnalysisConverter.toGetAvailabilityAnalysisDto(canSaveAnalysis));
     }
 
@@ -39,7 +39,7 @@ public class AnalysisController {
             @RequestHeader("authorization") final String authorizationHeader) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
         analysisManager.saveAnalysis(accessToken);
-        return ApiResponse.ofNoting(SuccessStatus.SAVE_ANALYSIS);
+        return ApiResponse.ofNoting(AnalysisSuccessCode.SAVE_ANALYSIS);
     }
 
     @GetMapping("/analysis")
@@ -47,6 +47,6 @@ public class AnalysisController {
     public ApiResponse<AnalysisResponseDto.GetAnalysisDto> getAnalysis(
             @RequestHeader("authorization") final String authorizationHeader) {
         String accessToken = authorizationHeader.replace(ACCESS_TOKEN_PREFIX, ACCESS_TOKEN_REPLACEMENT);
-        return ApiResponse.of(SuccessStatus.GET_ANALYSIS, analysisManager.getAnalysis(accessToken));
+        return ApiResponse.of(AnalysisSuccessCode.GET_ANALYSIS, analysisManager.getAnalysis(accessToken));
     }
 }

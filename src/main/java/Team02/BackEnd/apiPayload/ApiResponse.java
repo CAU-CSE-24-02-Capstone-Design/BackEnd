@@ -1,7 +1,6 @@
 package Team02.BackEnd.apiPayload;
 
-import Team02.BackEnd.apiPayload.code.BaseCode;
-import Team02.BackEnd.apiPayload.code.status.SuccessStatus;
+import Team02.BackEnd.apiPayload.code.SuccessCode;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -20,26 +19,18 @@ public class ApiResponse<T> {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T result;
 
-    // 성공한 경우 응답 생성
-    public static <T> ApiResponse<T> onSuccess(T result) {
-        return new ApiResponse<>(true, SuccessStatus._OK.getCode(), SuccessStatus._OK.getMessage(), result);
-    }
-
     // 성공한 경우 result 있을 때
-    public static <T> ApiResponse<T> of(BaseCode code, T result) {
-        return new ApiResponse<>(true, code.getReasonHttpStatus().getCode(), code.getReasonHttpStatus().getMessage(),
-                result);
+    public static <T> ApiResponse<T> of(final SuccessCode code, final T result) {
+        return new ApiResponse<>(true, code.getCode(), code.getMessage(), result);
     }
 
     // 성공한 경우 result 없을 때
-    public static <T> ApiResponse<T> ofNoting(BaseCode code) {
-        return new ApiResponse<>(true, code.getReasonHttpStatus().getCode(), code.getReasonHttpStatus().getMessage(),
-                null);
+    public static <T> ApiResponse<T> ofNoting(final SuccessCode code) {
+        return new ApiResponse<>(true, code.getCode(), code.getMessage(), null);
     }
 
     // 실패한 경우 응답 생성
-    public static <T> ApiResponse<T> onFailure(String code, String message, T data) {
+    public static <T> ApiResponse<T> onFailure(final String code, final String message, final T data) {
         return new ApiResponse<>(true, code, message, data);
     }
 }
-//

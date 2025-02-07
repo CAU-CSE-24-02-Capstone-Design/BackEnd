@@ -1,7 +1,7 @@
 package Team02.BackEnd.service.reissue;
 
-import Team02.BackEnd.apiPayload.code.status.ErrorStatus;
-import Team02.BackEnd.apiPayload.exception.handler.RefreshTokenHandler;
+import Team02.BackEnd.apiPayload.code.error.RefreshTokenErrorCode;
+import Team02.BackEnd.apiPayload.exception.handler.ExceptionHandler;
 import Team02.BackEnd.jwt.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,7 +24,7 @@ public class ReissueService {
             validateRefreshTokenIsBlackList(refreshToken.get());
             return refreshToken.get();
         }
-        throw new RefreshTokenHandler(ErrorStatus._REFRESHTOKEN_NOT_FOUND);
+        throw new ExceptionHandler(RefreshTokenErrorCode._REFRESHTOKEN_NOT_FOUND);
     }
 
     public void reissueToken(final HttpServletResponse response, final String refreshToken) {
@@ -43,13 +43,13 @@ public class ReissueService {
         try {
             jwtService.isTokenValid(refreshToken);
         } catch (Exception e) {
-            throw new RefreshTokenHandler(ErrorStatus._REFRESHTOKEN_NOT_VALID);
+            throw new ExceptionHandler(RefreshTokenErrorCode._REFRESHTOKEN_NOT_VALID);
         }
     }
 
     private void validateRefreshTokenIsBlackList(final String refreshToken) {
         if (jwtService.isBlackList(refreshToken)) {
-            throw new RefreshTokenHandler(ErrorStatus._REFRESHTOKEN_BLACKLIST);
+            throw new ExceptionHandler(RefreshTokenErrorCode._REFRESHTOKEN_BLACKLIST);
         }
     }
 }
