@@ -89,17 +89,20 @@
 
 ### 시스템 아키텍처
 <img src="https://github.com/user-attachments/assets/b3f5a466-8449-44f8-8947-9e8a31ab8e94" width="700">
+<img width="951" alt="스크린샷 2025-02-06 오후 9 32 13" src="https://github.com/user-attachments/assets/e61cd04a-a2a0-44ac-8afc-e0cc708d050f" />
+
 
 ### ERD
 ![image](https://github.com/user-attachments/assets/709c8ac8-9e3e-4ef8-a476-8aeea136f31b)
 
-
 ### 기술  
 <img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=React&logoColor=white"/> <img src="https://img.shields.io/badge/Tailwind CSS-06B6D4?style=flat&logo=TailwindCSS&logoColor=white"/> <img src="https://img.shields.io/badge/ESLint-4B32C3?style=flat&logo=ESLint&logoColor=white"/> <img src="https://img.shields.io/badge/Prettier-F7B93E?style=flat&logo=Prettier&logoColor=white"/> <img src="https://img.shields.io/badge/Axios-5A29E4?style=flat&logo=Axios&logoColor=white"/>
 
-<img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=flat&logo=SpringBoot&logoColor=white" />  <img src="https://img.shields.io/badge/Spring Security-6DB33F?style=flat&logo=SpringSecurity&logoColor=white" /> <img src="https://img.shields.io/badge/Spring Data JPA-6DB33F?style=flat&logo=Spring Data JPA&logoColor=white" /> <img src="https://img.shields.io/badge/FastAPI-009688?style=flat&logo=FastAPI&logoColor=white" /> <img src="https://img.shields.io/badge/Swagger-85EA2D?style=flat&logo=Swagger&logoColor=black" /> <img src="https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=MySQL&logoColor=white" /> <img src="https://img.shields.io/badge/Redis-FF4438?style=flat&logo=Redis&logoColor=white" /> <img src="https://img.shields.io/badge/Gradle-02303A?style=flat&logo=Gradle&logoColor=white" /> <img src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=Docker&logoColor=white" /> <img src="https://img.shields.io/badge/GithubActions-2088FF?style=flat&logo=GithubActions&logoColor=white" /> <img src="https://img.shields.io/badge/NGINX-009639?style=flat&logo=NGINX&logoColor=white" /> <img src="https://img.shields.io/badge/OpenAI-412991?style=flat&logo=OpenAI&logoColor=white" />
+
+<img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=flat&logo=SpringBoot&logoColor=white" />  <img src="https://img.shields.io/badge/Spring Security-6DB33F?style=flat&logo=SpringSecurity&logoColor=white" /> <img src="https://img.shields.io/badge/Spring Data JPA-6DB33F?style=flat&logo=Spring Data JPA&logoColor=white" /> <img src="https://img.shields.io/badge/FastAPI-009688?style=flat&logo=FastAPI&logoColor=white" /> <img src="https://img.shields.io/badge/Swagger-85EA2D?style=flat&logo=Swagger&logoColor=black" /> <img src="https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=MySQL&logoColor=white" /> <img src="https://img.shields.io/badge/Redis-FF4438?style=flat&logo=Redis&logoColor=white" /> <img src="https://img.shields.io/badge/Gradle-02303A?style=flat&logo=Gradle&logoColor=white" /> <img src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=Docker&logoColor=white" /> <img src="https://img.shields.io/badge/GithubActions-2088FF?style=flat&logo=GithubActions&logoColor=white" /> <img src="https://img.shields.io/badge/NGINX-009639?style=flat&logo=NGINX&logoColor=white" /> <img src="https://img.shields.io/badge/OpenAI-412991?style=flat&logo=OpenAI&logoColor=white" /> 
 
 <img src="https://img.shields.io/badge/Amazon EC2-FF9900?style=flat&logo=Amazon EC2&logoColor=white" />  <img src="https://img.shields.io/badge/Amazon S3-569A31?style=flat&logo=Amazon S3&logoColor=white" />  <img src="https://img.shields.io/badge/Amazon Elastic Load Balancing-8C4FFF?style=flat&logo=Amazon Elastic Load Balancing&logoColor=white" /> <img src="https://img.shields.io/badge/Amazon Route 53-8C4FFF?style=flat&logo=Amazon Route 53&logoColor=white" /> 
+
 
 ### 협업  
 [<img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=GitHub&logoColor=white" />](https://github.com/CAU-CSE-24-02-Capstone-Design)
