@@ -89,7 +89,7 @@
 
 ### 시스템 아키텍처
 <img src="https://github.com/user-attachments/assets/b3f5a466-8449-44f8-8947-9e8a31ab8e94" width="700">
-<img width="951" alt="스크린샷 2025-02-06 오후 9 32 13" src="https://github.com/user-attachments/assets/e61cd04a-a2a0-44ac-8afc-e0cc708d050f" />
+<img width="700" alt="스크린샷 2025-02-06 오후 9 32 13" src="https://github.com/user-attachments/assets/c0a4c9ef-ada6-46e8-9ca9-36c5fb42a490" />
 
 
 ### ERD
